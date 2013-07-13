@@ -1,1 +1,2 @@
-include ':sample', 'icepick'
+include 'sample', 'icepick'
+rootProject.name = 'icepick-parent'
