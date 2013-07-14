@@ -23,17 +23,17 @@ public class IcicleProcessor extends AbstractProcessor {
 
     public static final String SUFFIX = "$$Icicle";
 
-    private final Map<TypeElement, Set<IcicleField>> fieldsByType = new HashMap<TypeElement, Set<IcicleField>>();
 
     @Override
     public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment env) {
         Set<? extends Element> elements = env.getElementsAnnotatedWith(Icicle.class);
-        validateAnnotationsAndBuildFieldsByType(elements);
-        writeHelpers();
+        Map<TypeElement, Set<IcicleField>> fieldsByType = new HashMap<TypeElement, Set<IcicleField>>();
+        groupFieldsByType(elements, fieldsByType);
+        writeHelpers(fieldsByType);
         return true;
     }
 
-    private void validateAnnotationsAndBuildFieldsByType(Set<? extends Element> elements) {
+    private void groupFieldsByType(Set<? extends Element> elements, Map<TypeElement, Set<IcicleField>> fieldsByType) {
         IcicleConverter icicleConverter = new IcicleConverter(processingEnv.getTypeUtils(), processingEnv.getElementUtils());
         for (Element element : elements) {
             if (element.getModifiers().contains(Modifier.FINAL) ||
@@ -57,7 +57,7 @@ public class IcicleProcessor extends AbstractProcessor {
         }
     }
 
-    private void writeHelpers() {
+    private void writeHelpers(Map<TypeElement, Set<IcicleField>> fieldsByType) {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
             try {
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(entry.getKey().getQualifiedName() + SUFFIX, entry.getKey());
@@ -66,7 +66,7 @@ public class IcicleProcessor extends AbstractProcessor {
                 IcicleWriter icicleWriter = new IcicleWriter(jw, SUFFIX);
                 icicleWriter.writeClass(entry.getKey(), entry.getValue());
             } catch (IOException e) {
-                error(entry.getKey(), "Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
+                error(entry.getKey(), e.toString() +" Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
             }
         }
     }
