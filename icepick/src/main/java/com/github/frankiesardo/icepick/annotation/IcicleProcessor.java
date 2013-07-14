@@ -23,10 +23,17 @@ public class IcicleProcessor extends AbstractProcessor {
 
     public static final String SUFFIX = "$$Icicle";
 
+    private final Map<TypeElement, Set<IcicleField>> fieldsByType = new HashMap<TypeElement, Set<IcicleField>>();
+
     @Override
     public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment env) {
         Set<? extends Element> elements = env.getElementsAnnotatedWith(Icicle.class);
-        Map<TypeElement, Set<IcicleField>> fieldsByType = new HashMap<TypeElement, Set<IcicleField>>();
+        validateAnnotationsAndBuildFieldsByType(elements);
+        writeHelpers();
+        return true;
+    }
+
+    private void validateAnnotationsAndBuildFieldsByType(Set<? extends Element> elements) {
         IcicleConverter icicleConverter = new IcicleConverter(processingEnv.getTypeUtils(), processingEnv.getElementUtils());
         for (Element element : elements) {
             if (element.getModifiers().contains(Modifier.FINAL) ||
@@ -48,7 +55,9 @@ public class IcicleProcessor extends AbstractProcessor {
             String fieldCommand = icicleConverter.convert(element.asType());
             fields.add(new IcicleField(fieldName, fieldKey, fieldType, fieldCommand));
         }
+    }
 
+    private void writeHelpers() {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
             try {
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(entry.getKey().getQualifiedName() + SUFFIX, entry.getKey());
@@ -60,7 +69,6 @@ public class IcicleProcessor extends AbstractProcessor {
                 error(entry.getKey(), "Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
             }
         }
-        return true;
     }
 
     @Override
