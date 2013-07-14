@@ -25,7 +25,7 @@ class IcicleField {
     public String getTypeCast() {
         if (command.equals(IcicleCommand.SERIALIZABLE) ||
                 command.equals(IcicleCommand.PARCELABLE)) {
-            return "(" + type + ")";
+            return "(" + type + ") ";
         }
         return "";
     }
