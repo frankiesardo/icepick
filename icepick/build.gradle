@@ -1,4 +1,6 @@
-apply plugin: "java"
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 repositories {
     mavenCentral()
@@ -12,5 +14,72 @@ dependencies {
     testCompile "junit:junit:4.10"
     testCompile "org.mockito:mockito-core:1.8.5"
     testCompile "org.powermock:powermock-api-mockito:1.4.9"
+}
+
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { deployment -> signing.signPom(deployment) }
+
+            if (project.hasProperty('sonatypeUsername')) {
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+            }
+
+            repository(url: "file:///Users/frankie/Desktop/")
+
+            uniqueVersion = false
+
+            pom.project {
+
+                parent {
+                    groupId 'org.sonatype.oss'
+                    artifactId 'oss-parent'
+                    version '7'
+                }
+
+                groupId = 'com.github.frankiesardo'
+                artifactId = 'icepick'
+                version = '1.0'
+                packaging 'jar'
+
+                name 'Icepick'
+                description 'Android Bundle save and restore instancestate made easy'
+                url 'https://github.com/frankiesardo/icepick'
+
+                scm {
+                    url 'https://github.com/frankiesardo/icepick'
+                    connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
+                    developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'frankiesardo'
+                        name 'Frankie Sardo'
+                    }
+                }
+            }
+        }
+    }
 }
 
