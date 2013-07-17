@@ -31,7 +31,15 @@ __If you're proficient with a [dagger](https://github.com/square/dagger) and a [
 Download
 --------
 
-Maven central coming soon. For now, you can use the jar located in the root folder
+Maven dependency:
+
+```xml
+<dependency>
+  <groupId>com.github.frankiesardo</groupId>
+  <artifactId>icepick</artifactId>
+  <version>(insert latest version)</version>
+</dependency>
+```
 
 License
 -------
