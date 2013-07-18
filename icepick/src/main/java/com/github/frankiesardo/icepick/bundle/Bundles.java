@@ -19,9 +19,9 @@ public class Bundles {
         save(target, outState);
     }
 
-//    public static <T extends android.support.v4.app.Fragment> void saveInstanceState(T target, Bundle outState) {
-//        save(target, outState);
-//	}
+    public static <T extends android.support.v4.app.Fragment> void saveInstanceState(T target, Bundle outState) {
+        save(target, outState);
+    }
 
     private static void save(Object target, Bundle outState) {
         new BundleInjector(target, outState, CACHED_METHODS).inject(BundleAction.SAVE);
@@ -35,9 +35,9 @@ public class Bundles {
         restore(target, savedInstanceState);
     }
 
-//    public static <T extends android.support.v4.app.Fragment> void restoreInstanceState(T target, Bundle savedInstanceState) {
-//        restore(target, savedInstanceState);
-//   }
+    public static <T extends android.support.v4.app.Fragment> void restoreInstanceState(T target, Bundle savedInstanceState) {
+        restore(target, savedInstanceState);
+    }
 
     private static void restore(Object target, Bundle savedInstanceState) {
         new BundleInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
