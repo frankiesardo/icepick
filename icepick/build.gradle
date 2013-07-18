@@ -66,7 +66,7 @@ uploadArchives {
 
                 groupId = 'com.github.frankiesardo'
                 artifactId = 'icepick'
-                version = '1.1'
+                version = '1.1.1'
                 packaging 'jar'
 
                 name 'Icepick'
