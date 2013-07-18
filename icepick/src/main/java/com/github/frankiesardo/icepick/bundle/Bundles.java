@@ -1,7 +1,6 @@
 package com.github.frankiesardo.icepick.bundle;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 
 import java.lang.reflect.Method;
@@ -16,13 +15,12 @@ public class Bundles {
         save(target, outState);
     }
 
-    public static <T extends Fragment> void saveInstanceState(T target, Bundle outState) {
+    public static <T extends android.app.Fragment> void saveInstanceState(T target, Bundle outState) {
         save(target, outState);
     }
 
-    //Gradle is giving problems atm
 //    public static <T extends android.support.v4.app.Fragment> void saveInstanceState(T target, Bundle outState) {
-//        new BundleInjector(target, outState, CACHED_METHODS).inject(BundleAction.SAVE);
+//        save(target, outState);
 //	}
 
     private static void save(Object target, Bundle outState) {
@@ -33,16 +31,15 @@ public class Bundles {
         restore(target, savedInstanceState);
     }
 
-    public static <T extends Fragment> void restoreInstanceState(T target, Bundle savedInstanceState) {
+    public static <T extends android.app.Fragment> void restoreInstanceState(T target, Bundle savedInstanceState) {
         restore(target, savedInstanceState);
     }
-    //Gradle is giving problems atm
+
 //    public static <T extends android.support.v4.app.Fragment> void restoreInstanceState(T target, Bundle savedInstanceState) {
-//        new BundleInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
+//        restore(target, savedInstanceState);
 //   }
 
     private static void restore(Object target, Bundle savedInstanceState) {
         new BundleInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
     }
-
 }

@@ -37,7 +37,7 @@ public class IcicleWriterTest {
     }
 
     @Test
-    public void insertFieldPutAndGetIntoATemplate() throws Exception {
+    public void shouldWriteBundlePutAndGetIntoATemplate() throws Exception {
         icicleWriter.writeClass(classType, fields);
 
         assertEquals(SIMPLE_CLASS, stringWriter.toString());
@@ -57,5 +57,5 @@ public class IcicleWriterTest {
             "    }\n" +
             "    target." + ICICLE_FIELD.getName() + " = savedInstanceState.get" + ICICLE_FIELD.getCommand() + "(\"" + ICICLE_FIELD.getKey() + "\");\n" +
             "  }\n" +
-            "}";
+            "}\n";
 }
