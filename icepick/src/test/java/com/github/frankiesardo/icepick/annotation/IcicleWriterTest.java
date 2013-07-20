@@ -1,7 +1,5 @@
 package com.github.frankiesardo.icepick.annotation;
 
-import com.squareup.java.JavaWriter;
-
 import javax.lang.model.element.TypeElement;
 import java.io.StringWriter;
 import java.util.LinkedHashSet;
@@ -21,8 +19,7 @@ public class IcicleWriterTest {
     static final String QUALIFIED_NAME = PACKAGE + "." + SIMPLE_NAME;
     StringWriter stringWriter = new StringWriter();
 
-    JavaWriter javaWriter = new JavaWriter(stringWriter);
-    IcicleWriter icicleWriter = new IcicleWriter(javaWriter, SUFFIX);
+    IcicleWriter icicleWriter = new IcicleWriter(stringWriter, SUFFIX);
     TypeElement classType = mock(TypeElement.class, RETURNS_DEEP_STUBS);
 
     Set<IcicleField> fields = new LinkedHashSet<IcicleField>();

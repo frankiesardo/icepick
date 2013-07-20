@@ -1,6 +1,5 @@
 package com.github.frankiesardo.icepick;
 
-import com.github.frankiesardo.icepick.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -12,7 +11,6 @@ public class MainActivity extends Activity {
 
     @Icicle
     String query;
-    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,13 +18,13 @@ public class MainActivity extends Activity {
         Bundles.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.something);
-        textView.setText(query == null ? " nothing" : query);
+        textView.setText(query == null ? " Turn your device" : query);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        query = "Foo";
+        query = "Ice Pick works!";
         Bundles.saveInstanceState(this, outState);
     }
 }

@@ -1,7 +1,5 @@
 package com.github.frankiesardo.icepick.annotation;
 
-import com.squareup.java.JavaWriter;
-
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -62,8 +60,7 @@ public class IcicleProcessor extends AbstractProcessor {
             try {
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(entry.getKey().getQualifiedName() + SUFFIX, entry.getKey());
                 Writer writer = jfo.openWriter();
-                JavaWriter jw = new JavaWriter(writer);
-                IcicleWriter icicleWriter = new IcicleWriter(jw, SUFFIX);
+                IcicleWriter icicleWriter = new IcicleWriter(writer, SUFFIX);
                 icicleWriter.writeClass(entry.getKey(), entry.getValue());
             } catch (IOException e) {
                 error(entry.getKey(), e.toString() +" Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
