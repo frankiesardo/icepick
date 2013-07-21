@@ -21,7 +21,6 @@ public class IcicleProcessor extends AbstractProcessor {
 
     public static final String SUFFIX = "$$Icicle";
 
-
     @Override
     public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment env) {
         Set<? extends Element> elements = env.getElementsAnnotatedWith(Icicle.class);
@@ -32,7 +31,7 @@ public class IcicleProcessor extends AbstractProcessor {
     }
 
     private void groupFieldsByType(Set<? extends Element> elements, Map<TypeElement, Set<IcicleField>> fieldsByType) {
-        IcicleConverter icicleConverter = new IcicleConverter(processingEnv.getTypeUtils(), processingEnv.getElementUtils());
+        IcicleConverter icicleConverter = new IcicleConverter(new IcicleAssigner(processingEnv.getTypeUtils(), processingEnv.getElementUtils()));
         for (Element element : elements) {
             if (element.getModifiers().contains(Modifier.FINAL) ||
                     element.getModifiers().contains(Modifier.STATIC) ||
@@ -50,7 +49,7 @@ public class IcicleProcessor extends AbstractProcessor {
             String fieldName = element.getSimpleName().toString();
             String fieldKey = enclosingElement.getQualifiedName() + "." + fieldName;
             String fieldType = element.asType().toString();
-            String fieldCommand = icicleConverter.convert(element.asType());
+            String fieldCommand = icicleConverter.convert(element.asType().toString());
             fields.add(new IcicleField(fieldName, fieldKey, fieldType, fieldCommand));
         }
     }
@@ -63,7 +62,7 @@ public class IcicleProcessor extends AbstractProcessor {
                 IcicleWriter icicleWriter = new IcicleWriter(writer, SUFFIX);
                 icicleWriter.writeClass(entry.getKey(), entry.getValue());
             } catch (IOException e) {
-                error(entry.getKey(), e.toString() +" Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
+                error(entry.getKey(), e.toString() + " Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
             }
         }
     }

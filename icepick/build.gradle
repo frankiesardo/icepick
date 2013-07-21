@@ -16,13 +16,15 @@ sourceSets {
 }
 
 dependencies {
+    // Use provided instead of compile if you need to include icepick for API < 14.
+    // Your IDE won't compile the project tho
 //    provided 'com.google.android:android:4.0.1.2'
     compile 'com.google.android:android:4.0.1.2'
     compile 'com.google.android:support-v4:r7'
     testCompile "junit:junit:4.10"
-    testCompile "org.mockito:mockito-core:1.8.5"
-    testCompile "org.powermock:powermock-module-junit4:1.4.9"
-    testCompile "org.powermock:powermock-api-mockito:1.4.9"
+    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile "org.powermock:powermock-module-junit4:1.5"
+    testCompile "org.powermock:powermock-api-mockito:1.5"
 }
 
 if (project.hasProperty('signing.keyId')) {
