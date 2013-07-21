@@ -54,7 +54,6 @@ class IcicleWriter {
     private String makeBundleGet(IcicleField icicleField) {
         return RESTOREINSTANCESTATE_TEMPLATE
                 .replace(NAME, icicleField.getName())
-                .replace(KEY, icicleField.getKey())
                 .replace(COMMAND, icicleField.getCommand())
                 .replace(CAST, icicleField.getTypeCast());
     }
@@ -70,7 +69,6 @@ class IcicleWriter {
     private String makeBundlePut(IcicleField icicleField) {
         return SAVEINSTANCESTATE_TEMPLATE
                 .replace(NAME, icicleField.getName())
-                .replace(KEY, icicleField.getKey())
                 .replace(COMMAND, icicleField.getCommand());
     }
 
