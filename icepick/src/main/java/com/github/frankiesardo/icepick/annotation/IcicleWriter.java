@@ -82,16 +82,17 @@ class IcicleWriter {
     private static final String CLASS_TEMPLATE = "package " + PACKAGE + ";\n" +
             "\n" +
             "final class " + CLASS_NAME + SUFFIX + " {\n" +
+            "  private static final String BASE_KEY = \"" + PACKAGE + "." + CLASS_NAME + SUFFIX + ".\";\n\n" +
             "  private " + CLASS_NAME + SUFFIX + "() {\n" +
             "  }\n" +
             "  public static void saveInstanceState(" + CLASS_NAME + " target, android.os.Bundle outState) {\n" +
-            "    " + SAVEINSTANCESTATE + "\n" +
+            "" + SAVEINSTANCESTATE +
             "  }\n" +
             "  public static void restoreInstanceState(" + CLASS_NAME + " target, android.os.Bundle savedInstanceState) {\n" +
             "    if (savedInstanceState == null) {\n" +
             "      return;\n" +
             "    }\n" +
-            "    " + RESTOREINSTANCESTATE + "\n" +
+            "" + RESTOREINSTANCESTATE +
             "  }\n" +
             "}\n";
 
@@ -99,6 +100,6 @@ class IcicleWriter {
     private static final String KEY = "{key}";
     private static final String NAME = "{name}";
     private static final String CAST = "{cast}";
-    private static final String SAVEINSTANCESTATE_TEMPLATE = "outState.put" + COMMAND + "(\"" + KEY + "\", target." + NAME + ");";
-    private static final String RESTOREINSTANCESTATE_TEMPLATE = "target." + NAME + " = " + CAST + "savedInstanceState.get" + COMMAND + "(\"" + KEY + "\");";
+    private static final String SAVEINSTANCESTATE_TEMPLATE = "    outState.put" + COMMAND + "(BASE_KEY + \"" + NAME + "\", target." + NAME + ");\n";
+    private static final String RESTOREINSTANCESTATE_TEMPLATE = "    target." + NAME + " = " + CAST + "savedInstanceState.get" + COMMAND + "(BASE_KEY + \"" + NAME + "\");\n";
 }

@@ -17,13 +17,13 @@ public class IcicleWriterTest {
     static final String PACKAGE = "com.frankiesardo";
     static final String SIMPLE_NAME = "TestActivity";
     static final String QUALIFIED_NAME = PACKAGE + "." + SIMPLE_NAME;
+    static final IcicleField ICICLE_FIELD = new IcicleField("username", "somekey", "java.lang.String", "String");
     StringWriter stringWriter = new StringWriter();
 
     IcicleWriter icicleWriter = new IcicleWriter(stringWriter, SUFFIX);
     TypeElement classType = mock(TypeElement.class, RETURNS_DEEP_STUBS);
 
     Set<IcicleField> fields = new LinkedHashSet<IcicleField>();
-    static final IcicleField ICICLE_FIELD = new IcicleField("username", "somekey", "java.lang.String", "String");
 
     @Before
     public void setUp() throws Exception {
@@ -43,16 +43,17 @@ public class IcicleWriterTest {
     static final String SIMPLE_CLASS = "package " + PACKAGE + ";\n" +
             "\n" +
             "final class " + SIMPLE_NAME + SUFFIX + " {\n" +
+            "  private static final String BASE_KEY = \"" + PACKAGE + "." + SIMPLE_NAME + SUFFIX + ".\";\n\n" +
             "  private " + SIMPLE_NAME + SUFFIX + "() {\n" +
             "  }\n" +
             "  public static void saveInstanceState(" + SIMPLE_NAME + " target, android.os.Bundle outState) {\n" +
-            "    outState.put" + ICICLE_FIELD.getCommand() + "(\"" + ICICLE_FIELD.getKey() + "\", target." + ICICLE_FIELD.getName() + ");\n" +
+            "    outState.put" + ICICLE_FIELD.getCommand() + "(BASE_KEY + \"" + ICICLE_FIELD.getName() + "\", target." + ICICLE_FIELD.getName() + ");\n" +
             "  }\n" +
             "  public static void restoreInstanceState(" + SIMPLE_NAME + " target, android.os.Bundle savedInstanceState) {\n" +
             "    if (savedInstanceState == null) {\n" +
             "      return;\n" +
             "    }\n" +
-            "    target." + ICICLE_FIELD.getName() + " = savedInstanceState.get" + ICICLE_FIELD.getCommand() + "(\"" + ICICLE_FIELD.getKey() + "\");\n" +
+            "    target." + ICICLE_FIELD.getName() + " = savedInstanceState.get" + ICICLE_FIELD.getCommand() + "(BASE_KEY + \"" + ICICLE_FIELD.getName() + "\");\n" +
             "  }\n" +
             "}\n";
 }
