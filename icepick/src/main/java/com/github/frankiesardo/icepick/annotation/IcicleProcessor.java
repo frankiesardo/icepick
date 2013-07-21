@@ -47,10 +47,9 @@ public class IcicleProcessor extends AbstractProcessor {
                 fieldsByType.put(enclosingElement, fields);
             }
             String fieldName = element.getSimpleName().toString();
-            String fieldKey = enclosingElement.getQualifiedName() + "." + fieldName;
             String fieldType = element.asType().toString();
             String fieldCommand = icicleConverter.convert(element.asType().toString());
-            fields.add(new IcicleField(fieldName, fieldKey, fieldType, fieldCommand));
+            fields.add(new IcicleField(fieldName, fieldType, fieldCommand));
         }
     }
 
