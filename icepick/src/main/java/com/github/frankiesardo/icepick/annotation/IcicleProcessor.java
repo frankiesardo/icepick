@@ -57,7 +57,8 @@ public class IcicleProcessor extends AbstractProcessor {
             try {
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(entry.getKey().getQualifiedName() + SUFFIX, entry.getKey());
                 Writer writer = jfo.openWriter();
-                IcicleWriter icicleWriter = new IcicleWriter(writer, SUFFIX);
+
+                IcicleViewWriter icicleWriter = new IcicleViewWriter(writer, SUFFIX);
                 icicleWriter.writeClass(entry.getKey(), entry.getValue());
             } catch (IOException e) {
                 error(entry.getKey(), e.toString() + " Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);

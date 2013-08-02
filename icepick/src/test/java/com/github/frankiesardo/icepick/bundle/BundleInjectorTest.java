@@ -2,8 +2,6 @@ package com.github.frankiesardo.icepick.bundle;
 
 import android.os.Bundle;
 
-import com.github.frankiesardo.icepick.annotation.Icicle;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -23,7 +21,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class BundleInjectorTest {
 
-    @Icicle
     String someField;
 
     Bundle bundle = PowerMockito.mock(Bundle.class);
@@ -34,7 +31,7 @@ public class BundleInjectorTest {
         String value = "foo";
         when(bundle.getString(anyString())).thenReturn(value);
         bundleInjector.inject(BundleAction.RESTORE);
-        assertEquals(someField, value);
+        assertEquals(value, someField);
     }
 
     @Test

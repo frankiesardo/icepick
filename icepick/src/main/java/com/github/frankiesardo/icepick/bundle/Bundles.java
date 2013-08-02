@@ -2,6 +2,8 @@ package com.github.frankiesardo.icepick.bundle;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.View;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
@@ -23,6 +25,10 @@ public class Bundles {
         save(target, outState);
     }
 
+    public static <T extends View> Parcelable saveInstanceState(T target, Parcelable state) {
+        return new BundleViewInjector(target, state, CACHED_METHODS).inject(BundleAction.SAVE);
+    }
+
     private static void save(Object target, Bundle outState) {
         new BundleInjector(target, outState, CACHED_METHODS).inject(BundleAction.SAVE);
     }
@@ -41,5 +47,9 @@ public class Bundles {
 
     private static void restore(Object target, Bundle savedInstanceState) {
         new BundleInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
+    }
+
+    public static <T extends View> Parcelable restoreInstanceState(T target, Parcelable state) {
+        return new BundleViewInjector(target, state, CACHED_METHODS).inject(BundleAction.RESTORE);
     }
 }
