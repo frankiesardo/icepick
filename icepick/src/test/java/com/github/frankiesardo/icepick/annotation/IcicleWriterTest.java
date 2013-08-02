@@ -17,7 +17,7 @@ public class IcicleWriterTest {
     static final String PACKAGE = "com.frankiesardo";
     static final String SIMPLE_NAME = "TestActivity";
     static final String QUALIFIED_NAME = PACKAGE + "." + SIMPLE_NAME;
-    static final IcicleField ICICLE_FIELD = new IcicleField("username", "somekey", "java.lang.String", "String");
+    static final IcicleField ICICLE_FIELD = new IcicleField("username", "java.lang.String", "String");
     StringWriter stringWriter = new StringWriter();
 
     IcicleWriter icicleWriter = new IcicleWriter(stringWriter, SUFFIX);
