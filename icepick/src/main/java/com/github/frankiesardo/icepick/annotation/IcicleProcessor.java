@@ -35,9 +35,8 @@ public class IcicleProcessor extends AbstractProcessor {
         for (Element element : elements) {
             if (element.getModifiers().contains(Modifier.FINAL) ||
                     element.getModifiers().contains(Modifier.STATIC) ||
-                    element.getModifiers().contains(Modifier.PROTECTED) ||
                     element.getModifiers().contains(Modifier.PRIVATE)) {
-                error(element, "Field must not be private, protected, static or final");
+                error(element, "Field must not be private, static or final");
                 continue;
             }
             TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
