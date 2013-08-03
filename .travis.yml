@@ -1,4 +1,5 @@
 language: java
+jdk: oraclejdk6
 
 notifications:
     email: false
