@@ -12,12 +12,12 @@ abstract class IcicleWriter {
     private final Writer writer;
     private final String suffix;
 
-    public IcicleWriter(Writer writer, String suffix) {
+    protected IcicleWriter(Writer writer, String suffix) {
         this.writer = writer;
         this.suffix = suffix;
     }
 
-    public void writeClass(TypeElement classType, Set<IcicleField> fields) throws IOException {
+    void writeClass(TypeElement classType, Set<IcicleField> fields) throws IOException {
         String packageName = makePackage(classType);
         String className = makeType(classType);
         String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
@@ -95,16 +95,21 @@ abstract class IcicleWriter {
     private static final String RESTORE_INSTANCE_STATE_START = "{restoreInstanceStateStart}";
     private static final String RESTORE_INSTANCE_STATE_BODY = "{restoreInstanceStateBody}";
     private static final String RESTORE_INSTANCE_STATE_END = "{restoreInstanceStateEnd}";
+
     private static final String CLASS_TEMPLATE = "package " + PACKAGE + ";\n" +
             "\n" +
             "final class " + CLASS_NAME + SUFFIX + " {\n" +
-            "  private static final String BASE_KEY = \"" + PACKAGE + "." + CLASS_NAME + SUFFIX + ".\";\n\n" +
+            "\n" +
+            "  private static final String BASE_KEY = \"" + PACKAGE + "." + CLASS_NAME + SUFFIX + ".\";\n" +
+            "\n" +
             "  private " + CLASS_NAME + SUFFIX + "() {\n" +
-            "  }\n\n" +
+            "  }\n" +
+            "\n" +
             "" + SAVE_INSTANCE_STATE_START +
             "" + SAVE_INSTANCE_STATE_BODY +
             "" + SAVE_INSTANCE_STATE_END +
-            "  }\n\n" +
+            "  }\n" +
+            "\n" +
             "" + RESTORE_INSTANCE_STATE_START +
             "" + RESTORE_INSTANCE_STATE_BODY +
             "" + RESTORE_INSTANCE_STATE_END +

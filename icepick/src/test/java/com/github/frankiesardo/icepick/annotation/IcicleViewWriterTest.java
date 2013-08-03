@@ -38,6 +38,7 @@ public class IcicleViewWriterTest {
     static final String SIMPLE_CLASS = "package com.frankiesardo;\n" +
             "\n" +
             "final class TestActivity$$Icicle {\n" +
+            "\n" +
             "  private static final String BASE_KEY = \"com.frankiesardo.TestActivity$$Icicle.\";\n" +
             "\n" +
             "  private TestActivity$$Icicle() {\n" +

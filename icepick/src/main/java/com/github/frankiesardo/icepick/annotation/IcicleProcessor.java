@@ -54,14 +54,18 @@ public class IcicleProcessor extends AbstractProcessor {
 
     private void writeHelpers(Map<TypeElement, Set<IcicleField>> fieldsByType) {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
+            TypeElement classElement = entry.getKey();
+            IcicleAssigner icicleAssigner = new IcicleAssigner(processingEnv.getTypeUtils(), processingEnv.getElementUtils());
+            boolean isView = icicleAssigner.isAssignable(classElement.toString(), "android.view.View");
+
             try {
-                JavaFileObject jfo = processingEnv.getFiler().createSourceFile(entry.getKey().getQualifiedName() + SUFFIX, entry.getKey());
+                JavaFileObject jfo = processingEnv.getFiler().createSourceFile(classElement.getQualifiedName() + SUFFIX, classElement);
                 Writer writer = jfo.openWriter();
 
-                IcicleViewWriter icicleWriter = new IcicleViewWriter(writer, SUFFIX);
-                icicleWriter.writeClass(entry.getKey(), entry.getValue());
+                IcicleWriter icicleWriter = isView ? new IcicleViewWriter(writer, SUFFIX) : new IcicleFragmentActivityWriter(writer, SUFFIX);
+                icicleWriter.writeClass(classElement, entry.getValue());
             } catch (IOException e) {
-                error(entry.getKey(), "Impossible to create %. Reason: %" + entry.getKey().getQualifiedName() + SUFFIX, e);
+                error(classElement, "Impossible to create %. Reason: %" + classElement.getQualifiedName() + SUFFIX, e);
             }
         }
     }
