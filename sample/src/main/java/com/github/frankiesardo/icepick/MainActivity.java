@@ -5,27 +5,28 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.github.frankiesardo.icepick.annotation.Icicle;
 import com.github.frankiesardo.icepick.bundle.Bundles;
 
 public class MainActivity extends Activity {
 
-    String query;
+    @Icicle
+    String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundles.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = (TextView) findViewById(R.id.something);
-        textView.setText(query == null ? " Turn your device" : query);
+        ((TextView) findViewById(R.id.message)).setText(message == null ? " Turn your device" : message);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        CustomView customView = (CustomView) findViewById(R.id.custom);
-        customView.setBackgroundWithAnotherMethod(Color.RED);
+        ((CustomView) findViewById(R.id.custom_view)).setBackgroundWithAnotherMethod(Color.RED);
         super.onSaveInstanceState(outState);
-        query = "Ice Pick works!";
+
+        message = "Ice Pick works!";
         Bundles.saveInstanceState(this, outState);
     }
 }
