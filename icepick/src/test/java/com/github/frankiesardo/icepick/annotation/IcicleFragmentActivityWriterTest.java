@@ -30,7 +30,7 @@ public class IcicleFragmentActivityWriterTest {
 
     @Test
     public void shouldWriteBundlePutAndGetIntoATemplate() throws Exception {
-        icicleWriter.writeClass(classType, fields);
+        icicleWriter.writeClass(classType, "com.frankiesardo.SuperClass", fields);
 
         assertEquals(SIMPLE_CLASS, stringWriter.toString());
     }
@@ -45,6 +45,7 @@ public class IcicleFragmentActivityWriterTest {
             "  }\n" +
             "\n" +
             "  public static void saveInstanceState(TestActivity target, android.os.Bundle outState) {\n" +
+            "    com.frankiesardo.SuperClass$$Icicle.saveInstanceState(target, outState);\n" +
             "    outState.putString(" + IcicleWriter.BASE_KEY + " + \"username\", target.username);\n" +
             "  }\n" +
             "\n" +
@@ -53,6 +54,7 @@ public class IcicleFragmentActivityWriterTest {
             "      return;\n" +
             "    }\n" +
             "    target.username = savedInstanceState.getString(" + IcicleWriter.BASE_KEY + " + \"username\");\n" +
+            "    com.frankiesardo.SuperClass$$Icicle.restoreInstanceState(target, savedInstanceState);\n" +
             "  }\n" +
             "}\n";
 }

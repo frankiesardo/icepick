@@ -28,7 +28,7 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
 
     @Override
     protected String makeRestoreInstanceStateEnd(String parentFqcn) {
-        return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);" : "";
+        return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);\n" : "";
     }
 
     @Override

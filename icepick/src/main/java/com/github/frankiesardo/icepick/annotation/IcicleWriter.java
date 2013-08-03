@@ -17,15 +17,15 @@ abstract class IcicleWriter {
         this.suffix = suffix;
     }
 
-    void writeClass(TypeElement classType, Set<IcicleField> fields) throws IOException {
+    void writeClass(TypeElement classType, String parentFqcn, Set<IcicleField> fields) throws IOException {
         String packageName = makePackage(classType);
         String className = makeType(classType);
         String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
         String restoreInstanceStateBody = makeOnRestoreInstanceStateBody(fields);
-        String saveInstanceStateStart = makeSaveInstanceStateStart(className, null);
+        String saveInstanceStateStart = makeSaveInstanceStateStart(className, parentFqcn);
         String restoreInstanceStateStart = makeRestoreInstanceStateStart(className);
         String saveInstanceStateEnd = makeSaveInstanceStateEnd();
-        String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(null);
+        String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(parentFqcn);
 
         writeTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
     }
@@ -85,6 +85,7 @@ abstract class IcicleWriter {
         writer.flush();
         writer.close();
     }
+
     private static final String PACKAGE = "{packageName}";
     private static final String CLASS_NAME = "{className}";
     private static final String SUFFIX = "{suffix}";
