@@ -61,17 +61,17 @@ public class IcicleProcessor extends AbstractProcessor {
                 IcicleViewWriter icicleWriter = new IcicleViewWriter(writer, SUFFIX);
                 icicleWriter.writeClass(entry.getKey(), entry.getValue());
             } catch (IOException e) {
-                error(entry.getKey(), e.toString() + " Impossible to create " + entry.getKey().getQualifiedName() + SUFFIX, e);
+                error(entry.getKey(), "Impossible to create %. Reason: %" + entry.getKey().getQualifiedName() + SUFFIX, e);
             }
         }
+    }
+
+    private void error(Element element, String message, Object... args) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(message, args), element);
     }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
-    }
-
-    protected void error(Element element, String message, Object... args) {
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format(message, args), element);
     }
 }

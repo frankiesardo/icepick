@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-class IcicleWriter {
+abstract class IcicleWriter {
+
+    static final String BASE_KEY = "BASE_KEY";
 
     private final Writer writer;
     private final String suffix;
@@ -18,21 +20,14 @@ class IcicleWriter {
     public void writeClass(TypeElement classType, Set<IcicleField> fields) throws IOException {
         String packageName = makePackage(classType);
         String className = makeType(classType);
-        String saveInstanceState = writeOnSaveInstanceState(fields);
-        String restoreInstanceState = makeOnRestoreInstanceState(fields);
-        writeTemplateWith(packageName, className, saveInstanceState, restoreInstanceState);
-    }
+        String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
+        String restoreInstanceStateBody = makeOnRestoreInstanceStateBody(fields);
+        String saveInstanceStateStart = makeSaveInstanceStateStart(className);
+        String restoreInstanceStateStart = makeRestoreInstanceStateStart(className);
+        String saveInstanceStateEnd = makeSaveInstanceStateEnd();
+        String restoreInstanceStateEnd = makeRestoreInstanceStateEnd();
 
-    private void writeTemplateWith(String packageName, String className, String saveInstanceState, String restoreInstanceState) throws IOException {
-        String result = CLASS_TEMPLATE
-                .replace(PACKAGE, packageName)
-                .replace(CLASS_NAME, className)
-                .replace(SUFFIX, suffix)
-                .replace(SAVEINSTANCESTATE, saveInstanceState)
-                .replace(RESTOREINSTANCESTATE, restoreInstanceState);
-        writer.write(result);
-        writer.flush();
-        writer.close();
+        writeTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
     }
 
     private String makePackage(TypeElement classType) {
@@ -43,7 +38,7 @@ class IcicleWriter {
         return classType.getSimpleName().toString();
     }
 
-    private String makeOnRestoreInstanceState(Set<IcicleField> fields) {
+    private String makeOnRestoreInstanceStateBody(Set<IcicleField> fields) {
         StringBuilder builder = new StringBuilder();
         for (IcicleField field : fields) {
             builder.append(makeBundleGet(field));
@@ -52,13 +47,10 @@ class IcicleWriter {
     }
 
     private String makeBundleGet(IcicleField icicleField) {
-        return RESTOREINSTANCESTATE_TEMPLATE
-                .replace(NAME, icicleField.getName())
-                .replace(COMMAND, icicleField.getCommand())
-                .replace(CAST, icicleField.getTypeCast());
+        return "    target." + icicleField.getName() + " = " + icicleField.getTypeCast() + "savedInstanceState.get" + icicleField.getCommand() + "(BASE_KEY + \"" + icicleField.getName() + "\");\n";
     }
 
-    private String writeOnSaveInstanceState(Set<IcicleField> fields) {
+    private String makeOnSaveInstanceStateBody(Set<IcicleField> fields) {
         StringBuilder builder = new StringBuilder();
         for (IcicleField field : fields) {
             builder.append(makeBundlePut(field));
@@ -67,37 +59,55 @@ class IcicleWriter {
     }
 
     private String makeBundlePut(IcicleField icicleField) {
-        return SAVEINSTANCESTATE_TEMPLATE
-                .replace(NAME, icicleField.getName())
-                .replace(COMMAND, icicleField.getCommand());
+        return "    outState.put" + icicleField.getCommand() + "(BASE_KEY + \"" + icicleField.getName() + "\", target." + icicleField.getName() + ");\n";
+    }
+
+    protected abstract String makeSaveInstanceStateStart(String className);
+
+    protected abstract String makeRestoreInstanceStateStart(String className);
+
+    protected abstract String makeRestoreInstanceStateEnd();
+
+    protected abstract String makeSaveInstanceStateEnd();
+
+    private void writeTemplateWith(String packageName, String className, String saveInstanceStateStart, String restoreInstanceStateStart, String saveInstanceStateBody, String restoreInstanceStateBody, String saveInstanceStateEnd, String restoreInstanceStateEnd) throws IOException {
+        String result = CLASS_TEMPLATE
+                .replace(PACKAGE, packageName)
+                .replace(CLASS_NAME, className)
+                .replace(SUFFIX, suffix)
+                .replace(SAVE_INSTANCE_STATE_START, saveInstanceStateStart)
+                .replace(SAVE_INSTANCE_STATE_BODY, saveInstanceStateBody)
+                .replace(RESTORE_INSTANCE_STATE_START, restoreInstanceStateStart)
+                .replace(RESTORE_INSTANCE_STATE_BODY, restoreInstanceStateBody)
+                .replace(SAVE_INSTANCE_STATE_END, saveInstanceStateEnd)
+                .replace(RESTORE_INSTANCE_STATE_END, restoreInstanceStateEnd);
+        writer.write(result);
+        writer.flush();
+        writer.close();
     }
 
     private static final String PACKAGE = "{packageName}";
     private static final String CLASS_NAME = "{className}";
     private static final String SUFFIX = "{suffix}";
-    private static final String SAVEINSTANCESTATE = "{saveInstanceState}";
-    private static final String RESTOREINSTANCESTATE = "{restoreInstanceState}";
+    private static final String SAVE_INSTANCE_STATE_START = "{saveInstanceStateStart}";
+    private static final String SAVE_INSTANCE_STATE_BODY = "{saveInstanceStateBody}";
+    private static final String SAVE_INSTANCE_STATE_END = "{saveInstanceStateEnd}";
+    private static final String RESTORE_INSTANCE_STATE_START = "{restoreInstanceStateStart}";
+    private static final String RESTORE_INSTANCE_STATE_BODY = "{restoreInstanceStateBody}";
+    private static final String RESTORE_INSTANCE_STATE_END = "{restoreInstanceStateEnd}";
     private static final String CLASS_TEMPLATE = "package " + PACKAGE + ";\n" +
             "\n" +
             "final class " + CLASS_NAME + SUFFIX + " {\n" +
             "  private static final String BASE_KEY = \"" + PACKAGE + "." + CLASS_NAME + SUFFIX + ".\";\n\n" +
             "  private " + CLASS_NAME + SUFFIX + "() {\n" +
-            "  }\n" +
-            "  public static void saveInstanceState(" + CLASS_NAME + " target, android.os.Bundle outState) {\n" +
-            "" + SAVEINSTANCESTATE +
-            "  }\n" +
-            "  public static void restoreInstanceState(" + CLASS_NAME + " target, android.os.Bundle savedInstanceState) {\n" +
-            "    if (savedInstanceState == null) {\n" +
-            "      return;\n" +
-            "    }\n" +
-            "" + RESTOREINSTANCESTATE +
+            "  }\n\n" +
+            "" + SAVE_INSTANCE_STATE_START +
+            "" + SAVE_INSTANCE_STATE_BODY +
+            "" + SAVE_INSTANCE_STATE_END +
+            "  }\n\n" +
+            "" + RESTORE_INSTANCE_STATE_START +
+            "" + RESTORE_INSTANCE_STATE_BODY +
+            "" + RESTORE_INSTANCE_STATE_END +
             "  }\n" +
             "}\n";
-
-    private static final String COMMAND = "{command}";
-    private static final String KEY = "{key}";
-    private static final String NAME = "{name}";
-    private static final String CAST = "{cast}";
-    private static final String SAVEINSTANCESTATE_TEMPLATE = "    outState.put" + COMMAND + "(BASE_KEY + \"" + NAME + "\", target." + NAME + ");\n";
-    private static final String RESTOREINSTANCESTATE_TEMPLATE = "    target." + NAME + " = " + CAST + "savedInstanceState.get" + COMMAND + "(BASE_KEY + \"" + NAME + "\");\n";
 }

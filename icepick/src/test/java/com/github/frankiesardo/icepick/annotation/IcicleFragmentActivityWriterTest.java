@@ -11,10 +11,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class IcicleViewWriterTest {
+public class IcicleFragmentActivityWriterTest {
 
     StringWriter stringWriter = new StringWriter();
-    IcicleViewWriter icicleWriter = new IcicleViewWriter(stringWriter, "$$Icicle");
+    IcicleWriter icicleWriter = new IcicleFragmentActivityWriter(stringWriter, "$$Icicle");
     TypeElement classType = mock(TypeElement.class, RETURNS_DEEP_STUBS);
 
     Set<IcicleField> fields = new LinkedHashSet<IcicleField>();
@@ -43,17 +43,15 @@ public class IcicleViewWriterTest {
             "  private TestActivity$$Icicle() {\n" +
             "  }\n" +
             "\n" +
-            "  public static android.os.Parcelable saveInstanceState(" + "TestActivity" + " target, android.os.Parcelable state) {\n" +
-            "    android.os.Bundle outState = new android.os.Bundle();\n" +
-            "    outState.putParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ", state);\n" +
+            "  public static void saveInstanceState(TestActivity target, android.os.Bundle outState) {\n" +
             "    outState.putString(" + IcicleWriter.BASE_KEY + " + \"username\", target.username);\n" +
-            "    return outState;\n" +
             "  }\n" +
             "\n" +
-            "  public static android.os.Parcelable restoreInstanceState(" + "TestActivity" + " target, android.os.Parcelable state) {\n" +
-            "    android.os.Bundle savedInstanceState = (android.os.Bundle) state;\n" +
-            "    target.username = savedInstanceState.getString(BASE_KEY + \"username\");\n" +
-            "    return savedInstanceState.getParcelable(BASE_KEY + " + IcicleViewWriter.SUPER_SUFFIX + ");\n" +
+            "  public static void restoreInstanceState(TestActivity target, android.os.Bundle savedInstanceState) {\n" +
+            "    if (savedInstanceState == null) {\n" +
+            "      return;\n" +
+            "    }\n" +
+            "    target.username = savedInstanceState.getString(" + IcicleWriter.BASE_KEY + " + \"username\");\n" +
             "  }\n" +
             "}\n";
 }
