@@ -1,7 +1,7 @@
 Ice Pick
 ============
 
-Icepick is an Android library that simplifies the `Bundle` save and restore InstanceState.
+Icepick is an Android library that simplifies the `Bundle` save and restore instance state.
 It uses annotation processing to generate code that does bundle manipulation and key generation, removing lots of boilerplate from your code.
 
 ```java
@@ -21,7 +21,28 @@ class ExampleActivity extends Activity {
     Bundles.saveInstanceState(this, outState);
   }
 
-  // You can put the calls to Bundles in a BaseActivity and inherit from it
+  // You can put the calls to Bundles into a BaseActivity and inherit from it
+}
+```
+
+From version 2.0 Icepick can generate the code for your Custom Views as well:
+
+```java
+class CustomView extends View {
+  @Icicle
+  int selectedPosition; // This will be automatically saved and restored
+
+  @Override
+  public Parcelable onSaveInstanceState() {
+    return Bundles.saveInstanceState(this, super.onSaveInstanceState());
+  }
+
+  @Override
+  public void onRestoreInstanceState(Parcelable state) {
+    super.onRestoreInstanceState(Bundles.restoreInstanceState(this, state));
+  }
+
+  // You can put the calls to Bundles into a BaseCustomView and inherit from it
 }
 ```
 
@@ -37,7 +58,7 @@ Maven dependency:
 <dependency>
   <groupId>com.github.frankiesardo</groupId>
   <artifactId>icepick</artifactId>
-  <version>(insert latest version)</version>
+  <version>2.0</version>
 </dependency>
 ```
 
