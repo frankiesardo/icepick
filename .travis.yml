@@ -11,4 +11,4 @@ before_install:
     - export PATH=$GRADLE_HOME/bin:$PATH
 
 script:
-    - gradle test assembleDebug
+    - gradle check assemble --i
