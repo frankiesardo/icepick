@@ -3,6 +3,9 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
+project.version = "2.0.1-SNAPSHOT"
+project.group = 'com.github.frankiesardo'
+
 configurations {
     provided
 }
@@ -73,9 +76,7 @@ uploadArchives {
                     version '7'
                 }
 
-                groupId = 'com.github.frankiesardo'
                 artifactId = 'icepick'
-                version = '1.2.1'
                 packaging 'jar'
 
                 name 'Icepick'
