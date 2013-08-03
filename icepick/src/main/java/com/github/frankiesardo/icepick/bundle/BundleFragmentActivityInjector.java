@@ -1,34 +1,32 @@
 package com.github.frankiesardo.icepick.bundle;
 
-import android.os.Parcelable;
+import android.os.Bundle;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class BundleViewInjector extends BundleInjector<Parcelable> {
+class BundleFragmentActivityInjector extends BundleInjector<Bundle> {
 
-    BundleViewInjector(Object target, Parcelable argument, Map<BundleMethodKey, Method> cachedMethods) {
+    BundleFragmentActivityInjector(Object target, Bundle argument, Map<BundleMethodKey, Method> cachedMethods) {
         super(target, argument, cachedMethods);
     }
 
-    Parcelable inject(BundleAction action) {
+    void inject(BundleAction action) {
         Class<?> targetClass = target.getClass();
         try {
             Method inject = getMethodFromHelper(targetClass, action);
             if (inject != null) {
-                return (Parcelable) inject.invoke(null, target, argument);
+                inject.invoke(null, target, argument);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new UnableToInjectException(target, e);
         }
-
-        return argument; // return super value
     }
 
     @Override
     protected Class<?> getArgumentClass() {
-        return Parcelable.class;
+        return Bundle.class;
     }
 }

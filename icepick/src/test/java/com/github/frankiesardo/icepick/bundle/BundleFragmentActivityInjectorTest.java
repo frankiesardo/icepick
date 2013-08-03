@@ -19,18 +19,18 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PrepareForTest(Bundle.class)
 @RunWith(PowerMockRunner.class)
-public class BundleInjectorTest {
+public class BundleFragmentActivityInjectorTest {
 
     String someField;
 
     Bundle bundle = PowerMockito.mock(Bundle.class);
-    BundleInjector bundleInjector = new BundleInjector(this, bundle, new HashMap<BundleMethodKey, Method>());
+    BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(this, bundle, new HashMap<BundleMethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {
         String value = "foo";
         when(bundle.getString(anyString())).thenReturn(value);
-        bundleInjector.inject(BundleAction.RESTORE);
+        bundleFragmentActivityInjector.inject(BundleAction.RESTORE);
         assertEquals(value, someField);
     }
 
@@ -38,7 +38,7 @@ public class BundleInjectorTest {
     public void shouldSaveFieldValueToBundle() throws Exception {
         String value = "foo";
         someField = value;
-        bundleInjector.inject(BundleAction.SAVE);
+        bundleFragmentActivityInjector.inject(BundleAction.SAVE);
         verify(bundle).putString(anyString(), eq(value));
     }
 }

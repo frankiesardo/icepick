@@ -30,7 +30,7 @@ public class Bundles {
     }
 
     private static void save(Object target, Bundle outState) {
-        new BundleInjector(target, outState, CACHED_METHODS).inject(BundleAction.SAVE);
+        new BundleFragmentActivityInjector(target, outState, CACHED_METHODS).inject(BundleAction.SAVE);
     }
 
     public static <T extends Activity> void restoreInstanceState(T target, Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class Bundles {
     }
 
     private static void restore(Object target, Bundle savedInstanceState) {
-        new BundleInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
+        new BundleFragmentActivityInjector(target, savedInstanceState, CACHED_METHODS).inject(BundleAction.RESTORE);
     }
 
     public static <T extends View> Parcelable restoreInstanceState(T target, Parcelable state) {
