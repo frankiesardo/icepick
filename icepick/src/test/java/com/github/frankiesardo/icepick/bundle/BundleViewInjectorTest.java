@@ -6,18 +6,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mockito;
 
 import static org.mockito.Mockito.verify;
 
-@PrepareForTest(Parcelable.class)
-@RunWith(PowerMockRunner.class)
 public class BundleViewInjectorTest {
 
-    Parcelable parcelable = PowerMockito.mock(Parcelable.class);
+    Parcelable parcelable = Mockito.mock(Parcelable.class);
     BundleViewInjector bundleInjector = new BundleViewInjector(this, parcelable, new HashMap<BundleMethodKey, Method>());
 
     @Test

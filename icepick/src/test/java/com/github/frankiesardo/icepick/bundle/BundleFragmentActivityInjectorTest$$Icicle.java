@@ -5,10 +5,10 @@ import android.os.Bundle;
 public class BundleFragmentActivityInjectorTest$$Icicle {
 
     public static void saveInstanceState(BundleFragmentActivityInjectorTest target, Bundle outState) {
-        outState.putString("anyKey", target.someField);
+        outState.describeContents();
     }
 
     public static void restoreInstanceState(BundleFragmentActivityInjectorTest target, Bundle saveInstanceState) {
-        target.someField = saveInstanceState.getString("anyKey");
+        saveInstanceState.describeContents();
     }
 }
