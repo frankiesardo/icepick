@@ -1,32 +1,49 @@
 package com.github.frankiesardo.icepick;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.github.frankiesardo.icepick.annotation.Icicle;
-import com.github.frankiesardo.icepick.bundle.Bundles;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     @Icicle
     String message;
 
+    CustomView customView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundles.restoreInstanceState(this, savedInstanceState);
         setContentView(R.layout.activity_main);
-        ((TextView) findViewById(R.id.message)).setText(message == null ? " Turn your device" : message);
+        customView = (CustomView) findViewById(R.id.custom_view);
+        updateText();
+    }
+
+    private void updateText() {
+        String defaultText = message == null || baseMessage == null ? "Use the menu to add some state" : baseMessage + " " + message;
+        customView.setText(defaultText);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        ((CustomView) findViewById(R.id.custom_view)).setBackgroundWithAnotherMethod(Color.RED);
-        super.onSaveInstanceState(outState);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
-        message = "Ice Pick works!";
-        Bundles.saveInstanceState(this, outState);
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (item.getItemId() == R.id.action_add_state) {
+            customView.setBackgroundColorWithAnotherMethod(Color.BLUE);
+            customView.setTextColorWithAnotherMethod(Color.WHITE);
+
+            baseMessage = "This state will be automagically";
+            message = "saved and restored";
+            updateText();
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
     }
 }

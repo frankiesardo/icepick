@@ -8,12 +8,6 @@ buildscript {
 }
 apply plugin: 'android'
 
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     compile project(':icepick')
 }

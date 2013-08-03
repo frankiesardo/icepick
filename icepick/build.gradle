@@ -3,12 +3,6 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 configurations {
     provided
 }
