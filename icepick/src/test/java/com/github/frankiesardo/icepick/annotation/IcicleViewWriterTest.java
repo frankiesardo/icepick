@@ -46,15 +46,17 @@ public class IcicleViewWriterTest {
             "\n" +
             "  public static android.os.Parcelable saveInstanceState(" + "TestActivity" + " target, android.os.Parcelable state) {\n" +
             "    android.os.Bundle outState = new android.os.Bundle();\n" +
-            "    outState.putParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ", state);\n" +
+            "    android.os.Parcelable superState = state;\n" +
+            "    outState.putParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ", superState);\n" +
             "    outState.putString(" + IcicleWriter.BASE_KEY + " + \"username\", target.username);\n" +
             "    return outState;\n" +
             "  }\n" +
             "\n" +
             "  public static android.os.Parcelable restoreInstanceState(" + "TestActivity" + " target, android.os.Parcelable state) {\n" +
             "    android.os.Bundle savedInstanceState = (android.os.Bundle) state;\n" +
-            "    target.username = savedInstanceState.getString(BASE_KEY + \"username\");\n" +
-            "    return savedInstanceState.getParcelable(BASE_KEY + " + IcicleViewWriter.SUPER_SUFFIX + ");\n" +
+            "    android.os.Parcelable superState = savedInstanceState.getParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ");\n" +
+            "    target.username = savedInstanceState.getString(" + IcicleWriter.BASE_KEY + " + \"username\");\n" +
+            "    return superState;\n" +
             "  }\n" +
             "}\n";
 }

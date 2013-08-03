@@ -10,7 +10,12 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
 
     @Override
     protected String makeSaveInstanceStateStart(String className) {
-        return "  public static void saveInstanceState(" + className + " target, android.os.Bundle outState) {\n";
+        return "  public static void saveInstanceState(" + className + " target, android.os.Bundle outState) {\n" +
+                makeSuperSaveCall();
+    }
+
+    private String makeSuperSaveCall() {
+        return false ? "    fqcn.BaseActivity$$Icicle.saveInstanceState(target, outState);\n" : "";
     }
 
     @Override
@@ -18,7 +23,12 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
         return "  public static void restoreInstanceState(" + className + " target, android.os.Bundle savedInstanceState) {\n" +
                 "    if (savedInstanceState == null) {\n" +
                 "      return;\n" +
-                "    }\n";
+                "    }\n" +
+                makeSuperRestoreCall();
+    }
+
+    private String makeSuperRestoreCall() {
+        return false ? "    fqcn.BaseActivity$$Icicle.restoreInstanceState(target, savedInstanceState);\n" : "";
     }
 
     @Override
