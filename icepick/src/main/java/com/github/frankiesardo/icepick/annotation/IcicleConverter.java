@@ -15,7 +15,7 @@ class IcicleConverter {
         RAW_TYPES.put("int", INT);
         RAW_TYPES.put("int[]", INT_ARRAY);
         RAW_TYPES.put("java.lang.Integer", INT);
-        RAW_TYPES.put("java.lang.Integer", INT_ARRAY);
+        RAW_TYPES.put("java.lang.Integer[]", INT_ARRAY);
         RAW_TYPES.put("long", LONG);
         RAW_TYPES.put("long[]", LONG_ARRAY);
         RAW_TYPES.put("java.lang.Long", LONG);
