@@ -9,13 +9,13 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
     }
 
     @Override
-    protected String makeSaveInstanceStateStart(String className) {
+    protected String makeSaveInstanceStateStart(String className, String parentFqcn) {
         return "  public static void saveInstanceState(" + className + " target, android.os.Bundle outState) {\n" +
-                makeSuperSaveCall();
+                makeSuperSaveCall(parentFqcn);
     }
 
-    private String makeSuperSaveCall() {
-        return false ? "    fqcn.BaseActivity$$Icicle.saveInstanceState(target, outState);\n" : "";
+    private String makeSuperSaveCall(String parentFqcn) {
+        return parentFqcn != null ? "    " + parentFqcn + suffix + ".saveInstanceState(target, outState);\n" : "";
     }
 
     @Override
@@ -23,17 +23,12 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
         return "  public static void restoreInstanceState(" + className + " target, android.os.Bundle savedInstanceState) {\n" +
                 "    if (savedInstanceState == null) {\n" +
                 "      return;\n" +
-                "    }\n" +
-                makeSuperRestoreCall();
-    }
-
-    private String makeSuperRestoreCall() {
-        return false ? "    fqcn.BaseActivity$$Icicle.restoreInstanceState(target, savedInstanceState);\n" : "";
+                "    }\n";
     }
 
     @Override
-    protected String makeRestoreInstanceStateEnd() {
-        return "";
+    protected String makeRestoreInstanceStateEnd(String parentFqcn) {
+        return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);" : "";
     }
 
     @Override

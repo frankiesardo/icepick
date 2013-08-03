@@ -11,15 +11,15 @@ class IcicleViewWriter extends IcicleWriter {
     }
 
     @Override
-    protected String makeSaveInstanceStateStart(String className) {
+    protected String makeSaveInstanceStateStart(String className, String parentFqcn) {
         return "  public static android.os.Parcelable saveInstanceState(" + className + " target, android.os.Parcelable state) {\n" +
                 "    android.os.Bundle outState = new android.os.Bundle();\n" +
-                "    android.os.Parcelable superState = " + makeSaveSuperStateCall() + ";\n" +
+                "    android.os.Parcelable superState = " + makeSaveSuperStateCall(parentFqcn) + ";\n" +
                 "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
     }
 
-    private String makeSaveSuperStateCall() {
-        return false ? "fqcn.CustomView$$Icicle.saveInstanceState(target, state)" : "state";
+    private String makeSaveSuperStateCall(String parentFqcn) {
+        return parentFqcn != null ? parentFqcn + suffix + ".saveInstanceState(target, state)" : "state";
     }
 
     @Override
@@ -35,12 +35,7 @@ class IcicleViewWriter extends IcicleWriter {
     }
 
     @Override
-    protected String makeRestoreInstanceStateEnd() {
-        return "    return " + makeRestoreSuperStateCall() + ";\n";
+    protected String makeRestoreInstanceStateEnd(String parentFqcn) {
+        return "    return " + (parentFqcn != null ? parentFqcn + suffix + ".restoreInstanceState(target, superState)" : "superState") + ";\n";
     }
-
-    private String makeRestoreSuperStateCall() {
-        return false ? "fqcn.CustomView$$Icicle.restoreInstanceState(target, superState)" : "superState";
-    }
-
 }
