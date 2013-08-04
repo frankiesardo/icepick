@@ -10,6 +10,11 @@ idea.module {
     scopes.PROVIDED.plus += configurations.provided
 }
 
+gradle.taskGraph.beforeTask { task ->
+    if (task.name == 'javadoc')
+        task.options.classpath = task.options.classpath + configurations.provided.resolve()
+}
+
 sourceSets {
     main.compileClasspath += configurations.provided
     test.compileClasspath += configurations.provided
@@ -54,4 +59,3 @@ modifyPom {
         }
     }
 }
-
