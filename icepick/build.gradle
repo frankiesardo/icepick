@@ -1,10 +1,6 @@
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
 apply plugin: 'idea'
-
-project.version = "2.0.1-SNAPSHOT"
-project.group = 'com.github.frankiesardo'
+apply plugin: 'nexus'
 
 configurations {
     provided
@@ -29,81 +25,33 @@ dependencies {
     testCompile 'org.powermock:powermock-api-mockito:1.5'
 }
 
-if (project.hasProperty('signing.keyId')) {
-    signing {
-        sign configurations.archives
-    }
-}
+modifyPom {
+    project {
+        name 'Icepick'
+        description 'Android Bundle save and restore instancestate made easy'
+        url 'https://github.com/frankiesardo/icepick'
+        inceptionYear '2013'
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
+        scm {
+            url 'https://github.com/frankiesardo/icepick'
+            connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
+            developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
+        }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-artifacts {
-    archives jar
-    archives javadocJar
-    archives sourcesJar
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { deployment -> signing.signPom(deployment) }
-
-            if (project.hasProperty('sonatypeUsername')) {
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
             }
+        }
 
-            uniqueVersion = false
-
-            pom.project {
-
-                parent {
-                    groupId 'org.sonatype.oss'
-                    artifactId 'oss-parent'
-                    version '7'
-                }
-
-                artifactId = 'icepick'
-                packaging 'jar'
-
-                name 'Icepick'
-                description 'Android Bundle save and restore instancestate made easy'
-                url 'https://github.com/frankiesardo/icepick'
-
-                scm {
-                    url 'https://github.com/frankiesardo/icepick'
-                    connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
-                    developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'frankiesardo'
-                        name 'Frankie Sardo'
-                    }
-                }
+        developers {
+            developer {
+                id 'frankiesardo'
+                name 'Frankie Sardo'
             }
         }
     }
 }
+
