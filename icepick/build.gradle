@@ -1,25 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'nexus'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
 
-configurations {
-    provided
-}
-
-idea.module {
-    scopes.PROVIDED.plus += configurations.provided
-}
-
-gradle.taskGraph.beforeTask { task ->
-    if (task.name == 'javadoc')
-        task.options.classpath = task.options.classpath + configurations.provided.resolve()
-}
-
-sourceSets {
-    main.compileClasspath += configurations.provided
-    test.compileClasspath += configurations.provided
-    test.runtimeClasspath += configurations.provided
-}
+apply from: script('deploy')
 
 dependencies {
     provided 'com.google.android:android:4.0.1.2'
@@ -30,32 +14,6 @@ dependencies {
     testCompile 'org.powermock:powermock-api-mockito:1.5'
 }
 
-modifyPom {
-    project {
-        name 'Icepick'
-        description 'Android Bundle save and restore instancestate made easy'
-        url 'https://github.com/frankiesardo/icepick'
-        inceptionYear '2013'
-
-        scm {
-            url 'https://github.com/frankiesardo/icepick'
-            connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
-            developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
-        }
-
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id 'frankiesardo'
-                name 'Frankie Sardo'
-            }
-        }
-    }
+File script(String name) {
+    project.file("${name}.gradle")
 }

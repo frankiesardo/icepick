@@ -1,0 +1,59 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { deployment -> signing.signPom(deployment) }
+
+            if (project.hasProperty('nexusUsername')) {
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+            }
+
+            uniqueVersion = false
+
+            pom.project {
+
+                parent {
+                    groupId 'org.sonatype.oss'
+                    artifactId 'oss-parent'
+                    version '7'
+                }
+
+                name 'Icepick'
+                groupId 'com.github.frankiesardo'
+                version '2.0.1-SNAPSHOT'
+                description 'Android Bundle save and restore instance state made easy'
+                url 'https://github.com/frankiesardo/icepick'
+                inceptionYear '2013'
+
+                scm {
+                    url 'https://github.com/frankiesardo/icepick'
+                    connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
+                    developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'frankiesardo'
+                        name 'Frankie Sardo'
+                    }
+                }
+            }
+        }
+    }
+}
