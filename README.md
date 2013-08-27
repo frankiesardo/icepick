@@ -48,11 +48,29 @@ class CustomView extends View {
 
 __If you're proficient with a [dagger](https://github.com/square/dagger) and a [butter knife](https://github.com/JakeWharton/butterknife) this is another useful weapon in your tool bag.__
 
+Proguard
+--------
+
+If Proguard is enabled be sure to add these rules on your configuration:
+
+```
+-dontwarn com.github.frankiesardo.icepick.**
+-keep class **$$Icicle { *; }
+-keepnames class * { @com.github.frankiesardo.icepick.annotation.Icicle *;}
+```
 
 Download
 --------
 
-Maven dependency:
+Gradle:
+
+```
+dependencies {
+  compile 'com.github.frankiesardo:icepick:2.0'
+}
+```
+
+Maven:
 
 ```xml
 <dependency>
@@ -61,6 +79,10 @@ Maven dependency:
   <version>2.0</version>
 </dependency>
 ```
+
+Jar:
+
+Use this [link](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick&v=LATEST)
 
 License
 -------
