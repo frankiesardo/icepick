@@ -1,5 +1,8 @@
 package com.github.frankiesardo.icepick.annotation;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 class IcicleCommand {
 
     static final String STRING = "String";
@@ -26,10 +29,67 @@ class IcicleCommand {
     static final String BUNDLE_ARRAY = "BundleArray";
     static final String PARCELABLE = "Parcelable";
     static final String PARCELABLE_ARRAY = "ParcelableArray";
+
+    static final String SERIALIZABLE = "Serializable";
+
     static final String PARCELABLE_ARRAY_LIST = "ParcelableArrayList";
     static final String SPARSE_PARCELABLE_ARRAY = "SparseParcelableArray";
-    static final String SERIALIZABLE = "Serializable";
     static final String STRING_ARRAY_LIST = "StringArrayList";
     static final String INTEGER_ARRAY_LIST = "IntegerArrayList";
     static final String CHAR_SEQUENCE_ARRAY_LIST = "CharSequenceArrayList";
+
+    static final Map<String, String> DICTIONARY = new LinkedHashMap<String, String>();
+
+    static {
+
+        DICTIONARY.put("java.util.ArrayList<java.lang.Integer>", INTEGER_ARRAY_LIST);
+        DICTIONARY.put("java.util.ArrayList<java.lang.String>", STRING_ARRAY_LIST);
+        DICTIONARY.put("java.util.ArrayList<java.lang.CharSequence>", CHAR_SEQUENCE_ARRAY_LIST);
+
+        DICTIONARY.put("java.util.ArrayList<? extends android.os.Parcelable>", PARCELABLE_ARRAY_LIST);
+        DICTIONARY.put("android.util.SparseArray<? extends android.os.Parcelable>", SPARSE_PARCELABLE_ARRAY);
+
+        DICTIONARY.put("java.lang.String", STRING);
+        DICTIONARY.put("java.lang.String[]", STRING_ARRAY);
+        DICTIONARY.put("int", INT);
+        DICTIONARY.put("int[]", INT_ARRAY);
+        DICTIONARY.put("java.lang.Integer", INT);
+        DICTIONARY.put("java.lang.Integer[]", INT_ARRAY);
+        DICTIONARY.put("long", LONG);
+        DICTIONARY.put("long[]", LONG_ARRAY);
+        DICTIONARY.put("java.lang.Long", LONG);
+        DICTIONARY.put("java.lang.Long[]", LONG_ARRAY);
+        DICTIONARY.put("double", DOUBLE);
+        DICTIONARY.put("double[]", DOUBLE_ARRAY);
+        DICTIONARY.put("java.lang.Double", DOUBLE);
+        DICTIONARY.put("java.lang.Double[]", DOUBLE_ARRAY);
+        DICTIONARY.put("short", SHORT);
+        DICTIONARY.put("short[]", SHORT_ARRAY);
+        DICTIONARY.put("java.lang.Short", SHORT);
+        DICTIONARY.put("java.lang.Short[]", SHORT_ARRAY);
+        DICTIONARY.put("float", FLOAT);
+        DICTIONARY.put("float[]", FLOAT_ARRAY);
+        DICTIONARY.put("java.lang.Float", FLOAT);
+        DICTIONARY.put("java.lang.Float[]", FLOAT_ARRAY);
+        DICTIONARY.put("byte", BYTE);
+        DICTIONARY.put("byte[]", BYTE_ARRAY);
+        DICTIONARY.put("java.lang.Byte", BYTE);
+        DICTIONARY.put("java.lang.Byte[]", BYTE_ARRAY);
+        DICTIONARY.put("boolean", BOOLEAN);
+        DICTIONARY.put("boolean[]", BOOLEAN_ARRAY);
+        DICTIONARY.put("java.lang.Boolean", BOOLEAN);
+        DICTIONARY.put("java.lang.Boolean[]", BOOLEAN_ARRAY);
+        DICTIONARY.put("char", CHAR);
+        DICTIONARY.put("char[]", CHAR_ARRAY);
+        DICTIONARY.put("java.lang.Character", CHAR);
+        DICTIONARY.put("java.lang.Character[]", CHAR_ARRAY);
+        DICTIONARY.put("java.lang.CharSequence", CHAR_SEQUENCE);
+        DICTIONARY.put("android.os.Bundle", BUNDLE);
+        DICTIONARY.put("android.os.Bundle[]", BUNDLE_ARRAY);
+
+        DICTIONARY.put("java.lang.CharSequence[]", CHAR_SEQUENCE_ARRAY);
+        DICTIONARY.put("android.os.Parcelable", PARCELABLE);
+        DICTIONARY.put("android.os.Parcelable[]", PARCELABLE_ARRAY);
+        DICTIONARY.put("java.io.Serializable", SERIALIZABLE);
+    }
 }
