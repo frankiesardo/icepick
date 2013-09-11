@@ -101,7 +101,22 @@ class IcicleConverter {
     }
 
     private boolean isSerializable(String typeMirror) {
+        if (isGenericType(typeMirror)) {
+            return isAssignable(getGenericType(typeMirror), "java.io.Serializable") && isSerializable(getGenericArgument(typeMirror));
+        }
         return isAssignable(typeMirror, "java.io.Serializable");
+    }
+
+    private boolean isGenericType(String typeMirror) {
+        return typeMirror.indexOf('<') != -1;
+    }
+
+    private String getGenericType(String typeMirror) {
+        return typeMirror.substring(0, typeMirror.indexOf('<'));
+    }
+
+    private String getGenericArgument(String typeMirror) {
+        return typeMirror.substring(typeMirror.indexOf('<') + 1, typeMirror.length() - 1);
     }
 
     private boolean isAssignable(String typeMirror, String typeName) {
