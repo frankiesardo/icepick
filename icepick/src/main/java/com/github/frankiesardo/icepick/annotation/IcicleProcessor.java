@@ -33,11 +33,11 @@ public class IcicleProcessor extends AbstractProcessor {
     }
 
     private void groupFieldsByType(Set<? extends Element> elements, Map<TypeElement, Set<IcicleField>> fieldsByType, Set<TypeMirror> erasedTargetTypes) {
-        IcicleConverter icicleConverter = new IcicleConverter(new IcicleAssigner(processingEnv.getTypeUtils(), processingEnv.getElementUtils()));
+        IcicleConverter icicleConverter = new IcicleConverter(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
         for (Element element : elements) {
-            if (element.getModifiers().contains(Modifier.FINAL) ||
+            if (element.getModifiers().contains(Modifier.PRIVATE) ||
                     element.getModifiers().contains(Modifier.STATIC) ||
-                    element.getModifiers().contains(Modifier.PRIVATE)) {
+                    element.getModifiers().contains(Modifier.FINAL)) {
                 error(element, "Field must not be private, static or final");
                 continue;
             }
@@ -47,9 +47,10 @@ public class IcicleProcessor extends AbstractProcessor {
                 fields = new LinkedHashSet<IcicleField>();
                 fieldsByType.put(enclosingElement, fields);
             }
+
             String fieldName = element.getSimpleName().toString();
             String fieldType = element.asType().toString();
-            String fieldCommand = icicleConverter.convert(element.asType().toString());
+            String fieldCommand = icicleConverter.convert(element.asType());
             fields.add(new IcicleField(fieldName, fieldType, fieldCommand));
 
             // Add the type-erased version to the valid injection targets set.
@@ -62,8 +63,8 @@ public class IcicleProcessor extends AbstractProcessor {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
             TypeElement classElement = entry.getKey();
             String parentFqcn = findParentFqcn(classElement, erasedTargetTypes);
-            IcicleAssigner icicleAssigner = new IcicleAssigner(processingEnv.getTypeUtils(), processingEnv.getElementUtils());
-            boolean isView = icicleAssigner.isAssignable(classElement.toString(), "android.view.View");
+
+            boolean isView = processingEnv.getTypeUtils().isAssignable(classElement.asType(), processingEnv.getElementUtils().getTypeElement("android.view.View").asType());
 
             try {
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(classElement.getQualifiedName() + SUFFIX, classElement);
