@@ -1,5 +1,10 @@
 package com.github.frankiesardo.icepick.annotation;
 
+import javax.annotation.processing.Filer;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -9,7 +14,14 @@ abstract class IcicleWriter {
     static final String BASE_KEY = "BASE_KEY";
 
     private final Writer writer;
-    protected final String suffix;
+    private final String suffix;
+
+    static IcicleWriter newInstance(TypeElement classType, String suffix, Types typeUtils, Elements elementUtils, Filer filer) throws IOException {
+        JavaFileObject jfo = filer.createSourceFile(classType.getQualifiedName() + suffix, classType);
+        Writer writer = jfo.openWriter();
+        boolean isView = typeUtils.isAssignable(classType.asType(), elementUtils.getTypeElement("android.view.View").asType());
+        return isView ? new IcicleViewWriter(writer, suffix) : new IcicleFragmentActivityWriter(writer, suffix);
+    }
 
     protected IcicleWriter(Writer writer, String suffix) {
         this.writer = writer;
@@ -65,7 +77,7 @@ abstract class IcicleWriter {
         String result = CLASS_TEMPLATE
                 .replace(PACKAGE, packageName)
                 .replace(CLASS_NAME, className)
-                .replace(SUFFIX, suffix)
+                .replace(SUFFIX, getSuffix())
                 .replace(SAVE_INSTANCE_STATE_START, saveInstanceStateStart)
                 .replace(SAVE_INSTANCE_STATE_BODY, saveInstanceStateBody)
                 .replace(RESTORE_INSTANCE_STATE_START, restoreInstanceStateStart)
@@ -107,4 +119,8 @@ abstract class IcicleWriter {
             "" + RESTORE_INSTANCE_STATE_END +
             "  }\n" +
             "}\n";
+
+    public String getSuffix() {
+        return suffix;
+    }
 }

@@ -15,7 +15,7 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
     }
 
     private String makeSuperSaveCall(String parentFqcn) {
-        return parentFqcn != null ? "    " + parentFqcn + suffix + ".saveInstanceState(target, outState);\n" : "";
+        return parentFqcn != null ? "    " + parentFqcn + getSuffix() + ".saveInstanceState(target, outState);\n" : "";
     }
 
     @Override
@@ -28,7 +28,7 @@ class IcicleFragmentActivityWriter extends IcicleWriter {
 
     @Override
     protected String makeRestoreInstanceStateEnd(String parentFqcn) {
-        return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);\n" : "";
+        return parentFqcn != null ? "    " + parentFqcn + getSuffix() + ".restoreInstanceState(target, savedInstanceState);\n" : "";
     }
 
     @Override

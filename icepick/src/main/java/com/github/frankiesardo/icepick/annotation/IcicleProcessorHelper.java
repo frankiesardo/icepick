@@ -9,9 +9,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -70,20 +68,13 @@ class IcicleProcessorHelper {
 
     private void writeHelpers(Map<TypeElement, Set<IcicleField>> fieldsByType, Set<TypeMirror> erasedTargetTypes) {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
-            TypeElement classElement = entry.getKey();
-
-            IcicleEnclosingClass icicleEnclosingClass = IcicleEnclosingClass.newInstance(classElement, erasedTargetTypes, typeUtils);
-
-            boolean isView = typeUtils.isAssignable(classElement.asType(), elementUtils.getTypeElement("android.view.View").asType());
-
+            TypeElement classType = entry.getKey();
+            IcicleEnclosingClass icicleEnclosingClass = IcicleEnclosingClass.newInstance(classType, erasedTargetTypes, typeUtils);
             try {
-                JavaFileObject jfo = filer.createSourceFile(classElement.getQualifiedName() + suffix, classElement);
-                Writer writer = jfo.openWriter();
-
-                IcicleWriter icicleWriter = isView ? new IcicleViewWriter(writer, suffix) : new IcicleFragmentActivityWriter(writer, suffix);
+                IcicleWriter icicleWriter = IcicleWriter.newInstance(classType, suffix, typeUtils, elementUtils, filer);
                 icicleWriter.writeClass(icicleEnclosingClass, entry.getValue());
             } catch (IOException e) {
-                error(classElement, "Impossible to create %. Reason: %" + classElement.getQualifiedName() + suffix, e);
+                error(classType, "Impossible to create helper for %. Reason: %" + icicleEnclosingClass.className, e);
             }
         }
     }

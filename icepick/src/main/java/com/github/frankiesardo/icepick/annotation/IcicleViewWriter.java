@@ -19,7 +19,7 @@ class IcicleViewWriter extends IcicleWriter {
     }
 
     private String makeSaveSuperStateCall(String parentFqcn) {
-        return parentFqcn != null ? parentFqcn + suffix + ".saveInstanceState(target, state)" : "state";
+        return parentFqcn != null ? parentFqcn + getSuffix() + ".saveInstanceState(target, state)" : "state";
     }
 
     @Override
@@ -36,6 +36,6 @@ class IcicleViewWriter extends IcicleWriter {
 
     @Override
     protected String makeRestoreInstanceStateEnd(String parentFqcn) {
-        return "    return " + (parentFqcn != null ? parentFqcn + suffix + ".restoreInstanceState(target, superState)" : "superState") + ";\n";
+        return "    return " + (parentFqcn != null ? parentFqcn + getSuffix() + ".restoreInstanceState(target, superState)" : "superState") + ";\n";
     }
 }
