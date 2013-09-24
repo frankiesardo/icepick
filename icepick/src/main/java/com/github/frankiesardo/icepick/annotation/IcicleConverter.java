@@ -1,144 +1,105 @@
 package com.github.frankiesardo.icepick.annotation;
 
-import java.util.HashMap;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static com.github.frankiesardo.icepick.annotation.IcicleCommand.*;
 
 class IcicleConverter {
 
-    private static final Map<String, String> RAW_TYPES = new HashMap<String, String>();
+    private final Map<TypeMirror, String> conversionMap = new LinkedHashMap<TypeMirror, String>();
 
-    static {
-        RAW_TYPES.put("java.lang.String", STRING);
-        RAW_TYPES.put("java.lang.String[]", STRING_ARRAY);
-        RAW_TYPES.put("int", INT);
-        RAW_TYPES.put("int[]", INT_ARRAY);
-        RAW_TYPES.put("java.lang.Integer", INT);
-        RAW_TYPES.put("java.lang.Integer[]", INT_ARRAY);
-        RAW_TYPES.put("long", LONG);
-        RAW_TYPES.put("long[]", LONG_ARRAY);
-        RAW_TYPES.put("java.lang.Long", LONG);
-        RAW_TYPES.put("java.lang.Long[]", LONG_ARRAY);
-        RAW_TYPES.put("double", DOUBLE);
-        RAW_TYPES.put("double[]", DOUBLE_ARRAY);
-        RAW_TYPES.put("java.lang.Double", DOUBLE);
-        RAW_TYPES.put("java.lang.Double[]", DOUBLE_ARRAY);
-        RAW_TYPES.put("short", SHORT);
-        RAW_TYPES.put("short[]", SHORT_ARRAY);
-        RAW_TYPES.put("java.lang.Short", SHORT);
-        RAW_TYPES.put("java.lang.Short[]", SHORT_ARRAY);
-        RAW_TYPES.put("float", FLOAT);
-        RAW_TYPES.put("float[]", FLOAT_ARRAY);
-        RAW_TYPES.put("java.lang.Float", FLOAT);
-        RAW_TYPES.put("java.lang.Float[]", FLOAT_ARRAY);
-        RAW_TYPES.put("byte", BYTE);
-        RAW_TYPES.put("byte[]", BYTE_ARRAY);
-        RAW_TYPES.put("java.lang.Byte", BYTE);
-        RAW_TYPES.put("java.lang.Byte[]", BYTE_ARRAY);
-        RAW_TYPES.put("boolean", BOOLEAN);
-        RAW_TYPES.put("boolean[]", BOOLEAN_ARRAY);
-        RAW_TYPES.put("java.lang.Boolean", BOOLEAN);
-        RAW_TYPES.put("java.lang.Boolean[]", BOOLEAN_ARRAY);
-        RAW_TYPES.put("char", CHAR);
-        RAW_TYPES.put("char[]", CHAR_ARRAY);
-        RAW_TYPES.put("java.lang.Character", CHAR);
-        RAW_TYPES.put("java.lang.Character[]", CHAR_ARRAY);
-        RAW_TYPES.put("java.lang.CharSequence", CHAR_SEQUENCE);
-        RAW_TYPES.put("java.lang.CharSequence[]", CHAR_SEQUENCE_ARRAY);
+    private final Elements elementUtils;
+    private final Types typeUtils;
 
-        RAW_TYPES.put("android.os.Bundle", BUNDLE);
-        RAW_TYPES.put("android.os.Bundle[]", BUNDLE_ARRAY);
-        RAW_TYPES.put("android.os.Parcelable[]", PARCELABLE_ARRAY);
+    public IcicleConverter(Elements elementUtils, Types typeUtils) {
+        this.elementUtils = elementUtils;
+        this.typeUtils = typeUtils;
 
-        RAW_TYPES.put("java.util.ArrayList<java.lang.String>", STRING_ARRAY_LIST);
-        RAW_TYPES.put("java.util.ArrayList<java.lang.CharSequence>", CHAR_SEQUENCE_ARRAY_LIST);
-        RAW_TYPES.put("java.util.ArrayList<java.lang.Integer>", INTEGER_ARRAY_LIST);
-
+        initMap();
     }
 
-    private final IcicleAssigner assigner;
-
-    public IcicleConverter(IcicleAssigner assigner) {
-        this.assigner = assigner;
-    }
-
-    public String convert(String typeMirror) {
-        String type = asRawTpe(typeMirror);
-        if (type != null) {
-            return type;
+    private void initMap() {
+        for (String type : IcicleCommand.DICTIONARY.keySet()) {
+            conversionMap.put(getMirror(type), IcicleCommand.DICTIONARY.get(type));
         }
+    }
 
-        type = asImplementedInterface(typeMirror);
-        if (type != null) {
-            return type;
+    private TypeMirror getMirror(String type) {
+        if (isCollection(type)) {
+            return getCollectionMirror(type);
         }
-
-        type = asParcelableCollection(typeMirror);
-        if (type != null) {
-            return type;
+        if (isArray(type)) {
+            return getArrayMirror(type);
         }
-
-        throw new RuntimeException("Impossible to put a " + typeMirror + " into a Bundle");
-    }
-
-    private String asRawTpe(String typeMirror) {
-        return RAW_TYPES.get(typeMirror);
-    }
-
-    private String asImplementedInterface(String typeMirror) {
-        if (isParcelable(typeMirror)) {
-            return PARCELABLE;
+        if (isPrimitive(type)) {
+            return getPrimitiveMirror(type);
         }
-        if (isSerializable(typeMirror)) {
-            return SERIALIZABLE;
+        return getSimpleMirror(type);
+    }
+
+    private boolean isCollection(String type) {
+        return type.indexOf('<') != -1;
+    }
+
+    private TypeMirror getCollectionMirror(String type) {
+        String collectionType = type.substring(0, type.indexOf('<'));
+        String elementType = type.substring(type.indexOf('<') + 1, type.length() - 1);
+
+        TypeElement collectionTypeElement = elementUtils.getTypeElement(collectionType);
+
+        TypeMirror elementTypeMirror = getElementMirror(elementType);
+
+        return typeUtils.getDeclaredType(collectionTypeElement, elementTypeMirror);
+    }
+
+    private TypeMirror getElementMirror(String elementType) {
+        if (isWildCard(elementType)) {
+            TypeElement typeElement = elementUtils.getTypeElement(wildCard(elementType));
+            return typeUtils.getWildcardType(typeElement.asType(), null);
         }
-        return null;
+        return elementUtils.getTypeElement(elementType).asType();
     }
 
-    private boolean isParcelable(String typeMirror) {
-        return isAssignable(typeMirror, "android.os.Parcelable");
+    private boolean isWildCard(String elementType) {
+        return elementType.startsWith("?");
     }
 
-    private boolean isSerializable(String typeMirror) {
-        return isAssignable(typeMirror, "java.io.Serializable");
+    private String wildCard(String elementType) {
+        return elementType.substring("? extends ".length());
     }
 
-    private boolean isAssignable(String typeMirror, String typeName) {
-        return assigner.isAssignable(typeMirror, typeName);
+    private boolean isArray(String type) {
+        return type.endsWith("[]");
     }
 
-    private String asParcelableCollection(String typeMirror) {
-        if (isParcelableArrayList(typeMirror)) {
-            return PARCELABLE_ARRAY_LIST;
+    private ArrayType getArrayMirror(String type) {
+        return typeUtils.getArrayType(getMirror(type.substring(0, type.length() - 2)));
+    }
+
+    private boolean isPrimitive(String type) {
+        return type.indexOf('.') == -1;
+    }
+
+    private PrimitiveType getPrimitiveMirror(String type) {
+        return typeUtils.getPrimitiveType(TypeKind.valueOf(type.toUpperCase()));
+    }
+
+    private TypeMirror getSimpleMirror(String type) {
+        return elementUtils.getTypeElement(type).asType();
+    }
+
+    public String convert(TypeMirror typeMirror) {
+        for (TypeMirror other : conversionMap.keySet()) {
+            if (typeUtils.isAssignable(typeMirror, other)) {
+                return conversionMap.get(other);
+            }
         }
-        if (isSparseParcelableArray(typeMirror)) {
-            return SPARSE_PARCELABLE_ARRAY;
-        }
-        return null;
-    }
-
-    private boolean isParcelableArrayList(String typeMirror) {
-        return isArrayList(typeMirror) && isParcelable(getArrayListType(typeMirror));
-    }
-
-    private boolean isArrayList(String typeMirror) {
-        return typeMirror.startsWith("java.util.ArrayList");
-    }
-
-    private String getArrayListType(String typeMirror) {
-        return typeMirror.substring(20, typeMirror.length() - 1);
-    }
-
-    private boolean isSparseParcelableArray(String typeMirror) {
-        return isSparseArray(typeMirror) && isParcelable(getSparseArrayType(typeMirror));
-    }
-
-    private boolean isSparseArray(String typeMirror) {
-        return typeMirror.startsWith("android.util.SparseArray");
-    }
-
-    private String getSparseArrayType(String typeMirror) {
-        return typeMirror.substring(25, typeMirror.length() - 1);
+        throw new AssertionError("Cannot insert a " + typeMirror + " into a Bundle");
     }
 }
