@@ -41,11 +41,11 @@ class IcicleProcessorHelper {
     }
 
     private void groupFieldsByType(Set<? extends Element> elements, Map<TypeElement, Set<IcicleField>> fieldsByType, Set<TypeMirror> erasedTargetTypes) {
-        IcicleConverter icicleConverter = new IcicleConverter(new IcicleAssigner(typeUtils, elementUtils));
+        IcicleConverter icicleConverter = new IcicleConverter(elementUtils, typeUtils);
         for (Element element : elements) {
-            if (element.getModifiers().contains(Modifier.FINAL) ||
+            if (element.getModifiers().contains(Modifier.PRIVATE) ||
                     element.getModifiers().contains(Modifier.STATIC) ||
-                    element.getModifiers().contains(Modifier.PRIVATE)) {
+                    element.getModifiers().contains(Modifier.FINAL)) {
                 error(element, "Field must not be private, static or final");
                 continue;
             }
@@ -55,9 +55,10 @@ class IcicleProcessorHelper {
                 fields = new LinkedHashSet<IcicleField>();
                 fieldsByType.put(enclosingElement, fields);
             }
+
             String fieldName = element.getSimpleName().toString();
             String fieldType = element.asType().toString();
-            String fieldCommand = icicleConverter.convert(element.asType().toString());
+            String fieldCommand = icicleConverter.convert(element.asType());
             fields.add(new IcicleField(fieldName, fieldType, fieldCommand));
 
             // Add the type-erased version to the valid injection targets set.
@@ -70,8 +71,8 @@ class IcicleProcessorHelper {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
             TypeElement classElement = entry.getKey();
             String parentFqcn = findParentFqcn(classElement, erasedTargetTypes);
-            IcicleAssigner icicleAssigner = new IcicleAssigner(typeUtils, elementUtils);
-            boolean isView = icicleAssigner.isAssignable(classElement.toString(), "android.view.View");
+
+            boolean isView = typeUtils.isAssignable(classElement.asType(), elementUtils.getTypeElement("android.view.View").asType());
 
             try {
                 JavaFileObject jfo = filer.createSourceFile(classElement.getQualifiedName() + suffix, classElement);
@@ -100,7 +101,7 @@ class IcicleProcessorHelper {
     }
 
     private boolean containsTypeMirror(Collection<TypeMirror> mirrors, TypeMirror query) {
-        // Ensure we are checking against a type-erased version for normalization purposes.;
+        // Ensure we are checking against a type-erased version for normalization purposes.
         query = typeUtils.erasure(query);
 
         for (TypeMirror mirror : mirrors) {
