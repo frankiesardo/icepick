@@ -1,9 +1,8 @@
 package com.github.frankiesardo.icepick.annotation;
 
-import javax.lang.model.element.TypeElement;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Set;
+import java.util.Collection;
 
 abstract class IcicleWriter {
 
@@ -17,28 +16,20 @@ abstract class IcicleWriter {
         this.suffix = suffix;
     }
 
-    void writeClass(TypeElement classType, String parentFqcn, Set<IcicleField> fields) throws IOException {
-        String packageName = makePackage(classType);
-        String className = makeType(classType);
+    void writeClass(IcicleEnclosingClass enclosingClass, Collection<IcicleField> fields) throws IOException {
+        String className = enclosingClass.className;
+        String packageName = enclosingClass.packageName;
         String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
         String restoreInstanceStateBody = makeOnRestoreInstanceStateBody(fields);
-        String saveInstanceStateStart = makeSaveInstanceStateStart(className, parentFqcn);
+        String saveInstanceStateStart = makeSaveInstanceStateStart(className, enclosingClass.parentFqcn);
         String restoreInstanceStateStart = makeRestoreInstanceStateStart(className);
         String saveInstanceStateEnd = makeSaveInstanceStateEnd();
-        String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(parentFqcn);
+        String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(enclosingClass.parentFqcn);
 
         writeTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
     }
 
-    private String makePackage(TypeElement classType) {
-        return classType.getQualifiedName().toString().replace("." + classType.getSimpleName(), "");
-    }
-
-    private String makeType(TypeElement classType) {
-        return classType.getSimpleName().toString();
-    }
-
-    private String makeOnRestoreInstanceStateBody(Set<IcicleField> fields) {
+    private String makeOnRestoreInstanceStateBody(Collection<IcicleField> fields) {
         StringBuilder builder = new StringBuilder();
         for (IcicleField field : fields) {
             builder.append(makeBundleGet(field));
@@ -50,7 +41,7 @@ abstract class IcicleWriter {
         return "    target." + icicleField.getName() + " = " + icicleField.getTypeCast() + "savedInstanceState.get" + icicleField.getCommand() + "(" + BASE_KEY + " + \"" + icicleField.getName() + "\");\n";
     }
 
-    private String makeOnSaveInstanceStateBody(Set<IcicleField> fields) {
+    private String makeOnSaveInstanceStateBody(Collection<IcicleField> fields) {
         StringBuilder builder = new StringBuilder();
         for (IcicleField field : fields) {
             builder.append(makeBundlePut(field));

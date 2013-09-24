@@ -5,8 +5,6 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -14,7 +12,10 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 class IcicleProcessorHelper {
     private final Set<? extends Element> elements;
@@ -70,7 +71,8 @@ class IcicleProcessorHelper {
     private void writeHelpers(Map<TypeElement, Set<IcicleField>> fieldsByType, Set<TypeMirror> erasedTargetTypes) {
         for (Map.Entry<TypeElement, Set<IcicleField>> entry : fieldsByType.entrySet()) {
             TypeElement classElement = entry.getKey();
-            String parentFqcn = findParentFqcn(classElement, erasedTargetTypes);
+
+            IcicleEnclosingClass icicleEnclosingClass = IcicleEnclosingClass.newInstance(classElement, erasedTargetTypes, typeUtils);
 
             boolean isView = typeUtils.isAssignable(classElement.asType(), elementUtils.getTypeElement("android.view.View").asType());
 
@@ -79,37 +81,11 @@ class IcicleProcessorHelper {
                 Writer writer = jfo.openWriter();
 
                 IcicleWriter icicleWriter = isView ? new IcicleViewWriter(writer, suffix) : new IcicleFragmentActivityWriter(writer, suffix);
-                icicleWriter.writeClass(classElement, parentFqcn, entry.getValue());
+                icicleWriter.writeClass(icicleEnclosingClass, entry.getValue());
             } catch (IOException e) {
                 error(classElement, "Impossible to create %. Reason: %" + classElement.getQualifiedName() + suffix, e);
             }
         }
-    }
-
-    private String findParentFqcn(TypeElement typeElement, Set<TypeMirror> parents) {
-        TypeMirror type;
-        while (true) {
-            type = typeElement.getSuperclass();
-            if (type.getKind() == TypeKind.NONE) {
-                return null;
-            }
-            typeElement = (TypeElement) ((DeclaredType) type).asElement();
-            if (containsTypeMirror(parents, type)) {
-                return typeElement.getQualifiedName().toString();
-            }
-        }
-    }
-
-    private boolean containsTypeMirror(Collection<TypeMirror> mirrors, TypeMirror query) {
-        // Ensure we are checking against a type-erased version for normalization purposes.
-        query = typeUtils.erasure(query);
-
-        for (TypeMirror mirror : mirrors) {
-            if (typeUtils.isSameType(mirror, query)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void error(Element element, String message, Object... args) {
