@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.github.frankiesardo.icepick.annotation.Icicle;
-import com.github.frankiesardo.icepick.bundle.Bundles;
+import icepick.annotation.Icicle;
+import icepick.bundle.Bundles;
 
 public class BaseCustomView extends TextView {
 

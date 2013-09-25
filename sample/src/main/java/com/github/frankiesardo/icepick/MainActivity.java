@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.frankiesardo.icepick.annotation.Icicle;
+import icepick.annotation.Icicle;
 
 public class MainActivity extends BaseActivity {
 

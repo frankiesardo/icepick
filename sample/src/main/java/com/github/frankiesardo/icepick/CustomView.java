@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 
-import com.github.frankiesardo.icepick.annotation.Icicle;
+import icepick.annotation.Icicle;
 
 public class CustomView extends BaseCustomView {
 
