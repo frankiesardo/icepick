@@ -2,7 +2,7 @@ Ice Pick
 ============
 
 Icepick is an Android library that simplifies the `Bundle` save and restore instance state.
-It uses icepick.annotation processing to generate code that does icepick.bundle manipulation and key generation, removing lots of boilerplate from your code.
+It uses annotation processing to generate code that does bundle manipulation and key generation, removing lots of boilerplate from your code.
 
 ```java
 class ExampleActivity extends Activity {
