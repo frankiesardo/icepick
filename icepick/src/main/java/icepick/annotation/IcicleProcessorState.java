@@ -12,12 +12,12 @@ class IcicleProcessorState {
 
     private final Types typeUtils;
     private final IcicleFactory factory;
-    private final IcicleLogger icicleLogger;
+    private final IcicleLogger logger;
 
-    public IcicleProcessorState(Types typeUtils, IcicleFactory factory, IcicleLogger icicleLogger) {
+    public IcicleProcessorState(Types typeUtils, IcicleFactory factory, IcicleLogger logger) {
         this.typeUtils = typeUtils;
         this.factory = factory;
-        this.icicleLogger = icicleLogger;
+        this.logger = logger;
     }
 
     public void process(Set<? extends Element> elements) {
@@ -42,7 +42,7 @@ class IcicleProcessorState {
             if (isValid(element)) {
                 validElements.add(element);
             } else {
-                icicleLogger.logError(element, "Field must not be private, static or final");
+                logger.logError(element, "Field must not be private, static or final");
             }
         }
         return validElements;
@@ -95,7 +95,7 @@ class IcicleProcessorState {
                 IcicleWriter icicleWriter = factory.makeWriter(enclosingClass.type);
                 icicleWriter.writeClass(enclosingClass, elementsByEnclosingClass.get(enclosingClass));
             } catch (IOException e) {
-                icicleLogger.logError("Impossible to create helper for %. Reason: %" + enclosingClass.className, e);
+                logger.logError("Impossible to create helper for %. Reason: %" + enclosingClass.className, e);
             }
         }
     }

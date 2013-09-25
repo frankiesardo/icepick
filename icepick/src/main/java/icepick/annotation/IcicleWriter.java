@@ -1,5 +1,10 @@
 package icepick.annotation;
 
+import javax.annotation.processing.Filer;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -8,11 +13,11 @@ abstract class IcicleWriter {
 
     static final String BASE_KEY = "BASE_KEY";
 
-    private final Writer writer;
+    private final JavaFileObject javaFileObject;
     private final String suffix;
 
-    protected IcicleWriter(Writer writer, String suffix) {
-        this.writer = writer;
+    protected IcicleWriter(JavaFileObject javaFileObject, String suffix) {
+        this.javaFileObject = javaFileObject;
         this.suffix = suffix;
     }
 
@@ -21,6 +26,13 @@ abstract class IcicleWriter {
     }
 
     void writeClass(IcicleEnclosingClass enclosingClass, Collection<IcicleField> fields) throws IOException {
+        Writer writer = javaFileObject.openWriter();
+        writer.write(getClassTemplate(enclosingClass, fields));
+        writer.flush();
+        writer.close();
+    }
+
+    private String getClassTemplate(IcicleEnclosingClass enclosingClass, Collection<IcicleField> fields) throws IOException {
         String className = enclosingClass.className;
         String packageName = enclosingClass.packageName;
         String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
@@ -30,7 +42,7 @@ abstract class IcicleWriter {
         String saveInstanceStateEnd = makeSaveInstanceStateEnd();
         String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(enclosingClass.parentFqcn);
 
-        writeTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
+        return replaceTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
     }
 
     private String makeOnRestoreInstanceStateBody(Collection<IcicleField> fields) {
@@ -42,7 +54,7 @@ abstract class IcicleWriter {
     }
 
     private String makeBundleGet(IcicleField icicleField) {
-        return "    target." + icicleField.getName() + " = " + icicleField.getTypeCast() + "savedInstanceState.get" + icicleField.getCommand() + "(" + BASE_KEY + " + \"" + icicleField.getName() + "\");\n";
+        return "    target." + icicleField.name + " = " + icicleField.typeCast + "savedInstanceState.get" + icicleField.command + "(" + BASE_KEY + " + \"" + icicleField.name + "\");\n";
     }
 
     private String makeOnSaveInstanceStateBody(Collection<IcicleField> fields) {
@@ -54,7 +66,7 @@ abstract class IcicleWriter {
     }
 
     private String makeBundlePut(IcicleField icicleField) {
-        return "    outState.put" + icicleField.getCommand() + "(" + BASE_KEY + " + \"" + icicleField.getName() + "\", target." + icicleField.getName() + ");\n";
+        return "    outState.put" + icicleField.command + "(" + BASE_KEY + " + \"" + icicleField.name + "\", target." + icicleField.name + ");\n";
     }
 
     protected abstract String makeSaveInstanceStateStart(String className, String parentFqcn);
@@ -65,8 +77,8 @@ abstract class IcicleWriter {
 
     protected abstract String makeRestoreInstanceStateEnd(String parentFqcn);
 
-    private void writeTemplateWith(String packageName, String className, String saveInstanceStateStart, String restoreInstanceStateStart, String saveInstanceStateBody, String restoreInstanceStateBody, String saveInstanceStateEnd, String restoreInstanceStateEnd) throws IOException {
-        String result = CLASS_TEMPLATE
+    private String replaceTemplateWith(String packageName, String className, String saveInstanceStateStart, String restoreInstanceStateStart, String saveInstanceStateBody, String restoreInstanceStateBody, String saveInstanceStateEnd, String restoreInstanceStateEnd) throws IOException {
+        return CLASS_TEMPLATE
                 .replace(PACKAGE, packageName)
                 .replace(CLASS_NAME, className)
                 .replace(SUFFIX, getSuffix())
@@ -76,9 +88,6 @@ abstract class IcicleWriter {
                 .replace(RESTORE_INSTANCE_STATE_BODY, restoreInstanceStateBody)
                 .replace(SAVE_INSTANCE_STATE_END, saveInstanceStateEnd)
                 .replace(RESTORE_INSTANCE_STATE_END, restoreInstanceStateEnd);
-        writer.write(result);
-        writer.flush();
-        writer.close();
     }
 
     private static final String PACKAGE = "{packageName}";
@@ -112,4 +121,25 @@ abstract class IcicleWriter {
             "" + RESTORE_INSTANCE_STATE_END +
             "  }\n" +
             "}\n";
+
+    static class Factory {
+
+        private final Types typeUtils;
+        private final Elements elementUtils;
+        private final Filer filer;
+        private final String suffix;
+
+        Factory(Types typeUtils, Elements elementUtils, Filer filer, String suffix) {
+            this.typeUtils = typeUtils;
+            this.elementUtils = elementUtils;
+            this.filer = filer;
+            this.suffix = suffix;
+        }
+
+        public IcicleWriter from(TypeElement classType) throws IOException {
+            JavaFileObject jfo = filer.createSourceFile(classType.getQualifiedName() + suffix, classType);
+            boolean isView = typeUtils.isAssignable(classType.asType(), elementUtils.getTypeElement("android.view.View").asType());
+            return isView ? new IcicleViewWriter(jfo, suffix) : new IcicleFragmentActivityWriter(jfo, suffix);
+        }
+    }
 }

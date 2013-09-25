@@ -1,43 +1,40 @@
 package icepick.annotation;
 
-import javax.annotation.processing.Filer;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Collection;
 
 class IcicleFactory {
 
-    private final Types typeUtils;
-    private final Elements elementUtils;
-    private final Filer filer;
-    private final String suffix;
+    private final IcicleEnclosingClass.Factory enclosingClassFactory;
+    private final IcicleField.Factory fieldFactory;
+    private final IcicleWriter.Factory writerFactory;
 
-    IcicleFactory(Types typeUtils, Elements elementUtils, Filer filer, String suffix) {
-        this.typeUtils = typeUtils;
-        this.elementUtils = elementUtils;
-        this.filer = filer;
-        this.suffix = suffix;
+    static IcicleFactory from(ProcessingEnvironment processingEnv, String suffix) {
+        IcicleEnclosingClass.Factory enclosingClassFactory = new IcicleEnclosingClass.Factory(processingEnv.getTypeUtils());
+        IcicleField.Factory fieldFactory = new IcicleField.Factory(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+        IcicleWriter.Factory writerFactory = new IcicleWriter.Factory(processingEnv.getTypeUtils(), processingEnv.getElementUtils(), processingEnv.getFiler(), suffix);
+        return new IcicleFactory(enclosingClassFactory, fieldFactory, writerFactory);
     }
 
-    public IcicleWriter makeWriter(TypeElement classType) throws IOException {
-        JavaFileObject jfo = filer.createSourceFile(classType.getQualifiedName() + suffix, classType);
-        Writer writer = jfo.openWriter();
-        boolean isView = typeUtils.isAssignable(classType.asType(), elementUtils.getTypeElement("android.view.View").asType());
-        return isView ? new IcicleViewWriter(writer, suffix) : new IcicleFragmentActivityWriter(writer, suffix);
+    IcicleFactory(IcicleEnclosingClass.Factory enclosingClassFactory, IcicleField.Factory FieldFactory, IcicleWriter.Factory writerFactory) {
+        this.enclosingClassFactory = enclosingClassFactory;
+        this.fieldFactory = FieldFactory;
+        this.writerFactory = writerFactory;
     }
 
     public IcicleEnclosingClass makeEnclosingClass(TypeElement classType, Collection<TypeMirror> parents) {
-        return IcicleEnclosingClass.newInstance(classType, parents, typeUtils);
+        return enclosingClassFactory.from(classType, parents);
     }
 
     public IcicleField makeField(Element element) {
-        String command = new IcicleCommandConverter(elementUtils, typeUtils).convert(element.asType());
-        return new IcicleField(element.getSimpleName().toString(), element.asType().toString(), command);
+        return fieldFactory.from(element);
+    }
+
+    public IcicleWriter makeWriter(TypeElement classType) throws IOException {
+        return writerFactory.from(classType);
     }
 }

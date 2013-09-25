@@ -1,13 +1,13 @@
 package icepick.annotation;
 
-import java.io.Writer;
+import javax.tools.JavaFileObject;
 
 class IcicleViewWriter extends IcicleWriter {
 
     static final String SUPER_SUFFIX = "\"$$SUPER$$\"";
 
-    public IcicleViewWriter(Writer writer, String suffix) {
-        super(writer, suffix);
+    public IcicleViewWriter(JavaFileObject jfo, String suffix) {
+        super(jfo, suffix);
     }
 
     @Override

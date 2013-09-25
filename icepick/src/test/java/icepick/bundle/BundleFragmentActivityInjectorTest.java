@@ -17,8 +17,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(PowerMockRunner.class)
 public class BundleFragmentActivityInjectorTest {
 
-    Bundle bundle = PowerMockito.mock(Bundle.class);
-    BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(this, bundle, new HashMap<BundleMethodKey, Method>());
+    final Bundle bundle = PowerMockito.mock(Bundle.class);
+    final BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(this, bundle, new HashMap<BundleMethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {

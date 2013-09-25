@@ -1,6 +1,7 @@
 package icepick.annotation;
 
 import javax.lang.model.element.TypeElement;
+import javax.tools.JavaFileObject;
 import java.io.StringWriter;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -10,19 +11,23 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class IcicleViewWriterTest {
 
-    StringWriter stringWriter = new StringWriter();
-    IcicleViewWriter icicleWriter = new IcicleViewWriter(stringWriter, "$$Icicle");
-    IcicleEnclosingClass icicleEnclosingClass = new IcicleEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
+    final StringWriter stringWriter = new StringWriter();
+    final JavaFileObject jfo = mock(JavaFileObject.class);
+    final IcicleViewWriter icicleWriter = new IcicleViewWriter(jfo, "$$Icicle");
+    final IcicleEnclosingClass icicleEnclosingClass = new IcicleEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
-    Set<IcicleField> fields = new LinkedHashSet<IcicleField>();
+    final Set<IcicleField> fields = new LinkedHashSet<IcicleField>();
 
     @Before
     public void setUp() throws Exception {
-        IcicleField icicleField = new IcicleField("username", "java.lang.String", "String");
+        IcicleField icicleField = new IcicleField("username", "", "String");
         fields.add(icicleField);
+
+        when(jfo.openWriter()).thenReturn(stringWriter);
     }
 
     @Test

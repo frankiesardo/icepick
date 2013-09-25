@@ -1,11 +1,11 @@
 package icepick.annotation;
 
-import java.io.Writer;
+import javax.tools.JavaFileObject;
 
 class IcicleFragmentActivityWriter extends IcicleWriter {
 
-    IcicleFragmentActivityWriter(Writer writer, String suffix) {
-        super(writer, suffix);
+    IcicleFragmentActivityWriter(JavaFileObject jfo, String suffix) {
+        super(jfo, suffix);
     }
 
     @Override

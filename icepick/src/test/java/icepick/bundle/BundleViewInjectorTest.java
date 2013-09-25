@@ -12,8 +12,8 @@ import static org.mockito.Mockito.verify;
 
 public class BundleViewInjectorTest {
 
-    Parcelable parcelable = Mockito.mock(Parcelable.class);
-    BundleViewInjector bundleInjector = new BundleViewInjector(this, parcelable, new HashMap<BundleMethodKey, Method>());
+    final Parcelable parcelable = Mockito.mock(Parcelable.class);
+    final BundleViewInjector bundleInjector = new BundleViewInjector(this, parcelable, new HashMap<BundleMethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {

@@ -21,43 +21,52 @@ class IcicleEnclosingClass {
         this.parentFqcn = parentFqcn;
     }
 
-    static IcicleEnclosingClass newInstance(TypeElement classType, Collection<TypeMirror> parents, Types typeUtils) {
-        String className = findName(classType);
-        String packageName = findPackage(classType);
-        String parentFqcn = findParentFqcn(classType, parents, typeUtils);
-        return new IcicleEnclosingClass(classType, className, packageName, parentFqcn);
-    }
+    static class Factory {
 
-    private static String findName(TypeElement classType) {
-        return classType.getSimpleName().toString();
-    }
+        private final Types typeUtils;
 
-    private static String findPackage(TypeElement classType) {
-        return classType.getQualifiedName().toString().replace("." + classType.getSimpleName(), "");
-    }
+        Factory(Types typeUtils) {
+            this.typeUtils = typeUtils;
+        }
 
-    private static String findParentFqcn(TypeElement classType, Collection<TypeMirror> parents, Types typeUtils) {
-        TypeMirror type;
-        while (true) {
-            type = classType.getSuperclass();
-            if (type.getKind() == TypeKind.NONE) {
-                return null;
-            }
-            classType = (TypeElement) ((DeclaredType) type).asElement();
-            if (containsTypeMirror(parents, type, typeUtils)) {
-                return classType.getQualifiedName().toString();
+        public IcicleEnclosingClass from(TypeElement classType, Collection<TypeMirror> parents) {
+            String className = findName(classType);
+            String packageName = findPackage(classType);
+            String parentFqcn = findParentFqcn(classType, parents);
+            return new IcicleEnclosingClass(classType, className, packageName, parentFqcn);
+        }
+
+        private String findName(TypeElement classType) {
+            return classType.getSimpleName().toString();
+        }
+
+        private String findPackage(TypeElement classType) {
+            return classType.getQualifiedName().toString().replace("." + classType.getSimpleName(), "");
+        }
+
+        private String findParentFqcn(TypeElement classType, Collection<TypeMirror> parents) {
+            TypeMirror type;
+            while (true) {
+                type = classType.getSuperclass();
+                if (type.getKind() == TypeKind.NONE) {
+                    return null;
+                }
+                classType = (TypeElement) ((DeclaredType) type).asElement();
+                if (containsTypeMirror(parents, type)) {
+                    return classType.getQualifiedName().toString();
+                }
             }
         }
-    }
 
-    private static boolean containsTypeMirror(Collection<TypeMirror> mirrors, TypeMirror query, Types typeUtils) {
-        // Ensure we are checking against a type-erased version for normalization purposes.
-        TypeMirror erasure = typeUtils.erasure(query);
-        for (TypeMirror mirror : mirrors) {
-            if (typeUtils.isSameType(mirror, erasure)) {
-                return true;
+        private boolean containsTypeMirror(Collection<TypeMirror> mirrors, TypeMirror query) {
+            // Ensure we are checking against a type-erased version for normalization purposes.
+            TypeMirror erasure = typeUtils.erasure(query);
+            for (TypeMirror mirror : mirrors) {
+                if (typeUtils.isSameType(mirror, erasure)) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 }
