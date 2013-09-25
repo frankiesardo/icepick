@@ -9,7 +9,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.Set;
 
-@SupportedAnnotationTypes("com.github.frankiesardo.icepick.icepick.bundle.icepick.annotation.Icicle")
+@SupportedAnnotationTypes("icepick.annotation.Icicle")
 public class IcicleProcessor extends AbstractProcessor {
 
     public static final String SUFFIX = "$$Icicle";
