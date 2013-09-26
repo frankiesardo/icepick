@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 public class BundleViewInjectorTest {
 
     final Parcelable parcelable = Mockito.mock(Parcelable.class);
-    final BundleViewInjector bundleInjector = new BundleViewInjector(this, parcelable, new HashMap<BundleMethodKey, Method>());
+    final BundleViewInjector bundleInjector = new BundleViewInjector(new ClassToInject(), parcelable, new HashMap<BundleMethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {
@@ -27,5 +27,19 @@ public class BundleViewInjectorTest {
         bundleInjector.inject(BundleAction.SAVE);
 
         verify(parcelable).describeContents();
+    }
+
+    static class ClassToInject {
+    }
+
+    static class ClassToInject$$Icicle {
+
+        public static void saveInstanceState(ClassToInject target, Parcelable state) {
+            state.describeContents();
+        }
+
+        public static void restoreInstanceState(ClassToInject target, Parcelable state) {
+            state.describeContents();
+        }
     }
 }

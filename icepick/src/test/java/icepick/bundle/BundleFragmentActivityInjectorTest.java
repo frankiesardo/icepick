@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 public class BundleFragmentActivityInjectorTest {
 
     final Bundle bundle = PowerMockito.mock(Bundle.class);
-    final BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(this, bundle, new HashMap<BundleMethodKey, Method>());
+    final BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(new ClassToInject(), bundle, new HashMap<BundleMethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {
@@ -32,5 +32,19 @@ public class BundleFragmentActivityInjectorTest {
         bundleFragmentActivityInjector.inject(BundleAction.SAVE);
 
         verify(bundle).describeContents();
+    }
+
+    static class ClassToInject {
+    }
+
+    static class ClassToInject$$Icicle {
+
+        public static void saveInstanceState(ClassToInject target, Bundle outState) {
+            outState.describeContents();
+        }
+
+        public static void restoreInstanceState(ClassToInject target, Bundle saveInstanceState) {
+            saveInstanceState.describeContents();
+        }
     }
 }

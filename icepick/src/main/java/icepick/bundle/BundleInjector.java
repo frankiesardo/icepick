@@ -45,7 +45,7 @@ abstract class BundleInjector<T> {
 
     public static class UnableToInjectException extends RuntimeException {
         UnableToInjectException(Object target, Throwable cause) {
-            super("Unable to manipulate icepick.bundle for " + target, cause);
+            super("Unable to inject class " + target, cause);
         }
     }
 }
