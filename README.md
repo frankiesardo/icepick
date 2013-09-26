@@ -54,9 +54,9 @@ Proguard
 If Proguard is enabled be sure to add these rules on your configuration:
 
 ```
--dontwarn com.github.frankiesardo.icepick.**
+-dontwarn icepick.**
 -keep class **$$Icicle { *; }
--keepnames class * { @com.github.frankiesardo.icepick.icepick.bundle.icepick.annotation.Icicle *;}
+-keepnames class * { @icepick.annotation.Icicle *;}
 ```
 
 Download
