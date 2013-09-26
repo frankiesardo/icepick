@@ -35,13 +35,19 @@ class IcicleField {
             return new IcicleField(name, typeCast, command);
         }
 
-        public String convert(TypeMirror typeMirror) {
+        private String convert(TypeMirror typeMirror) {
             for (TypeMirror other : conversionMap.keySet()) {
                 if (typeUtils.isAssignable(typeMirror, other)) {
                     return conversionMap.get(other);
                 }
             }
-            throw new AssertionError("Cannot insert a " + typeMirror + " into a Bundle");
+            throw new UnableToSerializeException(typeMirror);
+        }
+    }
+
+    public static class UnableToSerializeException extends RuntimeException {
+        UnableToSerializeException(TypeMirror fieldType) {
+            super("Don't know how to put a " + fieldType + " into a Bundle");
         }
     }
 }
