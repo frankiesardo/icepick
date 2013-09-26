@@ -19,22 +19,29 @@ class IcicleField {
 
     static class Factory {
 
-        private final Elements elementUtils;
         private final Types typeUtils;
-        private final IcicleCommandConverter icicleCommandConverter;
+        private final IcicleConversionMap conversionMap;
 
         Factory(Elements elementUtils, Types typeUtils) {
-            this.elementUtils = elementUtils;
             this.typeUtils = typeUtils;
-            icicleCommandConverter = new IcicleCommandConverter(elementUtils, typeUtils);
+            this.conversionMap = new IcicleConversionMap(elementUtils, typeUtils);
         }
 
         public IcicleField from(Element element) {
             TypeMirror typeMirror = element.asType();
-            String command = icicleCommandConverter.convert(typeMirror);
-            String typeCast = IcicleCommand.TYPE_CAST_COMMANDS.contains(command) ? "(" + typeMirror.toString() + ")" : "";
+            String command = convert(typeMirror);
+            String typeCast = IcicleConversionMap.TYPE_CAST_COMMANDS.contains(command) ? "(" + typeMirror.toString() + ")" : "";
             String name = element.getSimpleName().toString();
             return new IcicleField(name, typeCast, command);
+        }
+
+        public String convert(TypeMirror typeMirror) {
+            for (TypeMirror other : conversionMap.keySet()) {
+                if (typeUtils.isAssignable(typeMirror, other)) {
+                    return conversionMap.get(other);
+                }
+            }
+            throw new AssertionError("Cannot insert a " + typeMirror + " into a Bundle");
         }
     }
 }
