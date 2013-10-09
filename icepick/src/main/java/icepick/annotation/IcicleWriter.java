@@ -104,7 +104,7 @@ abstract class IcicleWriter {
 
     private static final String CLASS_TEMPLATE = "package " + PACKAGE + ";\n" +
             "\n" +
-            "final class " + CLASS_NAME + SUFFIX + " {\n" +
+            "public final class " + CLASS_NAME + SUFFIX + " {\n" +
             "\n" +
             "  private static final String BASE_KEY = \"" + PACKAGE + "." + CLASS_NAME + SUFFIX + ".\";\n" +
             "\n" +
