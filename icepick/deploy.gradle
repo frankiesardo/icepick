@@ -12,7 +12,7 @@ modifyPom {
 
                 name 'Icepick'
                 groupId 'com.github.frankiesardo'
-                version '2.1'
+                version '2.1.1-SNAPSHOT'
                 description 'Android Bundle save and restore instance state made easy'
                 url 'https://github.com/frankiesardo/icepick'
                 inceptionYear '2013'
