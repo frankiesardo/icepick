@@ -28,7 +28,7 @@ uploadArchives {
 
                 name 'Icepick'
                 groupId 'com.github.frankiesardo'
-                version '2.0.1-SNAPSHOT'
+                version '2.1'
                 description 'Android Bundle save and restore instance state made easy'
                 url 'https://github.com/frankiesardo/icepick'
                 inceptionYear '2013'
