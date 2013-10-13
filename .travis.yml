@@ -1,0 +1,6 @@
+language: java
+
+notifications:
+  email: false
+
+script: gradlew build
