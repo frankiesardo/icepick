@@ -1,24 +1,21 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
+  }
+}
+
+
 apply plugin: 'maven'
-apply plugin: 'signing'
+apply plugin: 'nexus'
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { deployment -> signing.signPom(deployment) }
 
-            if (project.hasProperty('nexusUsername')) {
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                    authentication(userName: nexusUsername, password: nexusPassword)
-                }
 
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
-                    authentication(userName: nexusUsername, password: nexusPassword)
-                }
-            }
-
-            uniqueVersion = false
-
-            pom.project {
+modifyPom {
+            project {
 
                 parent {
                     groupId 'org.sonatype.oss'
@@ -28,7 +25,7 @@ uploadArchives {
 
                 name 'Icepick'
                 groupId 'com.github.frankiesardo'
-                version '2.1.1-SNAPSHOT'
+                version '2.1'
                 description 'Android Bundle save and restore instance state made easy'
                 url 'https://github.com/frankiesardo/icepick'
                 inceptionYear '2013'
@@ -55,5 +52,4 @@ uploadArchives {
                 }
             }
         }
-    }
-}
+        
