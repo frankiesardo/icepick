@@ -39,7 +39,7 @@ public class IcicleViewWriterTest {
 
     static final String SIMPLE_CLASS = "package com.frankiesardo;\n" +
             "\n" +
-            "final class TestView$$Icicle {\n" +
+            "public final class TestView$$Icicle {\n" +
             "\n" +
             "  private static final String BASE_KEY = \"com.frankiesardo.TestView$$Icicle.\";\n" +
             "\n" +
