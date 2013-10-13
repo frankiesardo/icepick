@@ -1,18 +1,5 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-
-  dependencies {
-    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
-  }
-}
-
-
 apply plugin: 'maven'
 apply plugin: 'nexus'
-
-
 
 modifyPom {
             project {
