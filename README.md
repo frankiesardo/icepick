@@ -66,7 +66,7 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.0'
+  compile 'com.github.frankiesardo:icepick:2.1'
 }
 ```
 
