@@ -80,6 +80,36 @@ Maven:
 </dependency>
 ```
 
+Note: If you are referencing a newer version of the Android Support Library in your app, you may need to exclude Ice Pick's dependency:
+
+Gradle:
+
+```
+dependencies {
+    compile ('com.github.frankiesardo:icepick:2.1') {
+        exclude module: 'support-v4'
+        compile 'com.android.support:support-v4:18.0.0'
+    }
+}
+```
+
+Maven 
+
+```xml
+<dependency>
+  <groupId>com.github.frankiesardo</groupId>
+  <artifactId>icepick</artifactId>
+  <version>2.1</version>
+  <exclusions>
+    <exclusion>
+      <groupId>com.google.android</groupId>
+      <artifactId>support-v4</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
+```
+
+
 Jar:
 
 Use this [link](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick&v=LATEST)
