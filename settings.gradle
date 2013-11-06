@@ -1,2 +1,2 @@
-include 'sample', 'icepick'
+include 'sample', 'icepick', 'icepick-processor'
 rootProject.name = 'icepick-parent'

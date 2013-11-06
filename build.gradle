@@ -2,17 +2,20 @@ subprojects {
     buildscript {
         repositories {
             mavenCentral()
-            maven { url 'http://repo.springsource.org/plugins-release' }
         }
         dependencies {
-            classpath 'com.android.tools.build:gradle:0.5.4'
-            classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
-            classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.4'
+            classpath 'com.android.tools.build:gradle:0.6.+'
         }
     }
 
     repositories {
         mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}

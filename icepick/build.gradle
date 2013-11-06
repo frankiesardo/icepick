@@ -1,19 +1,20 @@
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
+apply plugin: 'android-library'
+apply plugin: 'android-test'
 
-apply from: script('deploy')
+apply from: file('deploy.gradle')
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion '18.1.1'
+}
 
 dependencies {
-    provided 'com.google.android:android:4.0.1.2'
-    compile 'com.google.android:support-v4:r7'
+    compile 'com.android.support:support-v4:18.0.+'
+//    compile project(':icepick-processor')
+    compile 'com.github.frankiesardo:icepick-processor:2.2-SNAPSHOT'
+
     testCompile 'junit:junit:4.10'
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.powermock:powermock-module-junit4:1.5'
     testCompile 'org.powermock:powermock-api-mockito:1.5'
-}
-
-File script(String name) {
-    project.file("${name}.gradle")
 }

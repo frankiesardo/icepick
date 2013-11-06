@@ -1,0 +1,7 @@
+dependencies {
+    repositories {
+        mavenCentral()
+    }
+
+    compile 'com.android.tools.build:gradle:0.6.+'
+}

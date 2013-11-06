@@ -10,10 +10,10 @@ def isReleaseBuild() {
 def sonatypeRepositoryUrl
 
 if (isReleaseBuild()) {
-    println "RELEASE BUILD $version"
+    println "PROCESSOR RELEASE BUILD $version"
     sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 } else {
-    println "DEBUG BUILD $version"
+    println "PROCESSOR DEBUG BUILD $version"
     sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
@@ -62,27 +62,5 @@ afterEvaluate { project ->
     signing {
         required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
-    }
-
-    task androidJavadocs(type: Javadoc) {
-        source = android.sourceSets.main.allJava
-    }
-
-    task androidJavadocsJar(type: Jar) {
-        classifier = 'javadoc'
-        //basename = artifact_id
-        from androidJavadocs.destinationDir
-    }
-
-    task androidSourcesJar(type: Jar) {
-        classifier = 'sources'
-        //basename = artifact_id
-        from android.sourceSets.main.allSource
-    }
-
-    artifacts {
-        //archives packageReleaseJar
-        archives androidSourcesJar
-        archives androidJavadocsJar
     }
 }
