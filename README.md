@@ -1,4 +1,4 @@
-Ice Pick
+Icepick
 ============
 
 Icepick is an Android library that simplifies the `Bundle` save and restore instance state.
