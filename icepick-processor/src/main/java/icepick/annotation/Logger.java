@@ -19,4 +19,8 @@ class Logger {
     public void logError(Element element, String message, Object... args) {
         messager.printMessage(Diagnostic.Kind.ERROR, String.format(message, args), element);
     }
+
+    public void logError(Throwable throwable) {
+        messager.printMessage(Diagnostic.Kind.ERROR, throwable.getMessage());
+    }
 }

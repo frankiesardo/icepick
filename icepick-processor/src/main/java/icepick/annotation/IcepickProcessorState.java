@@ -82,6 +82,15 @@ class IcepickProcessorState {
     }
 
     private Collection<AnnotatedField> convert(Collection<Element> elements) {
+        try {
+            return attemptConversion(elements);
+        } catch(AnnotatedField.UnableToSerializeException e) {
+            logger.logError(e);
+            throw e;
+        }
+    }
+
+    private Collection<AnnotatedField> attemptConversion(Collection<Element> elements) {
         Set<AnnotatedField> convertedFields = new HashSet<AnnotatedField>(elements.size());
         for (Element e : elements) {
             convertedFields.add(factory.makeField(e));
