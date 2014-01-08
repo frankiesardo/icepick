@@ -84,7 +84,7 @@ class IcepickProcessorState {
     private Collection<AnnotatedField> convert(Collection<Element> elements) {
         try {
             return attemptConversion(elements);
-        } catch(AnnotatedField.UnableToSerializeException e) {
+        } catch (AnnotatedField.UnableToSerializeException e) {
             logger.logError(e);
             throw e;
         }
