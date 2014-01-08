@@ -15,21 +15,21 @@ import static org.mockito.Mockito.verify;
 
 @PrepareForTest(Bundle.class)
 @RunWith(PowerMockRunner.class)
-public class BundleFragmentActivityInjectorTest {
+public class FragmentActivityInjectorTest {
 
     final Bundle bundle = PowerMockito.mock(Bundle.class);
-    final BundleFragmentActivityInjector bundleFragmentActivityInjector = new BundleFragmentActivityInjector(new ClassToInject(), bundle, new HashMap<BundleMethodKey, Method>());
+    final FragmentActivityInjector fragmentActivityInjector = new FragmentActivityInjector(new ClassToInject(), bundle, new HashMap<MethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {
-        bundleFragmentActivityInjector.inject(BundleAction.RESTORE);
+        fragmentActivityInjector.inject(Action.RESTORE);
 
         verify(bundle).describeContents();
     }
 
     @Test
     public void shouldSaveFieldValueToBundle() throws Exception {
-        bundleFragmentActivityInjector.inject(BundleAction.SAVE);
+        fragmentActivityInjector.inject(Action.SAVE);
 
         verify(bundle).describeContents();
     }

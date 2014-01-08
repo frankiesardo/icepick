@@ -8,13 +8,13 @@ import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.util.*;
 
-class IcicleProcessorState {
+class IcepickProcessorState {
 
     private final Types typeUtils;
-    private final IcicleFactory factory;
-    private final IcicleLogger logger;
+    private final EnvironmentFactory factory;
+    private final Logger logger;
 
-    public IcicleProcessorState(Types typeUtils, IcicleFactory factory, IcicleLogger logger) {
+    public IcepickProcessorState(Types typeUtils, EnvironmentFactory factory, Logger logger) {
         this.typeUtils = typeUtils;
         this.factory = factory;
         this.logger = logger;
@@ -24,7 +24,7 @@ class IcicleProcessorState {
         Set<? extends Element> validElements = discardInvalid(elements);
         Map<TypeElement, Collection<Element>> elementsByEnclosingClass = groupElementsByEnclosingClass(validElements);
         Set<TypeMirror> erasedEnclosingClasses = findErasedEnclosingClasses(elementsByEnclosingClass.keySet());
-        Map<IcicleEnclosingClass, Collection<IcicleField>> convertedElements = convert(elementsByEnclosingClass, erasedEnclosingClasses);
+        Map<FieldEnclosingClass, Collection<AnnotatedField>> convertedElements = convert(elementsByEnclosingClass, erasedEnclosingClasses);
         writeHelpers(convertedElements);
     }
 
@@ -72,30 +72,30 @@ class IcicleProcessorState {
         return elementsByEnclosingClass;
     }
 
-    private Map<IcicleEnclosingClass, Collection<IcicleField>> convert(Map<TypeElement, Collection<Element>> elementsByEnclosingClass, Set<TypeMirror> erasedEnclosingClasses) {
-        Map<IcicleEnclosingClass, Collection<IcicleField>> convertedElements = new HashMap<IcicleEnclosingClass, Collection<IcicleField>>(elementsByEnclosingClass.size());
+    private Map<FieldEnclosingClass, Collection<AnnotatedField>> convert(Map<TypeElement, Collection<Element>> elementsByEnclosingClass, Set<TypeMirror> erasedEnclosingClasses) {
+        Map<FieldEnclosingClass, Collection<AnnotatedField>> convertedElements = new HashMap<FieldEnclosingClass, Collection<AnnotatedField>>(elementsByEnclosingClass.size());
         for (TypeElement classType : elementsByEnclosingClass.keySet()) {
-            IcicleEnclosingClass enclosingClass = factory.makeEnclosingClass(classType, erasedEnclosingClasses);
-            convertedElements.put(enclosingClass, convert(elementsByEnclosingClass.get(classType)));
+            FieldEnclosingClass fieldEnclosingClass = factory.makeEnclosingClass(classType, erasedEnclosingClasses);
+            convertedElements.put(fieldEnclosingClass, convert(elementsByEnclosingClass.get(classType)));
         }
         return convertedElements;
     }
 
-    private Collection<IcicleField> convert(Collection<Element> elements) {
-        Set<IcicleField> convertedFields = new HashSet<IcicleField>(elements.size());
+    private Collection<AnnotatedField> convert(Collection<Element> elements) {
+        Set<AnnotatedField> convertedFields = new HashSet<AnnotatedField>(elements.size());
         for (Element e : elements) {
             convertedFields.add(factory.makeField(e));
         }
         return convertedFields;
     }
 
-    private void writeHelpers(Map<IcicleEnclosingClass, Collection<IcicleField>> elementsByEnclosingClass) {
-        for (IcicleEnclosingClass enclosingClass : elementsByEnclosingClass.keySet()) {
+    private void writeHelpers(Map<FieldEnclosingClass, Collection<AnnotatedField>> elementsByEnclosingClass) {
+        for (FieldEnclosingClass fieldEnclosingClass : elementsByEnclosingClass.keySet()) {
             try {
-                IcicleWriter icicleWriter = factory.makeWriter(enclosingClass.type);
-                icicleWriter.writeClass(enclosingClass, elementsByEnclosingClass.get(enclosingClass));
+                ClassWriter classWriter = factory.makeWriter(fieldEnclosingClass.type);
+                classWriter.writeClass(fieldEnclosingClass, elementsByEnclosingClass.get(fieldEnclosingClass));
             } catch (IOException e) {
-                logger.logError("Impossible to create helper for %. Reason: %" + enclosingClass.className, e);
+                logger.logError("Impossible to create helper for %. Reason: %" + fieldEnclosingClass.className, e);
             }
         }
     }

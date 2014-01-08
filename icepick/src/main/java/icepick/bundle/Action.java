@@ -1,12 +1,12 @@
 package icepick.bundle;
 
-enum BundleAction {
+enum Action {
     SAVE("saveInstanceState"),
     RESTORE("restoreInstanceState");
 
     public final String name;
 
-    BundleAction(String name) {
+    Action(String name) {
         this.name = name;
     }
 }

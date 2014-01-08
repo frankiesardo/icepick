@@ -7,17 +7,17 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
-@SupportedAnnotationTypes("icepick.annotation.Icicle")
-public class IcicleProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("icepick.annotation.Icepick")
+public class IcepickProcessor extends AbstractProcessor {
 
-    public static final String SUFFIX = "$$Icicle";
+    public static final String SUFFIX = "$$Icepick";
 
     @Override
     public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment env) {
-        IcicleFactory icicleFactory = IcicleFactory.from(processingEnv, SUFFIX);
-        IcicleLogger icicleLogger = new IcicleLogger(processingEnv.getMessager());
-        IcicleProcessorState icicleProcessorState = new IcicleProcessorState(processingEnv.getTypeUtils(), icicleFactory, icicleLogger);
-        icicleProcessorState.process(env.getElementsAnnotatedWith(Icicle.class));
+        EnvironmentFactory environmentFactory = EnvironmentFactory.from(processingEnv, SUFFIX);
+        Logger logger = new Logger(processingEnv.getMessager());
+        IcepickProcessorState icepickProcessorState = new IcepickProcessorState(processingEnv.getTypeUtils(), environmentFactory, logger);
+        icepickProcessorState.process(env.getElementsAnnotatedWith(Icepick.class));
         return true;
     }
 

@@ -1,13 +1,13 @@
 package icepick.bundle;
 
-class BundleMethodKey {
+class MethodKey {
 
     public final Class<?> clazz;
-    public final BundleAction bundleAction;
+    public final Action action;
 
-    public BundleMethodKey(Class<?> clazz, BundleAction bundleAction) {
+    public MethodKey(Class<?> clazz, Action action) {
         this.clazz = clazz;
-        this.bundleAction = bundleAction;
+        this.action = action;
     }
 
     @Override
@@ -15,9 +15,9 @@ class BundleMethodKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BundleMethodKey that = (BundleMethodKey) o;
+        MethodKey that = (MethodKey) o;
 
-        if (bundleAction != that.bundleAction) return false;
+        if (action != that.action) return false;
         if (clazz != null ? !clazz.equals(that.clazz) : that.clazz != null) return false;
 
         return true;
@@ -26,7 +26,7 @@ class BundleMethodKey {
     @Override
     public int hashCode() {
         int result = clazz != null ? clazz.hashCode() : 0;
-        result = 31 * result + (bundleAction != null ? bundleAction.hashCode() : 0);
+        result = 31 * result + (action != null ? action.hashCode() : 0);
         return result;
     }
 }

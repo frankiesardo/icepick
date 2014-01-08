@@ -10,21 +10,21 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.verify;
 
-public class BundleViewInjectorTest {
+public class ViewInjectorTest {
 
     final Parcelable parcelable = Mockito.mock(Parcelable.class);
-    final BundleViewInjector bundleInjector = new BundleViewInjector(new ClassToInject(), parcelable, new HashMap<BundleMethodKey, Method>());
+    final ViewInjector viewInjector = new ViewInjector(new ClassToInject(), parcelable, new HashMap<MethodKey, Method>());
 
     @Test
     public void shouldRestoreFieldValueWithBundleContent() throws Exception {
-        bundleInjector.inject(BundleAction.RESTORE);
+        viewInjector.inject(Action.RESTORE);
 
         verify(parcelable).describeContents();
     }
 
     @Test
     public void shouldSaveFieldValueToBundle() throws Exception {
-        bundleInjector.inject(BundleAction.SAVE);
+        viewInjector.inject(Action.SAVE);
 
         verify(parcelable).describeContents();
     }

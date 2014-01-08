@@ -7,14 +7,14 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import java.util.Collection;
 
-class IcicleEnclosingClass {
+class FieldEnclosingClass {
 
     public final TypeElement type;
     public final String className;
     public final String packageName;
     public final String parentFqcn;
 
-    IcicleEnclosingClass(TypeElement type, String className, String packageName, String parentFqcn) {
+    FieldEnclosingClass(TypeElement type, String className, String packageName, String parentFqcn) {
         this.type = type;
         this.className = className;
         this.packageName = packageName;
@@ -29,11 +29,11 @@ class IcicleEnclosingClass {
             this.typeUtils = typeUtils;
         }
 
-        public IcicleEnclosingClass from(TypeElement classType, Collection<TypeMirror> parents) {
+        public FieldEnclosingClass from(TypeElement classType, Collection<TypeMirror> parents) {
             String className = findName(classType);
             String packageName = findPackage(classType);
             String parentFqcn = findParentFqcn(classType, parents);
-            return new IcicleEnclosingClass(classType, className, packageName, parentFqcn);
+            return new FieldEnclosingClass(classType, className, packageName, parentFqcn);
         }
 
         private String findName(TypeElement classType) {

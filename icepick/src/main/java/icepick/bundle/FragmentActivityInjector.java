@@ -5,13 +5,13 @@ import android.os.Bundle;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class BundleFragmentActivityInjector extends BundleInjector<Bundle> {
+class FragmentActivityInjector extends Injector<Bundle> {
 
-    BundleFragmentActivityInjector(Object target, Bundle argument, Map<BundleMethodKey, Method> cachedMethods) {
+    FragmentActivityInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
         super(target, argument, cachedMethods);
     }
 
-    void inject(BundleAction action) {
+    void inject(Action action) {
         Class<?> targetClass = target.getClass();
         try {
             Method inject = getMethodFromHelper(targetClass, action);

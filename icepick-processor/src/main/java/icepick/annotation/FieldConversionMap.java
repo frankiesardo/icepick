@@ -12,12 +12,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-class IcicleConversionMap extends LinkedHashMap<TypeMirror, String> {
+class FieldConversionMap extends LinkedHashMap<TypeMirror, String> {
 
     private final Elements elementUtils;
     private final Types typeUtils;
 
-    public IcicleConversionMap(Elements elementUtils, Types typeUtils) {
+    public FieldConversionMap(Elements elementUtils, Types typeUtils) {
         this.elementUtils = elementUtils;
         this.typeUtils = typeUtils;
 

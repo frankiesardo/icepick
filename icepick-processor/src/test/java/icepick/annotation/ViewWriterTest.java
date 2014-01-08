@@ -13,52 +13,52 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class IcicleViewWriterTest {
+public class ViewWriterTest {
 
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
-    final IcicleViewWriter icicleWriter = new IcicleViewWriter(jfo, "$$Icicle");
-    final IcicleEnclosingClass icicleEnclosingClass = new IcicleEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
+    final ViewWriter icicleWriter = new ViewWriter(jfo, "$$Icepick");
+    final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
-    final Set<IcicleField> fields = new LinkedHashSet<IcicleField>();
+    final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();
 
     @Before
     public void setUp() throws Exception {
-        IcicleField icicleField = new IcicleField("username", "", "String");
-        fields.add(icicleField);
+        AnnotatedField annotatedField = new AnnotatedField("username", "", "String");
+        fields.add(annotatedField);
 
         when(jfo.openWriter()).thenReturn(stringWriter);
     }
 
     @Test
     public void shouldWriteBundlePutAndGetIntoATemplate() throws Exception {
-        icicleWriter.writeClass(icicleEnclosingClass, fields);
+        icicleWriter.writeClass(fieldEnclosingClass, fields);
 
         assertEquals(SIMPLE_CLASS, stringWriter.toString());
     }
 
     static final String SIMPLE_CLASS = "package com.frankiesardo;\n" +
             "\n" +
-            "public final class TestView$$Icicle {\n" +
+            "public final class TestView$$Icepick {\n" +
             "\n" +
-            "  private static final String BASE_KEY = \"com.frankiesardo.TestView$$Icicle.\";\n" +
+            "  private static final String BASE_KEY = \"com.frankiesardo.TestView$$Icepick.\";\n" +
             "\n" +
-            "  private TestView$$Icicle() {\n" +
+            "  private TestView$$Icepick() {\n" +
             "  }\n" +
             "\n" +
             "  public static android.os.Parcelable saveInstanceState(" + "TestView" + " target, android.os.Parcelable state) {\n" +
             "    android.os.Bundle outState = new android.os.Bundle();\n" +
-            "    android.os.Parcelable superState = com.frankiesardo.SuperClass$$Icicle.saveInstanceState(target, state);\n" +
-            "    outState.putParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ", superState);\n" +
-            "    outState.putString(" + IcicleWriter.BASE_KEY + " + \"username\", target.username);\n" +
+            "    android.os.Parcelable superState = com.frankiesardo.SuperClass$$Icepick.saveInstanceState(target, state);\n" +
+            "    outState.putParcelable(" + ClassWriter.BASE_KEY + " + " + ViewWriter.SUPER_SUFFIX + ", superState);\n" +
+            "    outState.putString(" + ClassWriter.BASE_KEY + " + \"username\", target.username);\n" +
             "    return outState;\n" +
             "  }\n" +
             "\n" +
             "  public static android.os.Parcelable restoreInstanceState(" + "TestView" + " target, android.os.Parcelable state) {\n" +
             "    android.os.Bundle savedInstanceState = (android.os.Bundle) state;\n" +
-            "    android.os.Parcelable superState = savedInstanceState.getParcelable(" + IcicleWriter.BASE_KEY + " + " + IcicleViewWriter.SUPER_SUFFIX + ");\n" +
-            "    target.username = savedInstanceState.getString(" + IcicleWriter.BASE_KEY + " + \"username\");\n" +
-            "    return com.frankiesardo.SuperClass$$Icicle.restoreInstanceState(target, superState);\n" +
+            "    android.os.Parcelable superState = savedInstanceState.getParcelable(" + ClassWriter.BASE_KEY + " + " + ViewWriter.SUPER_SUFFIX + ");\n" +
+            "    target.username = savedInstanceState.getString(" + ClassWriter.BASE_KEY + " + \"username\");\n" +
+            "    return com.frankiesardo.SuperClass$$Icepick.restoreInstanceState(target, superState);\n" +
             "  }\n" +
             "}\n";
 }

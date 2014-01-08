@@ -4,11 +4,11 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
-class IcicleLogger {
+class Logger {
 
     private final Messager messager;
 
-    public IcicleLogger(Messager messager) {
+    public Logger(Messager messager) {
         this.messager = messager;
     }
 

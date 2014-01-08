@@ -10,8 +10,6 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:18.0.+'
-//    compile project(':icepick-processor')
-    compile 'com.github.frankiesardo:icepick-processor:2.2-SNAPSHOT'
 
     testCompile 'junit:junit:4.10'
     testCompile 'org.mockito:mockito-core:1.9.5'

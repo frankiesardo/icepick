@@ -5,13 +5,13 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-class IcicleField {
+class AnnotatedField {
 
     public final String name;
     public final String typeCast;
     public final String command;
 
-    IcicleField(String name, String typeCast, String command) {
+    AnnotatedField(String name, String typeCast, String command) {
         this.name = name;
         this.command = command;
         this.typeCast = typeCast;
@@ -20,25 +20,25 @@ class IcicleField {
     static class Factory {
 
         private final Types typeUtils;
-        private final IcicleConversionMap conversionMap;
+        private final FieldConversionMap fieldConversionMap;
 
         Factory(Elements elementUtils, Types typeUtils) {
             this.typeUtils = typeUtils;
-            this.conversionMap = new IcicleConversionMap(elementUtils, typeUtils);
+            this.fieldConversionMap = new FieldConversionMap(elementUtils, typeUtils);
         }
 
-        public IcicleField from(Element element) {
+        public AnnotatedField from(Element element) {
             TypeMirror typeMirror = element.asType();
             String command = convert(typeMirror);
-            String typeCast = IcicleConversionMap.TYPE_CAST_COMMANDS.contains(command) ? "(" + typeMirror.toString() + ")" : "";
+            String typeCast = FieldConversionMap.TYPE_CAST_COMMANDS.contains(command) ? "(" + typeMirror.toString() + ")" : "";
             String name = element.getSimpleName().toString();
-            return new IcicleField(name, typeCast, command);
+            return new AnnotatedField(name, typeCast, command);
         }
 
         private String convert(TypeMirror typeMirror) {
-            for (TypeMirror other : conversionMap.keySet()) {
+            for (TypeMirror other : fieldConversionMap.keySet()) {
                 if (typeUtils.isAssignable(typeMirror, other)) {
-                    return conversionMap.get(other);
+                    return fieldConversionMap.get(other);
                 }
             }
             throw new UnableToSerializeException(typeMirror);

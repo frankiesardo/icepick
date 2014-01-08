@@ -5,23 +5,23 @@ import java.util.Map;
 
 import icepick.annotation.IcicleProcessor;
 
-abstract class BundleInjector<T> {
+abstract class Injector<T> {
 
     static final Method NO_OP = null;
 
     protected final Object target;
     protected final T argument;
-    protected final Map<BundleMethodKey, Method> cachedMethods;
+    protected final Map<MethodKey, Method> cachedMethods;
 
-    protected BundleInjector(Object target, T argument, Map<BundleMethodKey, Method> cachedMethods) {
+    protected Injector(Object target, T argument, Map<MethodKey, Method> cachedMethods) {
         this.target = target;
         this.argument = argument;
         this.cachedMethods = cachedMethods;
     }
 
-    protected Method getMethodFromHelper(Class<?> cls, BundleAction bundleAction) throws NoSuchMethodException {
-        BundleMethodKey bundleMethodKey = new BundleMethodKey(cls, bundleAction);
-        Method method = cachedMethods.get(bundleMethodKey);
+    protected Method getMethodFromHelper(Class<?> cls, Action action) throws NoSuchMethodException {
+        MethodKey methodKey = new MethodKey(cls, action);
+        Method method = cachedMethods.get(methodKey);
         if (method != null) {
             return method;
         }
@@ -33,11 +33,11 @@ abstract class BundleInjector<T> {
 
         try {
             Class<?> helper = Class.forName(clsName + IcicleProcessor.SUFFIX);
-            method = helper.getMethod(bundleAction.name, cls, getArgumentClass());
+            method = helper.getMethod(action.name, cls, getArgumentClass());
         } catch (ClassNotFoundException e) {
-            method = getMethodFromHelper(cls.getSuperclass(), bundleAction);
+            method = getMethodFromHelper(cls.getSuperclass(), action);
         }
-        cachedMethods.put(bundleMethodKey, method);
+        cachedMethods.put(methodKey, method);
         return method;
     }
 

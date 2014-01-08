@@ -2,11 +2,11 @@ package icepick.annotation;
 
 import javax.tools.JavaFileObject;
 
-class IcicleViewWriter extends IcicleWriter {
+class ViewWriter extends ClassWriter {
 
     static final String SUPER_SUFFIX = "\"$$SUPER$$\"";
 
-    public IcicleViewWriter(JavaFileObject jfo, String suffix) {
+    public ViewWriter(JavaFileObject jfo, String suffix) {
         super(jfo, suffix);
     }
 

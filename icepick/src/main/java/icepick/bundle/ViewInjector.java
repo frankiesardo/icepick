@@ -5,13 +5,13 @@ import android.os.Parcelable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class BundleViewInjector extends BundleInjector<Parcelable> {
+class ViewInjector extends Injector<Parcelable> {
 
-    BundleViewInjector(Object target, Parcelable argument, Map<BundleMethodKey, Method> cachedMethods) {
+    ViewInjector(Object target, Parcelable argument, Map<MethodKey, Method> cachedMethods) {
         super(target, argument, cachedMethods);
     }
 
-    Parcelable inject(BundleAction action) {
+    Parcelable inject(Action action) {
         Class<?> targetClass = target.getClass();
         try {
             Method inject = getMethodFromHelper(targetClass, action);

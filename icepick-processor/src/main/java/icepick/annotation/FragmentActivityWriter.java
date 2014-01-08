@@ -2,9 +2,9 @@ package icepick.annotation;
 
 import javax.tools.JavaFileObject;
 
-class IcicleFragmentActivityWriter extends IcicleWriter {
+class FragmentActivityWriter extends ClassWriter {
 
-    IcicleFragmentActivityWriter(JavaFileObject jfo, String suffix) {
+    FragmentActivityWriter(JavaFileObject jfo, String suffix) {
         super(jfo, suffix);
     }
 
