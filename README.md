@@ -56,7 +56,7 @@ If Proguard is enabled be sure to add these rules on your configuration:
 ```
 -dontwarn icepick.**
 -keep class **$$Icicle { *; }
--keepnames class * { @icepick.annotation.Icepick *;}
+-keepnames class * { @icepick.annotation.Icicle *;}
 ```
 
 Download

@@ -17,7 +17,7 @@ public class ViewWriterTest {
 
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
-    final ViewWriter icicleWriter = new ViewWriter(jfo, "$$Icepick");
+    final ViewWriter icicleWriter = new ViewWriter(jfo, "$$Icicle");
     final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
     final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();
@@ -39,16 +39,16 @@ public class ViewWriterTest {
 
     static final String SIMPLE_CLASS = "package com.frankiesardo;\n" +
             "\n" +
-            "public final class TestView$$Icepick {\n" +
+            "public final class TestView$$Icicle {\n" +
             "\n" +
-            "  private static final String BASE_KEY = \"com.frankiesardo.TestView$$Icepick.\";\n" +
+            "  private static final String BASE_KEY = \"com.frankiesardo.TestView$$Icicle.\";\n" +
             "\n" +
-            "  private TestView$$Icepick() {\n" +
+            "  private TestView$$Icicle() {\n" +
             "  }\n" +
             "\n" +
             "  public static android.os.Parcelable saveInstanceState(" + "TestView" + " target, android.os.Parcelable state) {\n" +
             "    android.os.Bundle outState = new android.os.Bundle();\n" +
-            "    android.os.Parcelable superState = com.frankiesardo.SuperClass$$Icepick.saveInstanceState(target, state);\n" +
+            "    android.os.Parcelable superState = com.frankiesardo.SuperClass$$Icicle.saveInstanceState(target, state);\n" +
             "    outState.putParcelable(" + ClassWriter.BASE_KEY + " + " + ViewWriter.SUPER_SUFFIX + ", superState);\n" +
             "    outState.putString(" + ClassWriter.BASE_KEY + " + \"username\", target.username);\n" +
             "    return outState;\n" +
@@ -58,7 +58,7 @@ public class ViewWriterTest {
             "    android.os.Bundle savedInstanceState = (android.os.Bundle) state;\n" +
             "    android.os.Parcelable superState = savedInstanceState.getParcelable(" + ClassWriter.BASE_KEY + " + " + ViewWriter.SUPER_SUFFIX + ");\n" +
             "    target.username = savedInstanceState.getString(" + ClassWriter.BASE_KEY + " + \"username\");\n" +
-            "    return com.frankiesardo.SuperClass$$Icepick.restoreInstanceState(target, superState);\n" +
+            "    return com.frankiesardo.SuperClass$$Icicle.restoreInstanceState(target, superState);\n" +
             "  }\n" +
             "}\n";
 }

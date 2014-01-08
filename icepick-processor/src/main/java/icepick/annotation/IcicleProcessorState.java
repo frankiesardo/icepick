@@ -8,13 +8,13 @@ import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.util.*;
 
-class IcepickProcessorState {
+class IcicleProcessorState {
 
     private final Types typeUtils;
     private final EnvironmentFactory factory;
     private final Logger logger;
 
-    public IcepickProcessorState(Types typeUtils, EnvironmentFactory factory, Logger logger) {
+    public IcicleProcessorState(Types typeUtils, EnvironmentFactory factory, Logger logger) {
         this.typeUtils = typeUtils;
         this.factory = factory;
         this.logger = logger;

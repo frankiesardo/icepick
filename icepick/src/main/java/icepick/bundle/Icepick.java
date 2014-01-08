@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Icepick {
 
-    public static final String SUFFIX = "$$Icepick";
+    public static final String SUFFIX = "$$Icicle";
 
     private static final Map<MethodKey, Method> CACHED_METHODS = new LinkedHashMap<MethodKey, Method>();
 

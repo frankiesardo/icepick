@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import icepick.annotation.Icicle;
-import icepick.bundle.Bundles;
+import icepick.bundle.Icepick;
 
 public class BaseCustomView extends TextView {
 
@@ -32,12 +32,12 @@ public class BaseCustomView extends TextView {
 
     @Override
     public Parcelable onSaveInstanceState() {
-        return Bundles.saveInstanceState(this, super.onSaveInstanceState());
+        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(Bundles.restoreInstanceState(this, state));
+        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
         if (backgroundColor != Integer.MAX_VALUE) {
             setBackgroundColorWithAnotherMethod(backgroundColor);
         }

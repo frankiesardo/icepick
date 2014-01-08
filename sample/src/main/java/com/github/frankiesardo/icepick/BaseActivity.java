@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import icepick.annotation.Icicle;
-import icepick.bundle.Bundles;
+import icepick.bundle.Icepick;
 
 public class BaseActivity extends Activity {
 
@@ -14,12 +14,12 @@ public class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundles.restoreInstanceState(this, savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Bundles.saveInstanceState(this, outState);
+        Icepick.saveInstanceState(this, outState);
     }
 }

@@ -32,7 +32,7 @@ public class ViewInjectorTest {
     static class ClassToInject {
     }
 
-    static class ClassToInject$$Icepick {
+    static class ClassToInject$$Icicle {
 
         public static void saveInstanceState(ClassToInject target, Parcelable state) {
             state.describeContents();

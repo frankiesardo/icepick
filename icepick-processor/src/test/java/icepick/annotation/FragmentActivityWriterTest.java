@@ -17,7 +17,7 @@ public class FragmentActivityWriterTest {
 
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
-    final ClassWriter classWriter = new FragmentActivityWriter(jfo, "$$Icepick");
+    final ClassWriter classWriter = new FragmentActivityWriter(jfo, "$$Icicle");
     final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestActivity", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
     final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();
@@ -39,15 +39,15 @@ public class FragmentActivityWriterTest {
 
     static final String SIMPLE_CLASS = "package com.frankiesardo;\n" +
             "\n" +
-            "public final class TestActivity$$Icepick {\n" +
+            "public final class TestActivity$$Icicle {\n" +
             "\n" +
-            "  private static final String BASE_KEY = \"com.frankiesardo.TestActivity$$Icepick.\";\n" +
+            "  private static final String BASE_KEY = \"com.frankiesardo.TestActivity$$Icicle.\";\n" +
             "\n" +
-            "  private TestActivity$$Icepick() {\n" +
+            "  private TestActivity$$Icicle() {\n" +
             "  }\n" +
             "\n" +
             "  public static void saveInstanceState(TestActivity target, android.os.Bundle outState) {\n" +
-            "    com.frankiesardo.SuperClass$$Icepick.saveInstanceState(target, outState);\n" +
+            "    com.frankiesardo.SuperClass$$Icicle.saveInstanceState(target, outState);\n" +
             "    outState.putString(" + ClassWriter.BASE_KEY + " + \"username\", target.username);\n" +
             "  }\n" +
             "\n" +
@@ -56,7 +56,7 @@ public class FragmentActivityWriterTest {
             "      return;\n" +
             "    }\n" +
             "    target.username = savedInstanceState.getString(" + ClassWriter.BASE_KEY + " + \"username\");\n" +
-            "    com.frankiesardo.SuperClass$$Icepick.restoreInstanceState(target, savedInstanceState);\n" +
+            "    com.frankiesardo.SuperClass$$Icicle.restoreInstanceState(target, savedInstanceState);\n" +
             "  }\n" +
             "}\n";
 }
