@@ -12,16 +12,17 @@ class ExampleActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Bundles.restoreInstanceState(this, savedInstanceState);
+    Icepick.restoreInstanceState(this, savedInstanceState);
   }
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    Bundles.saveInstanceState(this, outState);
+    Icepick.saveInstanceState(this, outState);
   }
 
-  // You can put the calls to Bundles into a BaseActivity and inherit from it
+  // You can put the calls to Bundles into a BaseActivity
+  // All Activities extending BaseActivity automatically have state saved/restored
 }
 ```
 
@@ -43,6 +44,7 @@ class CustomView extends View {
   }
 
   // You can put the calls to Bundles into a BaseCustomView and inherit from it
+  // All Views extending this CustomView automatically have state saved/restored
 }
 ```
 
@@ -62,11 +64,14 @@ If Proguard is enabled be sure to add these rules on your configuration:
 Download
 --------
 
+Icepick comes in two libraries: `icepick` and `icepick-processor`.
+
 Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.1'
+  compile 'com.github.frankiesardo:icepick:2.2'
+  compile 'com.github.frankiesardo:icepick-processor:2.2'
 }
 ```
 
@@ -76,48 +81,23 @@ Maven:
 <dependency>
   <groupId>com.github.frankiesardo</groupId>
   <artifactId>icepick</artifactId>
-  <version>2.1</version>
+  <version>2.2</version>
 </dependency>
-```
-
-Note: If you are referencing a newer version of the Android Support Library in your app, you may need to exclude Ice Pick's dependency:
-
-Gradle:
-
-```
-dependencies {
-    compile ('com.github.frankiesardo:icepick:2.1') {
-        exclude module: 'support-v4'
-        compile 'com.android.support:support-v4:18.0.0'
-    }
-}
-```
-
-Maven 
-
-```xml
 <dependency>
   <groupId>com.github.frankiesardo</groupId>
-  <artifactId>icepick</artifactId>
-  <version>2.1</version>
-  <exclusions>
-    <exclusion>
-      <groupId>com.google.android</groupId>
-      <artifactId>support-v4</artifactId>
-    </exclusion>
-  </exclusions>
+  <artifactId>icepick-processor</artifactId>
+  <version>2.2</version>
 </dependency>
 ```
-
 
 Jar:
 
-Use this [link](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick&v=LATEST)
+This is the [library](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick&v=LATEST) and here is the [processor](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick-processor&v=LATEST).
 
 License
 -------
 
-    Copyright 2013 Frankie Sardo
+    Copyright 2014 Frankie Sardo
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
