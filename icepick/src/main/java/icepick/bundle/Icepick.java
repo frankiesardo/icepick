@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class Icepick {
 
+    public static final String SUFFIX = "$$Icepick";
+
     private static final Map<MethodKey, Method> CACHED_METHODS = new LinkedHashMap<MethodKey, Method>();
 
     public static <T extends Activity> void saveInstanceState(T target, Bundle outState) {

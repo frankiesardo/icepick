@@ -37,7 +37,7 @@ public class FragmentActivityInjectorTest {
     static class ClassToInject {
     }
 
-    static class ClassToInject$$Icicle {
+    static class ClassToInject$$Icepick {
 
         public static void saveInstanceState(ClassToInject target, Bundle outState) {
             outState.describeContents();

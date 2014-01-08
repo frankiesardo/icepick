@@ -3,8 +3,6 @@ package icepick.bundle;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import icepick.annotation.IcicleProcessor;
-
 abstract class Injector<T> {
 
     static final Method NO_OP = null;
@@ -32,7 +30,7 @@ abstract class Injector<T> {
         }
 
         try {
-            Class<?> helper = Class.forName(clsName + IcicleProcessor.SUFFIX);
+            Class<?> helper = Class.forName(clsName + Icepick.SUFFIX);
             method = helper.getMethod(action.name, cls, getArgumentClass());
         } catch (ClassNotFoundException e) {
             method = getMethodFromHelper(cls.getSuperclass(), action);
