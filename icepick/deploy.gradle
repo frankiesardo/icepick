@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "2.2-SNAPSHOT"
+version = "2.2"
 
 def isReleaseBuild() {
     !version.contains("SNAPSHOT")
@@ -28,7 +28,7 @@ afterEvaluate { project ->
                 }
 
                 pom.project {
-                    name 'Icepick'
+                    name 'icepick'
                     groupId 'com.github.frankiesardo'
                     description 'Android Bundle save and restore instance state made easy'
                     url 'https://github.com/frankiesardo/icepick'

@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "2.2-SNAPSHOT"
+version = "2.2"
 
 def isReleaseBuild() {
     !version.contains("SNAPSHOT")
@@ -28,7 +28,7 @@ afterEvaluate { project ->
                 }
 
                 pom.project {
-                    name 'Icepick'
+                    name 'icepick-processor'
                     groupId 'com.github.frankiesardo'
                     description 'Android Bundle save and restore instance state made easy'
                     url 'https://github.com/frankiesardo/icepick'
@@ -62,5 +62,20 @@ afterEvaluate { project ->
     signing {
         required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 }

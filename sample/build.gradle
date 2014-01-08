@@ -1,8 +1,8 @@
 apply plugin: 'android'
 
 dependencies {
-    compile 'com.github.frankiesardo:icepick:2.2-SNAPSHOT'
-    compile 'com.github.frankiesardo:icepick-processor:2.2-SNAPSHOT'
+    compile 'com.github.frankiesardo:icepick:2.2'
+    compile 'com.github.frankiesardo:icepick-processor:2.2'
 }
 
 android {
