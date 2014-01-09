@@ -1,4 +1,4 @@
-package icepick.bundle;
+package icepick;
 
 class MethodKey {
 

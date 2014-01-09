@@ -1,4 +1,4 @@
-package icepick.annotation;
+package icepick.processor;
 
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
@@ -8,6 +8,11 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import icepick.processor.AnnotatedField;
+import icepick.processor.ClassWriter;
+import icepick.processor.FieldEnclosingClass;
+import icepick.processor.ViewWriter;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

@@ -3,8 +3,8 @@ package com.github.frankiesardo.icepick;
 import android.app.Activity;
 import android.os.Bundle;
 
-import icepick.annotation.Icicle;
-import icepick.bundle.Icepick;
+import icepick.Icicle;
+import icepick.Icepick;
 
 public class BaseActivity extends Activity {
 

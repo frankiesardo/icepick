@@ -1,4 +1,4 @@
-package icepick.annotation;
+package icepick.processor;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;

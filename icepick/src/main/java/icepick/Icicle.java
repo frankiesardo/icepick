@@ -1,4 +1,4 @@
-package icepick.annotation;
+package icepick;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

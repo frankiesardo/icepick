@@ -1,32 +1,34 @@
-package icepick.bundle;
+package icepick;
 
-import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class FragmentActivityInjector extends Injector<Bundle> {
+class ViewInjector extends Injector<Parcelable> {
 
-    FragmentActivityInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
+    ViewInjector(Object target, Parcelable argument, Map<MethodKey, Method> cachedMethods) {
         super(target, argument, cachedMethods);
     }
 
-    void inject(Action action) {
+    Parcelable inject(Action action) {
         Class<?> targetClass = target.getClass();
         try {
             Method inject = getMethodFromHelper(targetClass, action);
             if (inject != null) {
-                inject.invoke(null, target, argument);
+                return (Parcelable) inject.invoke(null, target, argument);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new UnableToInjectException(target, e);
         }
+
+        return argument; // return super value
     }
 
     @Override
     protected Class<?> getArgumentClass() {
-        return Bundle.class;
+        return Parcelable.class;
     }
 }

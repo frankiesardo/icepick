@@ -1,4 +1,4 @@
-package icepick.annotation;
+package icepick.processor;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;

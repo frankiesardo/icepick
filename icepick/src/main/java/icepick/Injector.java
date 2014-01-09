@@ -1,4 +1,4 @@
-package icepick.bundle;
+package icepick;
 
 import java.lang.reflect.Method;
 import java.util.Map;
