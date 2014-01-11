@@ -9,11 +9,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import icepick.processor.AnnotatedField;
-import icepick.processor.ClassWriter;
-import icepick.processor.FieldEnclosingClass;
-import icepick.processor.ViewWriter;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,7 +18,7 @@ public class ViewWriterTest {
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
     final ViewWriter icicleWriter = new ViewWriter(jfo, "$$Icicle");
-    final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
+    final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestView", "TestView", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
     final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();
 

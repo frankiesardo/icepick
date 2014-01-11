@@ -35,6 +35,7 @@ abstract class ClassWriter {
     private String getClassTemplate(FieldEnclosingClass fieldEnclosingClass, Collection<AnnotatedField> fields) throws IOException {
         String className = fieldEnclosingClass.className;
         String packageName = fieldEnclosingClass.packageName;
+        String sanitizedClassName = fieldEnclosingClass.sanitizedClassName;
         String saveInstanceStateBody = makeOnSaveInstanceStateBody(fields);
         String restoreInstanceStateBody = makeOnRestoreInstanceStateBody(fields);
         String saveInstanceStateStart = makeSaveInstanceStateStart(className, fieldEnclosingClass.parentFqcn);
@@ -42,7 +43,7 @@ abstract class ClassWriter {
         String saveInstanceStateEnd = makeSaveInstanceStateEnd();
         String restoreInstanceStateEnd = makeRestoreInstanceStateEnd(fieldEnclosingClass.parentFqcn);
 
-        return replaceTemplateWith(packageName, className, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
+        return replaceTemplateWith(packageName, sanitizedClassName, saveInstanceStateStart, restoreInstanceStateStart, saveInstanceStateBody, restoreInstanceStateBody, saveInstanceStateEnd, restoreInstanceStateEnd);
     }
 
     private String makeOnRestoreInstanceStateBody(Collection<AnnotatedField> fields) {
@@ -77,10 +78,10 @@ abstract class ClassWriter {
 
     protected abstract String makeRestoreInstanceStateEnd(String parentFqcn);
 
-    private String replaceTemplateWith(String packageName, String className, String saveInstanceStateStart, String restoreInstanceStateStart, String saveInstanceStateBody, String restoreInstanceStateBody, String saveInstanceStateEnd, String restoreInstanceStateEnd) throws IOException {
+    private String replaceTemplateWith(String packageName, String sanitizedClassName, String saveInstanceStateStart, String restoreInstanceStateStart, String saveInstanceStateBody, String restoreInstanceStateBody, String saveInstanceStateEnd, String restoreInstanceStateEnd) throws IOException {
         return CLASS_TEMPLATE
                 .replace(PACKAGE, packageName)
-                .replace(CLASS_NAME, className)
+                .replace(CLASS_NAME, sanitizedClassName)
                 .replace(SUFFIX, getSuffix())
                 .replace(SAVE_INSTANCE_STATE_START, saveInstanceStateStart)
                 .replace(SAVE_INSTANCE_STATE_BODY, saveInstanceStateBody)
@@ -136,8 +137,10 @@ abstract class ClassWriter {
             this.suffix = suffix;
         }
 
-        public ClassWriter from(TypeElement classType) throws IOException {
-            JavaFileObject jfo = filer.createSourceFile(classType.getQualifiedName() + suffix, classType);
+        public ClassWriter from(FieldEnclosingClass fieldEnclosingClass) throws IOException {
+            TypeElement classType = fieldEnclosingClass.type;
+            String sanitizedClassName = fieldEnclosingClass.sanitizedClassName;
+            JavaFileObject jfo = filer.createSourceFile(sanitizedClassName + suffix, classType);
             boolean isView = typeUtils.isAssignable(classType.asType(), elementUtils.getTypeElement("android.view.View").asType());
             return isView ? new ViewWriter(jfo, suffix) : new FragmentActivityWriter(jfo, suffix);
         }

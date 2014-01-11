@@ -18,7 +18,7 @@ public class FragmentActivityWriterTest {
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
     final ClassWriter classWriter = new FragmentActivityWriter(jfo, "$$Icicle");
-    final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestActivity", "com.frankiesardo", "com.frankiesardo.SuperClass");
+    final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestActivity", "TestActivity", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
     final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();
 

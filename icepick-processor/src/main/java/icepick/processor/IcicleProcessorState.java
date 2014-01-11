@@ -101,7 +101,7 @@ class IcicleProcessorState {
     private void writeHelpers(Map<FieldEnclosingClass, Collection<AnnotatedField>> elementsByEnclosingClass) {
         for (FieldEnclosingClass fieldEnclosingClass : elementsByEnclosingClass.keySet()) {
             try {
-                ClassWriter classWriter = factory.makeWriter(fieldEnclosingClass.type);
+                ClassWriter classWriter = factory.makeWriter(fieldEnclosingClass);
                 classWriter.writeClass(fieldEnclosingClass, elementsByEnclosingClass.get(fieldEnclosingClass));
             } catch (IOException e) {
                 logger.logError("Impossible to create helper for %. Reason: %" + fieldEnclosingClass.className, e);
