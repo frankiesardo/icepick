@@ -2,8 +2,8 @@ apply plugin: 'android'
 apply plugin: 'android-apt'
 
 dependencies {
-    compile 'com.github.frankiesardo:icepick:2.2.1-SNAPSHOT'
-    apt 'com.github.frankiesardo:icepick-processor:2.2.1-SNAPSHOT'
+    compile 'com.github.frankiesardo:icepick:2.2.1'
+    apt 'com.github.frankiesardo:icepick-processor:2.2.1'
 }
 
 android {

@@ -70,8 +70,8 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.2'
-  compile 'com.github.frankiesardo:icepick-processor:2.2'
+  compile 'com.github.frankiesardo:icepick:2.2.1'
+  compile 'com.github.frankiesardo:icepick-processor:2.2.1'
 }
 ```
 
@@ -81,12 +81,12 @@ Maven:
 <dependency>
   <groupId>com.github.frankiesardo</groupId>
   <artifactId>icepick</artifactId>
-  <version>2.2</version>
+  <version>2.2.1</version>
 </dependency>
 <dependency>
   <groupId>com.github.frankiesardo</groupId>
   <artifactId>icepick-processor</artifactId>
-  <version>2.2</version>
+  <version>2.2.1</version>
 </dependency>
 ```
 
@@ -97,7 +97,7 @@ This is the [library](http://repository.sonatype.org/service/local/artifact/mave
 License
 -------
 
-    Copyright 2014 Frankie Sardo
+    Copyright 2013 Frankie Sardo
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
