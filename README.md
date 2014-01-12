@@ -35,12 +35,12 @@ class CustomView extends View {
 
   @Override
   public Parcelable onSaveInstanceState() {
-    return Bundles.saveInstanceState(this, super.onSaveInstanceState());
+    return Icepick.saveInstanceState(this, super.onSaveInstanceState());
   }
 
   @Override
   public void onRestoreInstanceState(Parcelable state) {
-    super.onRestoreInstanceState(Bundles.restoreInstanceState(this, state));
+    super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
   }
 
   // You can put the calls to Bundles into a BaseCustomView and inherit from it
