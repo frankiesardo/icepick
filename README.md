@@ -79,7 +79,7 @@ dependencies {
 
 Jar:
 
-This is the [library](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick&v=LATEST) and here is the [processor](http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.frankiesardo&a=icepick-processor&v=LATEST).
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.2.1/icepick-2.2.1.aar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.2.1/icepick-processor-2.2.1.jar).
 
 License
 -------
