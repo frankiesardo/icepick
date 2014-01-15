@@ -5,9 +5,9 @@ import android.os.Bundle;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class FragmentActivityInjector extends Injector<Bundle> {
+class GenericInjector extends Injector<Bundle> {
 
-    FragmentActivityInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
+    GenericInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
         super(target, argument, cachedMethods);
     }
 

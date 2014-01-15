@@ -142,7 +142,7 @@ abstract class ClassWriter {
             String sanitizedClassName = fieldEnclosingClass.sanitizedClassName;
             JavaFileObject jfo = filer.createSourceFile(sanitizedClassName + suffix, classType);
             boolean isView = typeUtils.isAssignable(classType.asType(), elementUtils.getTypeElement("android.view.View").asType());
-            return isView ? new ViewWriter(jfo, suffix) : new FragmentActivityWriter(jfo, suffix);
+            return isView ? new ViewWriter(jfo, suffix) : new GenericWriter(jfo, suffix);
         }
     }
 }

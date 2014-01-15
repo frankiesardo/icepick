@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FragmentActivityWriterTest {
+public class GenericWriterTest {
 
     final StringWriter stringWriter = new StringWriter();
     final JavaFileObject jfo = mock(JavaFileObject.class);
-    final ClassWriter classWriter = new FragmentActivityWriter(jfo, "$$Icicle");
+    final ClassWriter classWriter = new GenericWriter(jfo, "$$Icicle");
     final FieldEnclosingClass fieldEnclosingClass = new FieldEnclosingClass(mock(TypeElement.class), "TestActivity", "TestActivity", "com.frankiesardo", "com.frankiesardo.SuperClass");
 
     final Set<AnnotatedField> fields = new LinkedHashSet<AnnotatedField>();

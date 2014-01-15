@@ -2,9 +2,9 @@ package icepick.processor;
 
 import javax.tools.JavaFileObject;
 
-class FragmentActivityWriter extends ClassWriter {
+class GenericWriter extends ClassWriter {
 
-    FragmentActivityWriter(JavaFileObject jfo, String suffix) {
+    GenericWriter(JavaFileObject jfo, String suffix) {
         super(jfo, suffix);
     }
 
