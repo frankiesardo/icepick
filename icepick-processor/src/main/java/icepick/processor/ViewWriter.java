@@ -2,40 +2,50 @@ package icepick.processor;
 
 import javax.tools.JavaFileObject;
 
-class ViewWriter extends ClassWriter {
+class ViewWriter extends AbsWriter {
 
-    static final String SUPER_SUFFIX = "\"$$SUPER$$\"";
+  private static final String SUPER_SUFFIX = "\"$$SUPER$$\"";
 
-    public ViewWriter(JavaFileObject jfo, String suffix) {
-        super(jfo, suffix);
-    }
+  public ViewWriter(JavaFileObject jfo, String suffix, EnclosingClass enclosingClass) {
+    super(jfo, suffix, enclosingClass);
+  }
 
-    @Override
-    protected String makeSaveInstanceStateStart(String className, String parentFqcn) {
-        return "  public static android.os.Parcelable saveInstanceState(" + className + " target, android.os.Parcelable state) {\n" +
-                "    android.os.Bundle outState = new android.os.Bundle();\n" +
-                "    android.os.Parcelable superState = " + makeSaveSuperStateCall(parentFqcn) + ";\n" +
-                "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
-    }
+  @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
+    return
+        "  public static android.os.Parcelable restoreInstanceState(" + enclosingClass.getClassName()
+        + " target, Parcelable state) {\n"
+        +
+        "    Bundle savedInstanceState = (Bundle) state;\n"
+        +
+        "    Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY +
+        " + " + SUPER_SUFFIX + ");\n";
+  }
 
-    private String makeSaveSuperStateCall(String parentFqcn) {
-        return parentFqcn != null ? parentFqcn + getSuffix() + ".saveInstanceState(target, state)" : "state";
-    }
+  @Override protected String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix) {
+    String parentFqcn = enclosingClass.getParentEnclosingClass();
+    return "    return " + (parentFqcn != null ?
+        parentFqcn + suffix + ".restoreInstanceState(target, superState)"
+        : "superState") + ";\n";
+  }
 
-    @Override
-    protected String makeSaveInstanceStateEnd() {
-        return "    return outState;\n";
-    }
+  @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
+    return "  public static Parcelable saveInstanceState("
+        + enclosingClass.getClassName()
+        + " target, Parcelable state) {\n"
+        +
+        "    Bundle outState = new Bundle();\n"
+        +
+        "    Parcelable superState = "
+        + makeSaveSuperStateCall(enclosingClass.getParentEnclosingClass(), suffix)
+        + ";\n" +
+        "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
+  }
 
-    @Override
-    protected String makeRestoreInstanceStateStart(String className) {
-        return "  public static android.os.Parcelable restoreInstanceState(" + className + " target, android.os.Parcelable state) {\n" +
-                "    android.os.Bundle savedInstanceState = (android.os.Bundle) state;\n" +
-                "    android.os.Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ");\n";
-    }
+  private String makeSaveSuperStateCall(String parentFqcn, String suffix) {
+    return parentFqcn != null ? parentFqcn + suffix + ".saveInstanceState(target, state)" : "state";
+  }
 
-    @Override
-    protected String makeRestoreInstanceStateEnd(String parentFqcn) {
-        return "    return " + (parentFqcn != null ? parentFqcn + getSuffix() + ".restoreInstanceState(target, superState)" : "superState") + ";\n";
-    }
+  @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {
+    return "    return outState;\n";
+  }
 }

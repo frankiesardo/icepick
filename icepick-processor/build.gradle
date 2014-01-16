@@ -5,8 +5,11 @@ targetCompatibility = '1.6'
 sourceCompatibility = '1.6'
 
 dependencies {
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.mockito:mockito-core:1.9.5'
-    testCompile 'org.powermock:powermock-module-junit4:1.5'
-    testCompile 'org.powermock:powermock-api-mockito:1.5'
+  compile project(':icepick')
+  compile 'com.google.guava:guava:12.0'
+
+  testCompile 'junit:junit:4.10'
+  testCompile 'org.mockito:mockito-core:1.9.5'
+  testCompile 'org.powermock:powermock-module-junit4:1.5'
+  testCompile 'org.powermock:powermock-api-mockito:1.5'
 }

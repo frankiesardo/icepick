@@ -2,37 +2,42 @@ package icepick.processor;
 
 import javax.tools.JavaFileObject;
 
-class GenericWriter extends ClassWriter {
+class GenericWriter extends AbsWriter {
 
-    GenericWriter(JavaFileObject jfo, String suffix) {
-        super(jfo, suffix);
+    GenericWriter(JavaFileObject jfo, String suffix, EnclosingClass enclosingClass) {
+        super(jfo, suffix, enclosingClass);
     }
 
-    @Override
-    protected String makeSaveInstanceStateStart(String className, String parentFqcn) {
-        return "  public static void saveInstanceState(" + className + " target, android.os.Bundle outState) {\n" +
-                makeSuperSaveCall(parentFqcn);
-    }
+  @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
+    return "  public static void restoreInstanceState("
+        + enclosingClass.getClassName()
+        + " target, Bundle savedInstanceState) {\n"
+        +
+        "    if (savedInstanceState == null) {\n"
+        +
+        "      return;\n"
+        +
+        "    }\n";
+  }
 
-    private String makeSuperSaveCall(String parentFqcn) {
-        return parentFqcn != null ? "    " + parentFqcn + getSuffix() + ".saveInstanceState(target, outState);\n" : "";
-    }
+  @Override protected String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix) {
+    String parentFqcn = enclosingClass.getParentEnclosingClass();
+    return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);\n" : "";
+  }
 
-    @Override
-    protected String makeRestoreInstanceStateStart(String className) {
-        return "  public static void restoreInstanceState(" + className + " target, android.os.Bundle savedInstanceState) {\n" +
-                "    if (savedInstanceState == null) {\n" +
-                "      return;\n" +
-                "    }\n";
-    }
+  @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
+    return "  public static void saveInstanceState("
+        + enclosingClass.getClassName()
+        + " target, Bundle outState) {\n"
+        +
+        makeSuperSaveCall(enclosingClass.getParentEnclosingClass(), suffix);
+  }
 
-    @Override
-    protected String makeRestoreInstanceStateEnd(String parentFqcn) {
-        return parentFqcn != null ? "    " + parentFqcn + getSuffix() + ".restoreInstanceState(target, savedInstanceState);\n" : "";
-    }
+  private String makeSuperSaveCall(String parentFqcn, String suffix) {
+    return parentFqcn != null ? "    " + parentFqcn + suffix + ".saveInstanceState(target, outState);\n" : "";
+  }
 
-    @Override
-    protected String makeSaveInstanceStateEnd() {
-        return "";
-    }
+  @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {
+    return "";
+  }
 }
