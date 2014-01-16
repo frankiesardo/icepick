@@ -17,5 +17,4 @@ public class AnnotatedObject {
     @Icicle Parcelable parcelable;
     @Icicle Object object;
   }
-
 }

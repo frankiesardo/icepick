@@ -26,6 +26,7 @@ class ClassWriter {
     JavaFileObject jfo = filer.createSourceFile(fqcn, classType);
     boolean isView = typeUtils.isAssignable(classType.asType(),
         elementUtils.getTypeElement("android.view.View").asType());
-    return isView ? new ViewWriter(jfo, suffix, enclosingClass) : new GenericWriter(jfo, suffix, enclosingClass);
+    return isView ? new ViewWriter(jfo, suffix, enclosingClass)
+        : new GenericWriter(jfo, suffix, enclosingClass);
   }
 }

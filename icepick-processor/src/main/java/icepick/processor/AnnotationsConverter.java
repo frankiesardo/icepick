@@ -31,7 +31,8 @@ class AnnotationsConverter {
     this.typeUtils = typeUtils;
   }
 
-  Map<EnclosingClass, Collection<AnnotatedField>> convert(Collection<? extends Element> annotatedElements) {
+  Map<EnclosingClass, Collection<AnnotatedField>> convert(
+      Collection<? extends Element> annotatedElements) {
     FluentIterable<AnnotatedField> annotatedFields =
         from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 

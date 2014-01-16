@@ -8,7 +8,6 @@ import javax.tools.JavaFileObject;
 abstract class AbsWriter {
 
   protected static final String BASE_KEY = "BASE_KEY";
-
   private final JavaFileObject javaFileObject;
   private final String suffix;
   private final EnclosingClass enclosingClass;

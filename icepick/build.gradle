@@ -2,10 +2,10 @@ apply plugin: 'android-library'
 apply from: file('deploy.gradle')
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion '18.1.1'
+  compileSdkVersion 18
+  buildToolsVersion '18.1.1'
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.2.4'
+  compile 'com.google.code.gson:gson:2.2.4'
 }

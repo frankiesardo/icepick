@@ -4,85 +4,86 @@ apply plugin: 'signing'
 version = "2.3-SNAPSHOT"
 
 def isReleaseBuild() {
-    !version.contains("SNAPSHOT")
+  !version.contains("SNAPSHOT")
 }
 
 def sonatypeRepositoryUrl
 
 if (isReleaseBuild()) {
-    println "RELEASE BUILD $version"
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+  println "RELEASE BUILD $version"
+  sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 } else {
-    println "DEBUG BUILD $version"
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+  println "DEBUG BUILD $version"
+  sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
 afterEvaluate { project ->
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { deployment -> signing.signPom(deployment) }
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        beforeDeployment { deployment -> signing.signPom(deployment) }
 
-                repository(url: sonatypeRepositoryUrl) {
-                    authentication(userName: project.getProperty("nexusUsername"), password: project.getProperty("nexusPassword"))
-                }
-
-                pom.project {
-                    name 'icepick'
-                    groupId 'com.github.frankiesardo'
-                    description 'Android Bundle save and restore instance state made easy'
-                    url 'https://github.com/frankiesardo/icepick'
-                    inceptionYear '2013'
-
-                    scm {
-                        url 'https://github.com/frankiesardo/icepick'
-                        connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
-                        developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
-                    }
-
-                    licenses {
-                        license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id 'frankiesardo'
-                            name 'Frankie Sardo'
-                        }
-                    }
-                }
-            }
+        repository(url: sonatypeRepositoryUrl) {
+          authentication(userName: project.getProperty("nexusUsername"),
+              password: project.getProperty("nexusPassword"))
         }
-    }
 
-    signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
+        pom.project {
+          name 'icepick'
+          groupId 'com.github.frankiesardo'
+          description 'Android Bundle save and restore instance state made easy'
+          url 'https://github.com/frankiesardo/icepick'
+          inceptionYear '2013'
 
-    task androidJavadocs(type: Javadoc) {
-        source = android.sourceSets.main.allJava
-    }
+          scm {
+            url 'https://github.com/frankiesardo/icepick'
+            connection 'scm:https://frankiesardo@github.com/frankiesardo/icepick.git'
+            developerConnection 'scm:git@github.com:frankiesardo/icepick.git'
+          }
 
-    task androidJavadocsJar(type: Jar) {
-        classifier = 'javadoc'
-        //basename = artifact_id
-        from androidJavadocs.destinationDir
-    }
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
 
-    task androidSourcesJar(type: Jar) {
-        classifier = 'sources'
-        //basename = artifact_id
-        from android.sourceSets.main.allSource
+          developers {
+            developer {
+              id 'frankiesardo'
+              name 'Frankie Sardo'
+            }
+          }
+        }
+      }
     }
+  }
 
-    artifacts {
-        //archives packageReleaseJar
-        archives androidSourcesJar
-        archives androidJavadocsJar
-    }
+  signing {
+    required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+  }
+
+  task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.allJava
+  }
+
+  task androidJavadocsJar(type: Jar) {
+    classifier = 'javadoc'
+    //basename = artifact_id
+    from androidJavadocs.destinationDir
+  }
+
+  task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    //basename = artifact_id
+    from android.sourceSets.main.allSource
+  }
+
+  artifacts {
+    //archives packageReleaseJar
+    archives androidSourcesJar
+    archives androidJavadocsJar
+  }
 }

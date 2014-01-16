@@ -41,26 +41,15 @@ public class IcicleProcessor extends AbstractProcessor {
 
   private void write(Map<EnclosingClass, Collection<AnnotatedField>> fieldsByEnclosingClass) {
     ClassWriter classWriter = new ClassWriter(elementUtils, typeUtils, filer, "$$Icicle");
-    if (false) throw new RuntimeException(dump(fieldsByEnclosingClass));
     for (EnclosingClass enclosingClass : fieldsByEnclosingClass.keySet()) {
       try {
-        classWriter.writeClass(enclosingClass).withFields(fieldsByEnclosingClass.get(enclosingClass));
+        classWriter.writeClass(enclosingClass)
+            .withFields(fieldsByEnclosingClass.get(enclosingClass));
       } catch (IOException e) {
-        //logger.logError("Impossible to generate class %. Reason: %" + enclosingClass.getTargetClass(), e);
-        throw new RuntimeException(e);
+        logger.logError("Impossible to generate class %. Reason: %",
+            enclosingClass.getTargetClass(), e);
       }
     }
-  }
-
-  private String dump(Map<EnclosingClass, Collection<AnnotatedField>> fieldsByEnclosingClass) {
-    StringBuilder builder = new StringBuilder("\n");
-    for (EnclosingClass enclosingClass : fieldsByEnclosingClass.keySet()) {
-      builder.append("> Class: " + enclosingClass.getClassName() + "\n");
-      for (AnnotatedField field : fieldsByEnclosingClass.get(enclosingClass)) {
-        builder.append("    > Field: " + field.getName() + "\n");
-      }
-    }
-    return builder.toString();
   }
 
   private Map<EnclosingClass, Collection<AnnotatedField>> classesWithFieldsAnnotatedWith(
