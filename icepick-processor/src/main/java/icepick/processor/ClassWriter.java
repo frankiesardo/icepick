@@ -22,8 +22,8 @@ class ClassWriter {
 
   public AbsWriter writeClass(EnclosingClass enclosingClass) throws IOException {
     TypeElement classType = enclosingClass.getElement();
-    String className = enclosingClass.getClassName() + suffix;
-    JavaFileObject jfo = filer.createSourceFile(className, classType);
+    String fqcn = enclosingClass.getClassPackage() + "." + enclosingClass.getClassName() + suffix;
+    JavaFileObject jfo = filer.createSourceFile(fqcn, classType);
     boolean isView = typeUtils.isAssignable(classType.asType(),
         elementUtils.getTypeElement("android.view.View").asType());
     return isView ? new ViewWriter(jfo, suffix, enclosingClass) : new GenericWriter(jfo, suffix, enclosingClass);

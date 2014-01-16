@@ -12,7 +12,7 @@ class ViewWriter extends AbsWriter {
 
   @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
     return
-        "  public static android.os.Parcelable restoreInstanceState(" + enclosingClass.getClassName()
+        "  public static Parcelable restoreInstanceState(" + enclosingClass.getTargetClass()
         + " target, Parcelable state) {\n"
         +
         "    Bundle savedInstanceState = (Bundle) state;\n"
@@ -25,12 +25,12 @@ class ViewWriter extends AbsWriter {
     String parentFqcn = enclosingClass.getParentEnclosingClass();
     return "    return " + (parentFqcn != null ?
         parentFqcn + suffix + ".restoreInstanceState(target, superState)"
-        : "superState") + ";\n";
+        : "superState") + ";\n  }\n";
   }
 
   @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
     return "  public static Parcelable saveInstanceState("
-        + enclosingClass.getClassName()
+        + enclosingClass.getTargetClass()
         + " target, Parcelable state) {\n"
         +
         "    Bundle outState = new Bundle();\n"
@@ -46,6 +46,6 @@ class ViewWriter extends AbsWriter {
   }
 
   @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {
-    return "    return outState;\n";
+    return "    return outState;\n  }\n";
   }
 }

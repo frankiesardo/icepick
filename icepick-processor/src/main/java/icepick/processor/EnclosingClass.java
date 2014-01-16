@@ -38,4 +38,24 @@ class EnclosingClass {
   public TypeElement getElement() {
     return element;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    EnclosingClass that = (EnclosingClass) o;
+
+    if (!className.equals(that.className)) return false;
+    if (!classPackage.equals(that.classPackage)) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = classPackage.hashCode();
+    result = 31 * result + className.hashCode();
+    return result;
+  }
 }

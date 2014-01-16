@@ -43,15 +43,15 @@ class AnnotationsConverter {
 
   private class ValidModifier implements Predicate<Element> {
     @Override public boolean apply(@Nullable Element element) {
-      boolean isValid = element.getModifiers().contains(Modifier.PRIVATE) ||
+      boolean isInvalid = element.getModifiers().contains(Modifier.PRIVATE) ||
           element.getModifiers().contains(Modifier.STATIC) ||
           element.getModifiers().contains(Modifier.FINAL);
 
-      if (!isValid) {
+      if (isInvalid) {
         logger.logError(element, "Field must not be private, static or final");
       }
 
-      return isValid;
+      return !isInvalid;
     }
   }
 

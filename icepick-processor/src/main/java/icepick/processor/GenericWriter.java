@@ -10,7 +10,7 @@ class GenericWriter extends AbsWriter {
 
   @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
     return "  public static void restoreInstanceState("
-        + enclosingClass.getClassName()
+        + enclosingClass.getTargetClass()
         + " target, Bundle savedInstanceState) {\n"
         +
         "    if (savedInstanceState == null) {\n"
@@ -22,12 +22,12 @@ class GenericWriter extends AbsWriter {
 
   @Override protected String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix) {
     String parentFqcn = enclosingClass.getParentEnclosingClass();
-    return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);\n" : "";
+    return parentFqcn != null ? "    " + parentFqcn + suffix + ".restoreInstanceState(target, savedInstanceState);\n  }\n" : "  }\n";
   }
 
   @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
     return "  public static void saveInstanceState("
-        + enclosingClass.getClassName()
+        + enclosingClass.getTargetClass()
         + " target, Bundle outState) {\n"
         +
         makeSuperSaveCall(enclosingClass.getParentEnclosingClass(), suffix);
@@ -38,6 +38,6 @@ class GenericWriter extends AbsWriter {
   }
 
   @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {
-    return "";
+    return "  }\n";
   }
 }

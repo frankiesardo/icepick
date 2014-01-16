@@ -30,7 +30,8 @@ abstract class AbsWriter {
     StringBuilder builder = new StringBuilder();
     builder.append("// Generated code from Icepick. Do not modify!\n");
     builder.append("package ").append(enclosingClass.getClassPackage()).append(";\n\n");
-    builder.append("import icepick.GsonParcer;\n");
+    builder.append("import static icepick.Icepick.wrap;\n");
+    builder.append("import static icepick.Icepick.unwrap;\n");
     builder.append("import android.os.Bundle;\n");
     builder.append("import android.os.Parcelable;\n\n");
     builder.append("public class ").append(enclosingClass.getClassName() + suffix).append(" {\n");
@@ -61,7 +62,7 @@ abstract class AbsWriter {
   protected abstract String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix);
 
   protected String emitRestoreState(AnnotatedField field) {
-    return "    target." + field.getName() + " = " + "GsonParcer.unwrap("
+    return "    target." + field.getName() + " = " + "unwrap("
         + "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
   }
 
@@ -71,7 +72,7 @@ abstract class AbsWriter {
 
   protected String emitSaveState(AnnotatedField field) {
     return "    outState.putParcelable(" + BASE_KEY + " + \""
-        + field.getName() + "\", GsonParcer.wrap(target." + field.getName() + "));\n";
+        + field.getName() + "\", wrap(target." + field.getName() + "));\n";
   }
 
   protected abstract String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix);
