@@ -37,6 +37,8 @@ public class Icepick {
 
   @SuppressWarnings("unused")
   public static <T> Parcelable wrap(T instance) {
+    if (instance == null) return null;
+
     try {
       String json = GsonParcer.encode(instance);
       return new Wrapper(json);
@@ -48,6 +50,7 @@ public class Icepick {
   @SuppressWarnings("unused")
   public static <T> T unwrap(Parcelable parcelable) {
     Wrapper wrapper = (Wrapper) parcelable;
+    if (wrapper == null) return null;
     try {
       return GsonParcer.decode(wrapper.json);
     } catch (IOException e) {
