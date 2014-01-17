@@ -6,7 +6,6 @@ import com.google.common.collect.FluentIterable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -37,13 +36,13 @@ class AnnotationsConverter {
         from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 
     Set<TypeMirror> erasedEnclosingClasses =
-        annotatedFields.transform(new ToErasedEnclosingClass()).toImmutableSet();
+        annotatedFields.transform(new ToErasedEnclosingClass()).toSet();
 
     return index(annotatedFields, new ByEnclosingClass(erasedEnclosingClasses)).asMap();
   }
 
   private class ValidModifier implements Predicate<Element> {
-    @Override public boolean apply(@Nullable Element element) {
+    @Override public boolean apply(Element element) {
       boolean isInvalid = element.getModifiers().contains(Modifier.PRIVATE) ||
           element.getModifiers().contains(Modifier.STATIC) ||
           element.getModifiers().contains(Modifier.FINAL);
@@ -57,7 +56,7 @@ class AnnotationsConverter {
   }
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
-    @Nullable @Override public AnnotatedField apply(@Nullable Element element) {
+    @Override public AnnotatedField apply(Element element) {
       String name = element.getSimpleName().toString();
       TypeMirror type = element.asType();
       TypeElement enclosingClass = (TypeElement) element.getEnclosingElement();
@@ -66,7 +65,7 @@ class AnnotationsConverter {
   }
 
   private class ToErasedEnclosingClass implements Function<AnnotatedField, TypeMirror> {
-    @Nullable @Override public TypeMirror apply(@Nullable AnnotatedField field) {
+    @Override public TypeMirror apply(AnnotatedField field) {
       return typeUtils.erasure(field.getEnclosingClassType().asType());
     }
   }
@@ -79,7 +78,7 @@ class AnnotationsConverter {
       this.erasedEnclosingClasses = erasedEnclosingClasses;
     }
 
-    @Nullable @Override public EnclosingClass apply(@Nullable AnnotatedField field) {
+    @Override public EnclosingClass apply(AnnotatedField field) {
       TypeElement classType = field.getEnclosingClassType();
       String classPackage = elementUtils.getPackageOf(classType).getQualifiedName().toString();
       int packageLength = classPackage.length() + 1;

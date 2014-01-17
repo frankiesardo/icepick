@@ -5,10 +5,10 @@ targetCompatibility = '1.6'
 sourceCompatibility = '1.6'
 
 dependencies {
-  compile 'com.google.guava:guava:12.0'
+  compile 'com.google.guava:guava:15.0'
+  compile 'com.github.frankiesardo:icepick:2.3-SNAPSHOT'
 
-  testCompile 'junit:junit:4.10'
-  testCompile 'org.mockito:mockito-core:1.9.5'
-  testCompile 'org.powermock:powermock-module-junit4:1.5'
-  testCompile 'org.powermock:powermock-api-mockito:1.5'
+  testCompile 'com.google.testing.compile:compile-testing:0.4'
+  testCompile 'org.truth0:truth:0.13'
+  testCompile 'com.google.android:android:4.1.1.4'
 }

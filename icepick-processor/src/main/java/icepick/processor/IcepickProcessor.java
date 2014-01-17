@@ -1,5 +1,8 @@
 package icepick.processor;
 
+import com.google.common.collect.Sets;
+import icepick.Icicle;
+import icepick.Icepick;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -15,8 +18,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-@SupportedAnnotationTypes("icepick.Icicle")
-public class IcicleProcessor extends AbstractProcessor {
+public class IcepickProcessor extends AbstractProcessor {
 
   private Logger logger;
   private Elements elementUtils;
@@ -40,7 +42,7 @@ public class IcicleProcessor extends AbstractProcessor {
   }
 
   private void write(Map<EnclosingClass, Collection<AnnotatedField>> fieldsByEnclosingClass) {
-    ClassWriter classWriter = new ClassWriter(elementUtils, typeUtils, filer, "$$Icicle");
+    ClassWriter classWriter = new ClassWriter(elementUtils, typeUtils, filer, Icepick.SUFFIX);
     for (EnclosingClass enclosingClass : fieldsByEnclosingClass.keySet()) {
       try {
         classWriter.writeClass(enclosingClass)
@@ -60,5 +62,9 @@ public class IcicleProcessor extends AbstractProcessor {
   @Override
   public SourceVersion getSupportedSourceVersion() {
     return SourceVersion.RELEASE_6;
+  }
+
+  @Override public Set<String> getSupportedAnnotationTypes() {
+    return Sets.newHashSet(Icicle.class.getName());
   }
 }
