@@ -14,18 +14,20 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
+import javax.annotation.processing.Messager;
 
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Multimaps.index;
 
 class AnnotationsConverter {
 
-  private final Logger logger;
+  private final Messager messager;
   private final Elements elementUtils;
   private final Types typeUtils;
 
-  AnnotationsConverter(Logger logger, Elements elementUtils, Types typeUtils) {
-    this.logger = logger;
+  AnnotationsConverter(Messager messager, Elements elementUtils, Types typeUtils) {
+    this.messager = messager;
     this.elementUtils = elementUtils;
     this.typeUtils = typeUtils;
   }
@@ -48,11 +50,15 @@ class AnnotationsConverter {
           element.getModifiers().contains(Modifier.FINAL);
 
       if (isInvalid) {
-        logger.logError(element, "Field must not be private, static or final");
+        logError(element, "Field must not be private, static or final");
       }
 
       return !isInvalid;
     }
+  }
+
+  private void logError(Element element, String error) {
+    messager.printMessage(Diagnostic.Kind.ERROR, error, element);
   }
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
@@ -66,7 +72,11 @@ class AnnotationsConverter {
 
   private class ToErasedEnclosingClass implements Function<AnnotatedField, TypeMirror> {
     @Override public TypeMirror apply(AnnotatedField field) {
-      return typeUtils.erasure(field.getEnclosingClassType().asType());
+      TypeElement enclosingClassType = field.getEnclosingClassType();
+      if (enclosingClassType.getModifiers().contains(Modifier.PRIVATE)) {
+        logError(enclosingClassType, "Enclosing class must not be private");
+      }
+      return typeUtils.erasure(enclosingClassType.asType());
     }
   }
 

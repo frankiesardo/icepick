@@ -1,14 +1,15 @@
 package icepick.processor;
 
 import com.google.common.collect.Sets;
-import icepick.Icicle;
 import icepick.Icepick;
+import icepick.Icicle;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
@@ -16,20 +17,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
 public class IcepickProcessor extends AbstractProcessor {
 
-  private Logger logger;
-  private Elements elementUtils;
-  private Types typeUtils;
-  private Filer filer;
-
   @Override public synchronized void init(ProcessingEnvironment environment) {
     super.init(environment);
-    logger = new Logger(processingEnv.getMessager());
-    elementUtils = processingEnv.getElementUtils();
-    typeUtils = processingEnv.getTypeUtils();
-    filer = processingEnv.getFiler();
   }
 
   @Override
@@ -41,29 +34,46 @@ public class IcepickProcessor extends AbstractProcessor {
   }
 
   private void write(Map<EnclosingClass, Collection<AnnotatedField>> fieldsByEnclosingClass) {
-    ClassWriter classWriter = new ClassWriter(elementUtils, typeUtils, filer, Icepick.SUFFIX);
+    ClassWriter classWriter = new ClassWriter(elementUtils(), typeUtils(), filer(), Icepick.SUFFIX);
     for (EnclosingClass enclosingClass : fieldsByEnclosingClass.keySet()) {
       try {
         classWriter.writeClass(enclosingClass)
             .withFields(fieldsByEnclosingClass.get(enclosingClass));
       } catch (IOException e) {
-        logger.logError("Impossible to generate class %. Reason: %",
-            enclosingClass.getTargetClass(), e);
+        messager().printMessage(Diagnostic.Kind.ERROR,
+            "Error generating helper. Reason: " + e.getMessage(), enclosingClass.getElement());
       }
     }
   }
 
   private Map<EnclosingClass, Collection<AnnotatedField>> classesWithFieldsAnnotatedWith(
       Set<? extends Element> annotatedElements) {
-    return new AnnotationsConverter(logger, elementUtils, typeUtils).convert(annotatedElements);
+    return new AnnotationsConverter(messager(), elementUtils(), typeUtils())
+        .convert(annotatedElements);
   }
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
-    return SourceVersion.RELEASE_6;
+    return SourceVersion.latestSupported();
   }
 
   @Override public Set<String> getSupportedAnnotationTypes() {
     return Sets.newHashSet(Icicle.class.getName());
+  }
+
+  private Messager messager() {
+    return processingEnv.getMessager();
+  }
+
+  private Elements elementUtils() {
+    return processingEnv.getElementUtils();
+  }
+
+  private Types typeUtils() {
+    return processingEnv.getTypeUtils();
+  }
+
+  private Filer filer() {
+    return processingEnv.getFiler();
   }
 }

@@ -64,4 +64,38 @@ public class IcepickProcessorTest {
         .processedWith(icepickProcessors())
         .failsToCompile();
   }
+
+  @Test public void injectsArbitraryObjects() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  @Icicle Object thing;",
+        "}"));
+
+    JavaFileObject expectedHelper =
+        JavaFileObjects.forSourceString("test.Test$$Icicle", Joiner.on("\n") .join(
+            "package test;",
+            "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;",
+            "import android.os.Bundle;",
+            "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Target target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.thing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"thing\"));",
+            "  }",
+            "",
+            "  public static void saveInstanceState(Target target, Bundle outState) {",
+            "    outState.putParcelable(BASE_KEY + \"thing\", wrap(target.thing));",
+            "  }",
+            "}"));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedHelper);
+  }
 }
