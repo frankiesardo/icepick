@@ -17,6 +17,9 @@ if (isReleaseBuild()) {
   sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
+def username = project.hasProperty("nexusUsername") ? project.property("nexusUsername") : ""
+def password = project.hasProperty("nexusPassword") ? project.property("nexusPassword") : ""
+
 afterEvaluate { project ->
   uploadArchives {
     repositories {
@@ -24,8 +27,7 @@ afterEvaluate { project ->
         beforeDeployment { deployment -> signing.signPom(deployment) }
 
         repository(url: sonatypeRepositoryUrl) {
-          authentication(userName: project.getProperty("nexusUsername"),
-              password: project.getProperty("nexusPassword"))
+          authentication(userName: username, password: password)
         }
 
         pom.project {
