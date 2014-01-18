@@ -43,7 +43,7 @@ public class Icepick {
       String json = GsonParcer.encode(instance);
       return new Wrapper(json);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UnableToSerializeException(e);
     }
   }
 
@@ -51,10 +51,11 @@ public class Icepick {
   public static <T> T unwrap(Parcelable parcelable) {
     Wrapper wrapper = (Wrapper) parcelable;
     if (wrapper == null) return null;
+
     try {
       return GsonParcer.decode(wrapper.json);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UnableToSerializeException(e);
     }
   }
 }

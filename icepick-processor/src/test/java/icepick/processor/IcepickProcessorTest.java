@@ -3,6 +3,7 @@ package icepick.processor;
 import com.google.common.base.Joiner;
 import com.google.testing.compile.JavaFileObjects;
 import javax.tools.JavaFileObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
@@ -65,6 +66,7 @@ public class IcepickProcessorTest {
         .failsToCompile();
   }
 
+  @Ignore
   @Test public void injectsArbitraryObjects() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
         "package test;",

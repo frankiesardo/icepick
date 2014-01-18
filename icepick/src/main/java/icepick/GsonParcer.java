@@ -38,7 +38,7 @@ class GsonParcer {
       Class<?> type = Class.forName(reader.nextName());
       return GSON.fromJson(reader, type);
     } catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
+      throw new IOException(e);
     } finally {
       reader.close();
     }
