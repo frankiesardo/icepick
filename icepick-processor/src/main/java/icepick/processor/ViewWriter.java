@@ -14,10 +14,8 @@ class ViewWriter extends AbsWriter {
     return
         "  public static Parcelable restoreInstanceState(" + enclosingClass.getTargetClass()
         + " target, Parcelable state) {\n"
-        +
-        "    Bundle savedInstanceState = (Bundle) state;\n"
-        +
-        "    Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY +
+        + "    Bundle savedInstanceState = (Bundle) state;\n"
+        + "    Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY +
         " + " + SUPER_SUFFIX + ");\n";
   }
 
@@ -32,13 +30,11 @@ class ViewWriter extends AbsWriter {
     return "  public static Parcelable saveInstanceState("
         + enclosingClass.getTargetClass()
         + " target, Parcelable state) {\n"
-        +
-        "    Bundle outState = new Bundle();\n"
-        +
-        "    Parcelable superState = "
+        + "    Bundle outState = new Bundle();\n"
+        + "    Parcelable superState = "
         + makeSaveSuperStateCall(enclosingClass.getParentEnclosingClass(), suffix)
-        + ";\n" +
-        "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
+        + ";\n"
+        + "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
   }
 
   private String makeSaveSuperStateCall(String parentFqcn, String suffix) {
