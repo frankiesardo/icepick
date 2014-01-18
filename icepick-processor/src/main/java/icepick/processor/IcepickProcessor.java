@@ -21,10 +21,6 @@ import javax.tools.Diagnostic;
 
 public class IcepickProcessor extends AbstractProcessor {
 
-  @Override public synchronized void init(ProcessingEnvironment environment) {
-    super.init(environment);
-  }
-
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment) {
     for (TypeElement annotation : annotations) {
