@@ -3,7 +3,6 @@ package icepick;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,7 +31,9 @@ public class Icepick {
   }
 
   public static <T> Parcelable wrap(T instance) {
-    if (instance == null) return null;
+    if (instance == null) {
+      return null;
+    }
 
     try {
       String json = GsonParcer.encode(instance);
@@ -44,7 +45,9 @@ public class Icepick {
 
   public static <T> T unwrap(Parcelable parcelable) {
     Wrapper wrapper = (Wrapper) parcelable;
-    if (wrapper == null) return null;
+    if (wrapper == null) {
+      return null;
+    }
 
     try {
       return GsonParcer.decode(wrapper.json);
