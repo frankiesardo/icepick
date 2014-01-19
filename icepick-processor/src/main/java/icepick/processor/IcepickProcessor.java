@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -37,7 +36,8 @@ public class IcepickProcessor extends AbstractProcessor {
             .withFields(fieldsByEnclosingClass.get(enclosingClass));
       } catch (IOException e) {
         messager().printMessage(Diagnostic.Kind.ERROR,
-            "Error generating helper. Reason: " + e.getMessage(), enclosingClass.getElement());
+            "Error generating helper for class " + enclosingClass.getClassName()
+                + ". Reason: " + e.getMessage());
       }
     }
   }
