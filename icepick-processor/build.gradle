@@ -9,6 +9,14 @@ dependencies {
   compile 'com.github.frankiesardo:icepick:2.3-SNAPSHOT'
 
   testCompile 'com.google.testing.compile:compile-testing:0.4'
-  testCompile 'org.truth0:truth:0.13'
   testCompile 'com.google.android:android:4.1.1.4'
+  testCompile files('libs/tools.jar')
 }
+
+tasks.withType(Test) {
+  testLogging {
+    exceptionFormat "full"
+    events "passed", "skipped", "failed"
+  }
+}
+
