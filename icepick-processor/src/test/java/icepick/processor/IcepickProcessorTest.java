@@ -162,4 +162,67 @@ public class IcepickProcessorTest {
         .compilesWithoutError()
         .and().generatesSources(expectedSource1, expectedSource2);
   }
+
+  @Test public void withTypedParent() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test<T> {",
+        "  @Icicle Object thing;",
+        "}",
+        "class TestOne extends Test<String> {",
+        "  @Icicle Object anotherThing;",
+        "}",
+        "class TestTwo extends Test<Integer> {",
+        "}"
+    ));
+
+    JavaFileObject expectedSource1 = JavaFileObjects.forSourceString("test.Test$$Icicle",
+        Joiner.on('\n').join(
+            "package test;",
+            "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.thing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"thing\"));",
+            "  }",
+            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "    outState.putParcelable(BASE_KEY + \"thing\", wrap(target.thing));",
+            "  }",
+            "}"
+        ));
+
+    JavaFileObject expectedSource2 = JavaFileObjects.forSourceString("test.TestOne$$Icicle",
+        Joiner.on('\n') .join(
+            "package test;",
+            "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class TestOne$$Icicle {",
+            "  private static final String BASE_KEY = \"test.TestOne$$Icicle.\";",
+            "  public static void restoreInstanceState(TestOne target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.anotherThing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"anotherThing\"));",
+            "    test.Test$$Icicle.restoreInstanceState(target, savedInstanceState);",
+            "  }",
+            "  public static void saveInstanceState(TestOne target, Bundle outState) {",
+            "    test.Test$$Icicle.saveInstanceState(target, outState);",
+            "    outState.putParcelable(BASE_KEY + \"anotherThing\", wrap(target.anotherThing));",
+            "  }",
+            "}"));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource1, expectedSource2);
+  }
 }
