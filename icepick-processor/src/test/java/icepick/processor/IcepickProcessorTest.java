@@ -2,11 +2,12 @@ package icepick.processor;
 
 import com.google.common.base.Joiner;
 import com.google.testing.compile.JavaFileObjects;
+import java.util.Arrays;
+import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 import org.junit.Test;
 
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
-import static icepick.processor.ProcessorTestUtilities.icepickProcessors;
 import static org.truth0.Truth.ASSERT;
 
 public class IcepickProcessorTest {
@@ -224,5 +225,45 @@ public class IcepickProcessorTest {
         .processedWith(icepickProcessors())
         .compilesWithoutError()
         .and().generatesSources(expectedSource1, expectedSource2);
+  }
+
+  @Test public void innerClass() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  class Inner {",
+        "    @Icicle Object thing;",
+        "  }",
+        "}"
+    ));
+
+    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$Inner$$Icicle",
+        Joiner.on('\n').join(
+            "package test;",
+            "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class Test$Inner$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$Inner$$Icicle.\";",
+            "  public static void restoreInstanceState(Test.Inner target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;", "    }",
+            "    target.thing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"thing\"));",
+            "  }",
+            "  public static void saveInstanceState(Test.Inner target, Bundle outState) {",
+            "    outState.putParcelable(BASE_KEY + \"thing\", wrap(target.thing));",
+            "  }",
+            "}"));
+    
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource);
+  }
+
+  private Iterable<? extends Processor> icepickProcessors() {
+    return Arrays.asList(new IcepickProcessor());
   }
 }
