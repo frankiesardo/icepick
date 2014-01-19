@@ -15,27 +15,22 @@ public class Icepick {
   private static final Map<MethodKey, Method> CACHED_METHODS =
       new LinkedHashMap<MethodKey, Method>();
 
-  @SuppressWarnings("unused")
   public static void saveInstanceState(Object target, Bundle outState) {
     new GenericInjector(target, outState, CACHED_METHODS).inject(Action.SAVE);
   }
 
-  @SuppressWarnings("unused")
   public static void restoreInstanceState(Object target, Bundle outState) {
     new GenericInjector(target, outState, CACHED_METHODS).inject(Action.RESTORE);
   }
 
-  @SuppressWarnings("unused")
   public static <T extends View> Parcelable saveInstanceState(T target, Parcelable state) {
     return new ViewInjector(target, state, CACHED_METHODS).inject(Action.SAVE);
   }
 
-  @SuppressWarnings("unused")
   public static <T extends View> Parcelable restoreInstanceState(T target, Parcelable state) {
     return new ViewInjector(target, state, CACHED_METHODS).inject(Action.RESTORE);
   }
 
-  @SuppressWarnings("unused")
   public static <T> Parcelable wrap(T instance) {
     if (instance == null) return null;
 
@@ -47,7 +42,6 @@ public class Icepick {
     }
   }
 
-  @SuppressWarnings("unused")
   public static <T> T unwrap(Parcelable parcelable) {
     Wrapper wrapper = (Wrapper) parcelable;
     if (wrapper == null) return null;
