@@ -71,7 +71,7 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3@aar'
+  compile 'com.github.frankiesardo:icepick:2.3'
   apt 'com.github.frankiesardo:icepick-processor:2.3'
 }
 ```
