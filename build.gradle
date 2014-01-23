@@ -1,22 +1,23 @@
 subprojects {
-    buildscript {
-        repositories {
-            mavenCentral()
-        }
-        dependencies {
-            classpath 'com.android.tools.build:gradle:0.6.+'
-            classpath 'com.neenbedankt.gradle.plugins:android-apt:1.1'
-        }
-    }
-
+  buildscript {
     repositories {
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-        mavenCentral()
+      mavenCentral()
     }
+    dependencies {
+      classpath 'com.android.tools.build:gradle:0.6.+'
+      classpath 'com.neenbedankt.gradle.plugins:android-apt:1.1'
+    }
+  }
+
+  repositories {
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    mavenCentral()
+    mavenLocal()
+  }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+  gradleVersion = '1.8'
 }

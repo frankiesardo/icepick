@@ -1,53 +1,29 @@
 package icepick.processor;
 
-import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 class AnnotatedField {
 
-    public final String name;
-    public final String typeCast;
-    public final String command;
+  private final String name;
+  private final TypeMirror fieldType;
+  private final TypeElement enclosingClassType;
 
-    AnnotatedField(String name, String typeCast, String command) {
-        this.name = name;
-        this.command = command;
-        this.typeCast = typeCast;
-    }
+  AnnotatedField(String name, TypeMirror fieldType, TypeElement enclosingClassType) {
+    this.name = name;
+    this.fieldType = fieldType;
+    this.enclosingClassType = enclosingClassType;
+  }
 
-    static class Factory {
+  public String getName() {
+    return name;
+  }
 
-        private final Types typeUtils;
-        private final FieldConversionMap fieldConversionMap;
+  public TypeMirror getFieldType() {
+    return fieldType;
+  }
 
-        Factory(Elements elementUtils, Types typeUtils) {
-            this.typeUtils = typeUtils;
-            this.fieldConversionMap = new FieldConversionMap(elementUtils, typeUtils);
-        }
-
-        public AnnotatedField from(Element element) {
-            TypeMirror typeMirror = element.asType();
-            String command = convert(typeMirror);
-            String typeCast = FieldConversionMap.TYPE_CAST_COMMANDS.contains(command) ? "(" + typeMirror.toString() + ")" : "";
-            String name = element.getSimpleName().toString();
-            return new AnnotatedField(name, typeCast, command);
-        }
-
-        private String convert(TypeMirror typeMirror) {
-            for (TypeMirror other : fieldConversionMap.keySet()) {
-                if (typeUtils.isAssignable(typeMirror, other)) {
-                    return fieldConversionMap.get(other);
-                }
-            }
-            throw new UnableToSerializeException(typeMirror);
-        }
-    }
-
-    public static class UnableToSerializeException extends RuntimeException {
-        UnableToSerializeException(TypeMirror fieldType) {
-            super("Don't know how to put a " + fieldType + " into a Bundle");
-        }
-    }
+  public TypeElement getEnclosingClassType() {
+    return enclosingClassType;
+  }
 }

@@ -2,16 +2,16 @@ apply plugin: 'android'
 apply plugin: 'android-apt'
 
 dependencies {
-    compile 'com.github.frankiesardo:icepick:2.2.1'
-    apt 'com.github.frankiesardo:icepick-processor:2.2.1'
+  compile 'com.github.frankiesardo:icepick:2.3-SNAPSHOT'
+  apt 'com.github.frankiesardo:icepick-processor:2.3-SNAPSHOT'
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion '18.1.1'
+  compileSdkVersion 18
+  buildToolsVersion '18.1.1'
 
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 16
-    }
+  defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 16
+  }
 }
