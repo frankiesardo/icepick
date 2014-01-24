@@ -79,7 +79,7 @@ dependencies {
 
 Jar:
 
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.2.1/icepick-2.3.aar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.2.1/icepick-processor-2.3.jar).
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3/icepick-2.3.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3/icepick-processor-2.3.jar).
 
 License
 -------
