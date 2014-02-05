@@ -6,7 +6,7 @@ sourceCompatibility = '1.6'
 
 dependencies {
   compile 'com.google.guava:guava:15.0'
-  compile 'com.github.frankiesardo:icepick:2.3-SNAPSHOT'
+  compile 'com.github.frankiesardo:icepick:2.3.1-SNAPSHOT'
 
   testCompile 'com.google.testing.compile:compile-testing:0.4'
   testCompile 'com.google.android:android:4.1.1.4'

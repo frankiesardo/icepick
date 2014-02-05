@@ -1,8 +1,9 @@
 apply plugin: 'android'
 
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3'
-  provided 'com.github.frankiesardo:icepick-processor:2.3'
+  compile 'joda-time:joda-time:2.3'
+  compile 'com.github.frankiesardo:icepick:2.3.1-SNAPSHOT'
+  provided 'com.github.frankiesardo:icepick-processor:2.3.1-SNAPSHOT'
 }
 
 android {
