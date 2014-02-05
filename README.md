@@ -6,17 +6,14 @@ It uses annotation processing to generate code that does bundle manipulation and
 
 ```java
 class ExampleActivity extends Activity {
-  @Icicle
-  String username; // This will be automatically saved and restored
+  @Icicle String username; // This will be automatically saved and restored
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Icepick.restoreInstanceState(this, savedInstanceState);
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
+  @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     Icepick.saveInstanceState(this, outState);
   }
@@ -26,20 +23,17 @@ class ExampleActivity extends Activity {
 }
 ```
 
-From version 2.0 Icepick can generate the code for your Custom Views as well:
+Icepick can also generate the instance state code for your Custom Views:
 
 ```java
 class CustomView extends View {
-  @Icicle
-  int selectedPosition; // This will be automatically saved and restored
+  @Icicle int selectedPosition; // This will be automatically saved and restored
 
-  @Override
-  public Parcelable onSaveInstanceState() {
+  @Override public Parcelable onSaveInstanceState() {
     return Icepick.saveInstanceState(this, super.onSaveInstanceState());
   }
 
-  @Override
-  public void onRestoreInstanceState(Parcelable state) {
+  @Override public void onRestoreInstanceState(Parcelable state) {
     super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
   }
 
