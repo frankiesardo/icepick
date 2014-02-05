@@ -6,6 +6,7 @@ import com.google.common.collect.FluentIterable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -15,7 +16,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import javax.annotation.processing.Messager;
 
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Multimaps.index;
@@ -62,11 +62,28 @@ class AnnotationsConverter {
   }
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
+
+    final TypeMirror serializable = elementUtils.getTypeElement("java.io.Serializable").asType();
+    final TypeMirror parcelable = elementUtils.getTypeElement("android.os.Parcelable").asType();
+
     @Override public AnnotatedField apply(Element element) {
       String name = element.getSimpleName().toString();
       TypeMirror type = element.asType();
       TypeElement enclosingClass = (TypeElement) element.getEnclosingElement();
-      return new AnnotatedField(name, type, enclosingClass);
+      AnnotatedField.WrappingStrategy wrappingStrategy = wrappingStrategy(type);
+      return new AnnotatedField(name, wrappingStrategy, type, enclosingClass);
+    }
+
+    private AnnotatedField.WrappingStrategy wrappingStrategy(TypeMirror type) {
+      if (typeUtils.isAssignable(type, parcelable)) {
+        return AnnotatedField.WrappingStrategy.PARCELABLE;
+      }
+
+      if (typeUtils.isAssignable(type, serializable)) {
+        return AnnotatedField.WrappingStrategy.SERIALIZABLE;
+      }
+
+      return AnnotatedField.WrappingStrategy.CUSTOM;
     }
   }
 

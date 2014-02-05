@@ -2,9 +2,11 @@ package icepick.processor;
 
 import com.google.common.base.Joiner;
 import com.google.testing.compile.JavaFileObjects;
-import java.util.Arrays;
+
 import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
@@ -264,6 +266,50 @@ public class IcepickProcessorTest {
             "}"
         ));
     
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource);
+  }
+
+  @Test public void serializableIsPersistedAsIs() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
+        "package test;","import icepick.Icicle;", "public class Test {", "  @Icicle java.io.File thing;",
+        "}"));
+
+    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
+        Joiner.on('\n').join("package test;", "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;", "import android.os.Bundle;",
+            "import android.os.Parcelable;", "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {", "      return;", "    }",
+            "    target.thing = (java.io.File) savedInstanceState.getSerializable(BASE_KEY + \"thing\");", "  }",
+            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "    outState.putSerializable(BASE_KEY + \"thing\", target.thing);", "  }", "}"));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource);
+  }
+
+  @Test public void parcelableIsPersistedAsIs() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
+        "package test;","import icepick.Icicle;", "public class Test {", "  @Icicle android.os.Bundle thing;",
+        "}"));
+
+    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
+        Joiner.on('\n').join("package test;", "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;", "import android.os.Bundle;",
+            "import android.os.Parcelable;", "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {", "      return;", "    }",
+            "    target.thing = (android.os.Bundle) savedInstanceState.getParcelable(BASE_KEY + \"thing\");", "  }",
+            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "    outState.putParcelable(BASE_KEY + \"thing\", target.thing);", "  }", "}"));
+
     ASSERT.about(javaSource()).that(source)
         .processedWith(icepickProcessors())
         .compilesWithoutError()

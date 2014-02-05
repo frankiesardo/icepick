@@ -61,8 +61,17 @@ abstract class AbsWriter {
   protected abstract String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix);
 
   protected String emitRestoreState(AnnotatedField field) {
-    return "    target." + field.getName() + " = " + "unwrap("
-        + "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
+    switch (field.getWrappingStrategy()) {
+      case PARCELABLE:
+        return "    target." + field.getName() + " = (" + field.getFieldType() +
+            ") savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
+      case SERIALIZABLE:
+        return "    target." + field.getName() + " = (" + field.getFieldType() +
+            ") savedInstanceState.getSerializable(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
+      default:
+        return "    target." + field.getName() + " = " + "unwrap(" +
+            "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
+    }
   }
 
   protected abstract String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix);
@@ -70,8 +79,17 @@ abstract class AbsWriter {
   protected abstract String emitSaveStateStart(EnclosingClass enclosingClass, String suffix);
 
   protected String emitSaveState(AnnotatedField field) {
-    return "    outState.putParcelable(" + BASE_KEY + " + \""
-        + field.getName() + "\", wrap(target." + field.getName() + "));\n";
+    switch (field.getWrappingStrategy()) {
+      case PARCELABLE:
+        return "    outState.putParcelable(" + BASE_KEY + " + \""
+            + field.getName() + "\", target." + field.getName() + ");\n";
+      case SERIALIZABLE:
+        return "    outState.putSerializable(" + BASE_KEY + " + \""
+            + field.getName() + "\", target." + field.getName() + ");\n";
+      default:
+        return "    outState.putParcelable(" + BASE_KEY + " + \""
+            + field.getName() + "\", wrap(target." + field.getName() + "));\n";
+    }
   }
 
   protected abstract String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix);
