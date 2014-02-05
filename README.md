@@ -65,14 +65,13 @@ Download
 --------
 
 Icepick comes in two libraries: `icepick` and `icepick-processor`.
-I strongly suggest you use the [android-apt plugin](http://code.neenbedankt.com/gradle-android-apt-plugin/) to specify the processor as a compile time only dependency.
 
 Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3'
-  apt 'com.github.frankiesardo:icepick-processor:2.3'
+  compile 'com.github.frankiesardo:icepick:2.3.1'
+  provided 'com.github.frankiesardo:icepick-processor:2.3.1'
 }
 ```
 
