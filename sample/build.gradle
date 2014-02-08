@@ -4,6 +4,8 @@ dependencies {
   compile 'joda-time:joda-time:2.3'
   compile 'com.github.frankiesardo:icepick:2.3.1'
   provided 'com.github.frankiesardo:icepick-processor:2.3.1'
+  compile 'org.parceler:parceler:0.2.6'
+  provided 'org.parceler:parceler-api:0.2.6'
 }
 
 android {

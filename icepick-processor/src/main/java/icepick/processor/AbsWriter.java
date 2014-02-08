@@ -68,8 +68,11 @@ abstract class AbsWriter {
       case SERIALIZABLE:
         return "    target." + field.getName() + " = (" + field.getFieldType() +
             ") savedInstanceState.getSerializable(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
+      case PARCEL:
+        return "    target." + field.getName() + " = org.parceler.Parceles.unwrap(" +
+                "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
       default:
-        return "    target." + field.getName() + " = " + "unwrap(" +
+        return "    target." + field.getName() + " = unwrap(" +
             "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
     }
   }
@@ -86,6 +89,9 @@ abstract class AbsWriter {
       case SERIALIZABLE:
         return "    outState.putSerializable(" + BASE_KEY + " + \""
             + field.getName() + "\", target." + field.getName() + ");\n";
+      case PARCEL:
+        return "    outState.putParcelable(" + BASE_KEY + " + \""
+                + field.getName() + "\", org.parceler.Parceles.wrap(target." + field.getName() + "));\n";
       default:
         return "    outState.putParcelable(" + BASE_KEY + " + \""
             + field.getName() + "\", wrap(target." + field.getName() + "));\n";

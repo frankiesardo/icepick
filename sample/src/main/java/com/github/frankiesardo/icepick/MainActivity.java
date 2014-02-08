@@ -12,6 +12,7 @@ public class MainActivity extends BaseActivity {
   @Icicle String message;
   @Icicle Bundle someUnusedExtras = new Bundle();
   @Icicle DateTime timestamp = DateTime.now();
+  @Icicle ExampleParcel exampleParcel;
 
   CustomView customView;
 
