@@ -8,6 +8,7 @@ class AnnotatedField {
   enum WrappingStrategy {
     SERIALIZABLE,
     PARCELABLE,
+    PARCEL,
     CUSTOM
   }
 

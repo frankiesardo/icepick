@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -83,8 +84,23 @@ class AnnotationsConverter {
         return AnnotatedField.WrappingStrategy.SERIALIZABLE;
       }
 
+      if (isAnnotated(typeUtils.asElement(type), "org.parceler.Parcel")){
+        return AnnotatedField.WrappingStrategy.PARCEL;
+      }
+
       return AnnotatedField.WrappingStrategy.CUSTOM;
     }
+  }
+
+  private boolean isAnnotated(Element element, String annotationName) {
+    if (element != null) {
+      for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+        if (annotationMirror.getAnnotationType().asElement().toString().equals(annotationName)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private class ToErasedEnclosingClass implements Function<AnnotatedField, TypeMirror> {
