@@ -344,6 +344,44 @@ public class IcepickProcessorTest {
         .and().generatesSources(expectedSource);
   }
 
+  @Test public void primitivesAndArraysAreHandledByCustomWrapping() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n')
+        .join("package test;",
+            "import icepick.Icicle;",
+            "public class Test {",
+            "  @Icicle float thing;",
+            "  @Icicle int[] anotherThing;",
+            "}"));
+
+    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
+        Joiner.on("\n").join(
+            "package test;",
+            "import static icepick.Icepick.wrap;",
+            "import static icepick.Icepick.unwrap;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.thing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"thing\"));",
+            "    target.anotherThing = unwrap(savedInstanceState.getParcelable(BASE_KEY + \"anotherThing\"));",
+            "  }",
+            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "    outState.putParcelable(BASE_KEY + \"thing\", wrap(target.thing));",
+            "    outState.putParcelable(BASE_KEY + \"anotherThing\", wrap(target.anotherThing));",
+            "  }",
+            "}"
+        ));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource);
+  }
+
   @Test public void viewReturnsParcelable() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
         "package test;",

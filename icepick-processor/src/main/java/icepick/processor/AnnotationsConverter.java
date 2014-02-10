@@ -70,11 +70,15 @@ class AnnotationsConverter {
       String name = element.getSimpleName().toString();
       TypeMirror type = element.asType();
       TypeElement enclosingClass = (TypeElement) element.getEnclosingElement();
-      AnnotatedField.WrappingStrategy wrappingStrategy = wrappingStrategy(type);
+      AnnotatedField.WrappingStrategy wrappingStrategy = getWrappingStrategy(type);
       return new AnnotatedField(name, wrappingStrategy, type, enclosingClass);
     }
 
-    private AnnotatedField.WrappingStrategy wrappingStrategy(TypeMirror type) {
+    private AnnotatedField.WrappingStrategy getWrappingStrategy(TypeMirror type) {
+      if (type.getKind().isPrimitive() || type.getKind() == TypeKind.ARRAY) {
+        return AnnotatedField.WrappingStrategy.CUSTOM;
+      }
+
       if (typeUtils.isAssignable(type, parcelable)) {
         return AnnotatedField.WrappingStrategy.PARCELABLE;
       }
