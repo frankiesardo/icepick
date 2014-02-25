@@ -3,6 +3,7 @@ package icepick.processor;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import java.lang.annotation.AnnotationFormatError;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ class AnnotationsConverter {
 
   Map<EnclosingClass, Collection<AnnotatedField>> convert(
       Collection<? extends Element> annotatedElements) {
+
     FluentIterable<AnnotatedField> annotatedFields =
         from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 
@@ -63,31 +65,29 @@ class AnnotationsConverter {
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
 
-    final TypeMirror serializable = elementUtils.getTypeElement("java.io.Serializable").asType();
-    final TypeMirror parcelable = elementUtils.getTypeElement("android.os.Parcelable").asType();
+    final TypeToMethodMap typeToMethodMap = new TypeToMethodMap(elementUtils, typeUtils);
 
-    @Override public AnnotatedField apply(Element element) {
-      String name = element.getSimpleName().toString();
-      TypeMirror type = element.asType();
-      TypeElement enclosingClass = (TypeElement) element.getEnclosingElement();
-      AnnotatedField.WrappingStrategy wrappingStrategy = getWrappingStrategy(type);
-      return new AnnotatedField(name, wrappingStrategy, type, enclosingClass);
+    @Override public AnnotatedField apply(Element fieldElement) {
+      String name = fieldElement.getSimpleName().toString();
+      TypeMirror type = fieldElement.asType();
+      TypeElement enclosingClass = (TypeElement) fieldElement.getEnclosingElement();
+      String bundleMethod = getBundleMethod(fieldElement);
+      String typeCast = typeToMethodMap.requiresTypeCast(bundleMethod) ? "(" + type + ")" : "";
+
+      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
     }
 
-    private AnnotatedField.WrappingStrategy getWrappingStrategy(TypeMirror type) {
-      if (type.getKind().isPrimitive() || type.getKind() == TypeKind.ARRAY) {
-        return AnnotatedField.WrappingStrategy.CUSTOM;
+    private String getBundleMethod(Element fieldElement) {
+      TypeMirror fieldType = fieldElement.asType();
+      for (TypeMirror candidate : typeToMethodMap.keySet()) {
+        if (typeUtils.isAssignable(fieldType, candidate)) {
+          return typeToMethodMap.get(candidate);
+        }
       }
 
-      if (typeUtils.isAssignable(type, parcelable)) {
-        return AnnotatedField.WrappingStrategy.PARCELABLE;
-      }
+      logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
 
-      if (typeUtils.isAssignable(type, serializable)) {
-        return AnnotatedField.WrappingStrategy.SERIALIZABLE;
-      }
-
-      return AnnotatedField.WrappingStrategy.CUSTOM;
+      throw new AnnotationFormatError("Don't know how to put a " + fieldType + " inside a Bundle");
     }
   }
 

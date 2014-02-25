@@ -8,6 +8,7 @@ import javax.tools.JavaFileObject;
 abstract class AbsWriter {
 
   protected static final String BASE_KEY = "BASE_KEY";
+
   private final JavaFileObject javaFileObject;
   private final String suffix;
   private final EnclosingClass enclosingClass;
@@ -29,10 +30,8 @@ abstract class AbsWriter {
     StringBuilder builder = new StringBuilder();
     builder.append("// Generated code from Icepick. Do not modify!\n");
     builder.append("package ").append(enclosingClass.getClassPackage()).append(";\n\n");
-    builder.append("import static icepick.Icepick.wrap;\n");
-    builder.append("import static icepick.Icepick.unwrap;\n");
     builder.append("import android.os.Bundle;\n");
-    builder.append("import android.os.Parcelable;\n\n");
+    builder.append("import android.os.Parcelable;\n");
     builder.append("public class ").append(enclosingClass.getClassName() + suffix).append(" {\n");
     builder.append("  private static final String ").append(BASE_KEY).append(" = \"")
         .append(enclosingClass.getClassPackage()).append(".")
@@ -61,17 +60,8 @@ abstract class AbsWriter {
   protected abstract String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix);
 
   protected String emitRestoreState(AnnotatedField field) {
-    switch (field.getWrappingStrategy()) {
-      case PARCELABLE:
-        return "    target." + field.getName() + " = (" + field.getFieldType() +
-            ") savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
-      case SERIALIZABLE:
-        return "    target." + field.getName() + " = (" + field.getFieldType() +
-            ") savedInstanceState.getSerializable(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
-      default:
-        return "    target." + field.getName() + " = " + "unwrap(" +
-            "savedInstanceState.getParcelable(" + BASE_KEY + " + \"" + field.getName() + "\"));\n";
-    }
+    return "    target." + field.getName() + " = " + field.getTypeCast() + " savedInstanceState.get"
+        + field.getBundleMethod() + "(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
   }
 
   protected abstract String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix);
@@ -79,17 +69,8 @@ abstract class AbsWriter {
   protected abstract String emitSaveStateStart(EnclosingClass enclosingClass, String suffix);
 
   protected String emitSaveState(AnnotatedField field) {
-    switch (field.getWrappingStrategy()) {
-      case PARCELABLE:
-        return "    outState.putParcelable(" + BASE_KEY + " + \""
-            + field.getName() + "\", target." + field.getName() + ");\n";
-      case SERIALIZABLE:
-        return "    outState.putSerializable(" + BASE_KEY + " + \""
-            + field.getName() + "\", target." + field.getName() + ");\n";
-      default:
-        return "    outState.putParcelable(" + BASE_KEY + " + \""
-            + field.getName() + "\", wrap(target." + field.getName() + "));\n";
-    }
+    return "    outState.put" + field.getBundleMethod() + "(" + BASE_KEY + " + \""
+        + field.getName() + "\", target." + field.getName() + ");\n";
   }
 
   protected abstract String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix);
