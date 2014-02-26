@@ -17,7 +17,7 @@ public class IcepickProcessorTest {
         "package test;",
         "import icepick.Icicle;",
         "public class Test {",
-        "  @Icicle private Object thing;",
+        "  @Icicle private int thing;",
         "}"
     ));
 
@@ -31,7 +31,7 @@ public class IcepickProcessorTest {
         "package test;",
         "import icepick.Icicle;",
         "public class Test {",
-        "  @Icicle static Object thing;",
+        "  @Icicle static int thing;",
         "}"
     ));
 
@@ -45,7 +45,7 @@ public class IcepickProcessorTest {
         "package test;",
         "import icepick.Icicle;",
         "public class Test {",
-        "  @Icicle final Object thing;",
+        "  @Icicle final int thing;",
         "}"
     ));
 
@@ -60,10 +60,23 @@ public class IcepickProcessorTest {
         "import icepick.Icicle;",
         "public class Test {",
         "  private class Inner {",
-        "    @Icicle final Object thing;",
+        "    @Icicle final int thing;",
         "  }",
         "}"
     ));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .failsToCompile();
+  }
+
+  @Test public void notEveryObjectCanBePutInsideBundle() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  @Icicle Object thing;",
+        "}"));
 
     ASSERT.about(javaSource()).that(source)
         .processedWith(icepickProcessors())
@@ -310,6 +323,35 @@ public class IcepickProcessorTest {
             "    outState.putCharSequenceArrayList(BASE_KEY + \"charSequenceArrayList\", target.charSequenceArrayList);",
             "    outState.putParcelableArrayList(BASE_KEY + \"parcelableArrayList\", target.parcelableArrayList);",
             "    outState.putSparseParcelableArray(BASE_KEY + \"sparseParcelableArray\", target.sparseParcelableArray);",
+            "  }",
+            "}"));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource);
+  }
+
+  @Test public void incompleteSerializableChainCompilesButFailsAtRuntime() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  @Icicle Object[] thing;",
+        "}"));
+
+    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
+        Joiner.on('\n').join("package test;", "import android.os.Bundle;",
+            "import android.os.Parcelable;", "public class Test$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
+            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.thing = (java.lang.Object[]) savedInstanceState.getSerializable(BASE_KEY + \"thing\");",
+            "  }",
+            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "    outState.putSerializable(BASE_KEY + \"thing\", target.thing);",
             "  }",
             "}"));
 

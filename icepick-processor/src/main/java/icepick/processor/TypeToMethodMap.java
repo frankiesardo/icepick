@@ -12,7 +12,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-class TypeToMethodMap extends LinkedHashMap<TypeMirror, String> {
+class TypeToMethodMap {
+
+  private final Map<TypeMirror, String> conversionMap = new LinkedHashMap<TypeMirror, String>();
 
   private final Elements elementUtils;
   private final Types typeUtils;
@@ -26,8 +28,21 @@ class TypeToMethodMap extends LinkedHashMap<TypeMirror, String> {
     }
   }
 
+  public String convert(TypeMirror fieldType) {
+    for (TypeMirror candidate : conversionMap.keySet()) {
+      if (typeUtils.isAssignable(fieldType, candidate)) {
+        return conversionMap.get(candidate);
+      }
+    }
+    return null;
+  }
+
   public boolean requiresTypeCast(String bundleMethod) {
     return REQUIRE_TYPE_CAST_METHODS.contains(bundleMethod);
+  }
+
+  private void put(TypeMirror type, String method) {
+    conversionMap.put(type, method);
   }
 
   private TypeMirror getMirror(String type) {

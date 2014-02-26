@@ -3,7 +3,6 @@ package icepick.processor;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import java.lang.annotation.AnnotationFormatError;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -69,25 +68,15 @@ class AnnotationsConverter {
 
     @Override public AnnotatedField apply(Element fieldElement) {
       String name = fieldElement.getSimpleName().toString();
-      TypeMirror type = fieldElement.asType();
+      TypeMirror fieldType = fieldElement.asType();
       TypeElement enclosingClass = (TypeElement) fieldElement.getEnclosingElement();
-      String bundleMethod = getBundleMethod(fieldElement);
-      String typeCast = typeToMethodMap.requiresTypeCast(bundleMethod) ? "(" + type + ")" : "";
+      String bundleMethod = typeToMethodMap.convert(fieldType);
+      if (bundleMethod == null) {
+        logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
+      }
+      String typeCast = typeToMethodMap.requiresTypeCast(bundleMethod) ? "(" + fieldType + ")" : "";
 
       return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
-    }
-
-    private String getBundleMethod(Element fieldElement) {
-      TypeMirror fieldType = fieldElement.asType();
-      for (TypeMirror candidate : typeToMethodMap.keySet()) {
-        if (typeUtils.isAssignable(fieldType, candidate)) {
-          return typeToMethodMap.get(candidate);
-        }
-      }
-
-      logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
-
-      throw new AnnotationFormatError("Don't know how to put a " + fieldType + " inside a Bundle");
     }
   }
 
