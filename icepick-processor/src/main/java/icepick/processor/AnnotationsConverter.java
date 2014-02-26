@@ -34,6 +34,7 @@ class AnnotationsConverter {
 
   Map<EnclosingClass, Collection<AnnotatedField>> convert(
       Collection<? extends Element> annotatedElements) {
+
     FluentIterable<AnnotatedField> annotatedFields =
         from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 
@@ -63,27 +64,19 @@ class AnnotationsConverter {
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
 
-    final TypeMirror serializable = elementUtils.getTypeElement("java.io.Serializable").asType();
-    final TypeMirror parcelable = elementUtils.getTypeElement("android.os.Parcelable").asType();
+    final TypeToMethodMap typeToMethodMap = new TypeToMethodMap(elementUtils, typeUtils);
 
-    @Override public AnnotatedField apply(Element element) {
-      String name = element.getSimpleName().toString();
-      TypeMirror type = element.asType();
-      TypeElement enclosingClass = (TypeElement) element.getEnclosingElement();
-      AnnotatedField.WrappingStrategy wrappingStrategy = wrappingStrategy(type);
-      return new AnnotatedField(name, wrappingStrategy, type, enclosingClass);
-    }
-
-    private AnnotatedField.WrappingStrategy wrappingStrategy(TypeMirror type) {
-      if (typeUtils.isAssignable(type, parcelable)) {
-        return AnnotatedField.WrappingStrategy.PARCELABLE;
+    @Override public AnnotatedField apply(Element fieldElement) {
+      String name = fieldElement.getSimpleName().toString();
+      TypeMirror fieldType = fieldElement.asType();
+      TypeElement enclosingClass = (TypeElement) fieldElement.getEnclosingElement();
+      String bundleMethod = typeToMethodMap.convert(fieldType);
+      if (bundleMethod == null) {
+        logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
       }
+      String typeCast = typeToMethodMap.requiresTypeCast(bundleMethod) ? "(" + fieldType + ")" : "";
 
-      if (typeUtils.isAssignable(type, serializable)) {
-        return AnnotatedField.WrappingStrategy.SERIALIZABLE;
-      }
-
-      return AnnotatedField.WrappingStrategy.CUSTOM;
+      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
     }
   }
 

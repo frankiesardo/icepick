@@ -48,8 +48,7 @@ public class IcepickProcessor extends AbstractProcessor {
         .convert(annotatedElements);
   }
 
-  @Override
-  public SourceVersion getSupportedSourceVersion() {
+  @Override public SourceVersion getSupportedSourceVersion() {
     return SourceVersion.latestSupported();
   }
 

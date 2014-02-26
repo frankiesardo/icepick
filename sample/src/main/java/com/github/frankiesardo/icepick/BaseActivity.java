@@ -7,7 +7,6 @@ import icepick.Icicle;
 
 public class BaseActivity extends Activity {
 
-
   @Icicle String baseMessage;
 
   @Override

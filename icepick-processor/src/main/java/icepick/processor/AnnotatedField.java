@@ -1,25 +1,18 @@
 package icepick.processor;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
 class AnnotatedField {
 
-  enum WrappingStrategy {
-    SERIALIZABLE,
-    PARCELABLE,
-    CUSTOM
-  }
-
   private final String name;
-  private final WrappingStrategy wrappingStrategy;
-  private final TypeMirror fieldType;
+  private final String bundleMethod;
+  private final String typeCast;
   private final TypeElement enclosingClassType;
 
-  AnnotatedField(String name, WrappingStrategy wrappingStrategy, TypeMirror fieldType, TypeElement enclosingClassType) {
+  AnnotatedField(String name, String bundleMethod, String typeCast, TypeElement enclosingClassType) {
     this.name = name;
-    this.wrappingStrategy = wrappingStrategy;
-    this.fieldType = fieldType;
+    this.bundleMethod = bundleMethod;
+    this.typeCast = typeCast;
     this.enclosingClassType = enclosingClassType;
   }
 
@@ -27,12 +20,12 @@ class AnnotatedField {
     return name;
   }
 
-  public WrappingStrategy getWrappingStrategy() {
-    return wrappingStrategy;
+  public String getBundleMethod() {
+    return bundleMethod;
   }
 
-  public TypeMirror getFieldType() {
-    return fieldType;
+  public String getTypeCast() {
+    return typeCast;
   }
 
   public TypeElement getEnclosingClassType() {

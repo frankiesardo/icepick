@@ -9,7 +9,7 @@ import icepick.Icicle;
 
 public class BaseCustomView extends TextView {
 
-  @Icicle Integer backgroundColor = Integer.MAX_VALUE;
+  @Icicle int backgroundColor = Integer.MAX_VALUE;
 
   public BaseCustomView(Context context) {
     super(context);
