@@ -32,7 +32,7 @@ public class IcepickTest {
 
     Icepick.restoreInstanceState(classToInject, state);
 
-    Assert.assertEquals(classToInject.string, ANOTHER_VALUE);
+    Assert.assertEquals(ANOTHER_VALUE, classToInject.string);
   }
 
   static class ClassToInject {
