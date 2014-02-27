@@ -1,4 +1,4 @@
-package com.github.frankiesardo.icepick;
+package com.sample.icepick.lib;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import icepick.Icicle;
 
 public class BaseCustomView extends TextView {
 
-  @Icicle int backgroundColor = Integer.MAX_VALUE;
+  @Icicle protected int backgroundColor = Integer.MAX_VALUE;
 
   public BaseCustomView(Context context) {
     super(context);

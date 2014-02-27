@@ -4,14 +4,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.sample.icepick.lib.BaseActivity;
 import icepick.Icicle;
-import org.joda.time.DateTime;
 
 public class MainActivity extends BaseActivity {
 
   @Icicle String message;
-  @Icicle Bundle someUnusedExtras = new Bundle();
-  @Icicle DateTime timestamp = DateTime.now();
 
   CustomView customView;
 
@@ -25,7 +23,7 @@ public class MainActivity extends BaseActivity {
 
   private void updateText() {
     String defaultText = message == null || baseMessage == null ? "Use the menu to add some state"
-        : baseMessage + " " + message + "\ntimestamp: " + timestamp;
+        : baseMessage +  message;
     customView.setText(defaultText);
   }
 
@@ -41,7 +39,7 @@ public class MainActivity extends BaseActivity {
       customView.setBackgroundColorWithAnotherMethod(Color.BLUE);
       customView.setTextColorWithAnotherMethod(Color.WHITE);
 
-      baseMessage = "This state will be automagically";
+      baseMessage = "This state will be automagically ";
       message = "saved and restored";
       updateText();
       return true;

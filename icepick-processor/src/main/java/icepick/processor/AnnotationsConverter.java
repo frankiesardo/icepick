@@ -3,16 +3,22 @@ package icepick.processor;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import icepick.Icicle;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -92,19 +98,20 @@ class AnnotationsConverter {
 
   private class ByEnclosingClass implements Function<AnnotatedField, EnclosingClass> {
 
-    private final Set<TypeMirror> erasedEnclosingClasses;
+    private final Set<TypeMirror> ignoredClasses = new HashSet<TypeMirror>();
+    private final Set<TypeMirror> annotatedClasses = new HashSet<TypeMirror>();
 
     private ByEnclosingClass(Set<TypeMirror> erasedEnclosingClasses) {
-      this.erasedEnclosingClasses = erasedEnclosingClasses;
+      this.annotatedClasses.addAll(erasedEnclosingClasses);
     }
 
     @Override public EnclosingClass apply(AnnotatedField field) {
       TypeElement classType = field.getEnclosingClassType();
       String classPackage = getPackageName(classType);
-      String targetClass = getClassName(classType, classPackage);
-      String sanitizedClassName = sanitize(targetClass);
+      String targetClassName = getClassName(classType, classPackage);
+      String sanitizedClassName = sanitize(targetClassName);
       String parentFqcn = findParentFqcn(classType);
-      return new EnclosingClass(classPackage, sanitizedClassName, targetClass, parentFqcn, classType);
+      return new EnclosingClass(classPackage, sanitizedClassName, targetClassName, parentFqcn, classType);
     }
 
     private String findParentFqcn(TypeElement classType) {
@@ -115,22 +122,52 @@ class AnnotationsConverter {
           return null;
         }
         classType = (TypeElement) ((DeclaredType) type).asElement();
-        if (containsTypeMirror(type)) {
-          String packageName = getPackageName(classType);
-          return packageName + "." + sanitize(getClassName(classType, packageName));
+
+        if (containsErasure(annotatedClasses, type)) {
+          return getFqcn(classType);
         }
+
+        // The assumption is that it should be faster to check a stoplist than checking every field
+        if (containsErasure(ignoredClasses, type)) {
+          continue;
+        }
+
+        if (isAnnotatedFromAnotherSourceSet(classType)) {
+          annotatedClasses.add(typeUtils.erasure(type));
+          return getFqcn(classType);
+        }
+
+        ignoredClasses.add(typeUtils.erasure(type));
       }
     }
 
-    private boolean containsTypeMirror(TypeMirror query) {
+    private boolean containsErasure(Set<TypeMirror> group, TypeMirror query) {
       // Ensure we are checking against a type-erased version for normalization purposes.
       TypeMirror erasure = typeUtils.erasure(query);
-      for (TypeMirror mirror : erasedEnclosingClasses) {
+      for (TypeMirror mirror : group) {
         if (typeUtils.isSameType(mirror, erasure)) {
           return true;
         }
       }
       return false;
+    }
+
+    private boolean isAnnotatedFromAnotherSourceSet(TypeElement query) {
+      List<VariableElement> fields = ElementFilter.fieldsIn(query.getEnclosedElements());
+
+      for (Element e : fields) {
+        for (AnnotationMirror am : e.getAnnotationMirrors()) {
+          if (am.getAnnotationType().asElement().toString().equals(Icicle.class.getName())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    private String getFqcn(TypeElement classType) {
+      String packageName = getPackageName(classType);
+      return packageName + "." + sanitize(getClassName(classType, packageName));
     }
 
     private String getPackageName(TypeElement classType) {

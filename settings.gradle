@@ -1,2 +1,2 @@
-include 'sample', 'icepick', 'icepick-processor'
+include 'icepick', 'icepick-processor', 'sample-lib', 'sample'
 rootProject.name = 'icepick-parent'

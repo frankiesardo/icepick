@@ -1,9 +1,10 @@
 apply plugin: 'android'
 
 dependencies {
-  compile 'joda-time:joda-time:2.3'
   compile project(':icepick')
   provided project(':icepick-processor')
+
+  compile project(':sample-lib')
 }
 
 android {
