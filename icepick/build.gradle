@@ -1,15 +1,24 @@
-apply plugin: 'android-library'
-apply from: file('deploy.gradle')
-
-android {
-  compileSdkVersion 19
-  buildToolsVersion "19.0.1"
-
-  lintOptions {
-    abortOnError false
+buildscript {
+  repositories {
+    maven { url 'http://repo.springsource.org/plugins-release' }
+  }
+  dependencies {
+    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.1'
   }
 }
 
+apply plugin: 'java'
+apply from: file('deploy.gradle')
+
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
+
 dependencies {
-  compile 'com.google.code.gson:gson:2.2.4'
+  provided 'com.google.android:android:4.1.1.4'
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.mockito:mockito-core:1.9.5'
+  testCompile 'org.powermock:powermock-module-junit4:1.5'
+  testCompile 'org.powermock:powermock-api-mockito:1.5'
 }
