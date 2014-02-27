@@ -10,10 +10,14 @@ class ViewWriter extends AbsWriter {
     super(jfo, suffix, enclosingClass);
   }
 
+  @Override protected String getType() {
+    return "Parcelable";
+  }
+
   @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
     return
-        "  public static Parcelable restoreInstanceState(" + enclosingClass.getTargetClass()
-        + " target, Parcelable state) {\n"
+        "  public Parcelable restoreInstanceState(Object obj, Parcelable state) {\n"
+        + "    " + enclosingClass.getTargetClass() + " target = (" + enclosingClass.getTargetClass() + ") obj;\n"
         + "    Bundle savedInstanceState = (Bundle) state;\n"
         + "    Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY +
         " + " + SUPER_SUFFIX + ");\n";
@@ -21,15 +25,14 @@ class ViewWriter extends AbsWriter {
 
   @Override protected String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix) {
     String parentFqcn = enclosingClass.getParentEnclosingClass();
-    return "    return " + (parentFqcn != null ?
-        parentFqcn + suffix + ".restoreInstanceState(target, superState)"
+    return "    return " + (parentFqcn != null
+        ? " new " + parentFqcn + suffix + "().restoreInstanceState(target, superState)"
         : "superState") + ";\n  }\n";
   }
 
   @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
-    return "  public static Parcelable saveInstanceState("
-        + enclosingClass.getTargetClass()
-        + " target, Parcelable state) {\n"
+    return "  public Parcelable saveInstanceState(Object obj, Parcelable state) {\n"
+        + "    " + enclosingClass.getTargetClass() + " target = (" + enclosingClass.getTargetClass() + ") obj;\n"
         + "    Bundle outState = new Bundle();\n"
         + "    Parcelable superState = "
         + makeSaveSuperStateCall(enclosingClass.getParentEnclosingClass(), suffix)
@@ -38,7 +41,7 @@ class ViewWriter extends AbsWriter {
   }
 
   private String makeSaveSuperStateCall(String parentFqcn, String suffix) {
-    return parentFqcn != null ? parentFqcn + suffix + ".saveInstanceState(target, state)" : "state";
+    return parentFqcn != null ? "new " + parentFqcn + suffix + "().saveInstanceState(target, state)" : "state";
   }
 
   @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {

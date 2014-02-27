@@ -1,31 +1,24 @@
 package icepick;
 
 import android.os.Bundle;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 class ObjectInjector extends AbsInjector<Bundle> {
 
-  ObjectInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
-    super(target, argument, cachedMethods);
+  ObjectInjector(Object target, Bundle argument, Map<Class<?>, StateHelper<?>> cachedhelpers) {
+    super(target, argument, cachedhelpers);
   }
 
   void inject(Action action) {
-    Class<?> targetClass = target.getClass();
     try {
-      Method inject = getMethodFromHelper(targetClass, action);
-      if (inject != null) {
-        inject.invoke(null, target, argument);
+      StateHelper<Bundle> helper = getHelperForClass(target.getClass());
+      if (helper != null) {
+        action.invoke(helper, target, argument);
       }
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
       throw new UnableToInjectException(target, e);
     }
-  }
-
-  @Override
-  protected Class<?> getArgumentClass() {
-    return Bundle.class;
   }
 }

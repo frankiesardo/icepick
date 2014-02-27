@@ -1,26 +1,34 @@
 package icepick;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 abstract class AbsInjector<T> {
 
-  static final Method NO_OP = null;
+  private final StateHelper<T> NO_OP = new StateHelper<T>() {
+    @Override public T saveInstanceState(Object target, T state) {
+      return state;
+    }
+
+    @Override public T restoreInstanceState(Object target, T state) {
+      return state;
+    }
+  };
+
   protected final Object target;
   protected final T argument;
-  protected final Map<MethodKey, Method> cachedMethods;
+  protected final Map<Class<?>, StateHelper<?>> cachedHelpers;
 
-  protected AbsInjector(Object target, T argument, Map<MethodKey, Method> cachedMethods) {
+  protected AbsInjector(Object target, T argument, Map<Class<?>, StateHelper<?>> cachedHelpers) {
     this.target = target;
     this.argument = argument;
-    this.cachedMethods = cachedMethods;
+    this.cachedHelpers = cachedHelpers;
   }
 
-  protected Method getMethodFromHelper(Class<?> cls, Action action) throws NoSuchMethodException {
-    MethodKey methodKey = new MethodKey(cls, action);
-    Method method = cachedMethods.get(methodKey);
-    if (method != null) {
-      return method;
+  @SuppressWarnings("unchecked")
+  protected StateHelper<T> getHelperForClass(Class<?> cls) throws NoSuchMethodException {
+    StateHelper<T> stateHelper = (StateHelper<T>) cachedHelpers.get(cls);
+    if (stateHelper != null) {
+      return stateHelper;
     }
 
     String clsName = cls.getName();
@@ -29,16 +37,18 @@ abstract class AbsInjector<T> {
     }
 
     try {
-      Class<?> helper = Class.forName(clsName + Icepick.SUFFIX);
-      method = helper.getMethod(action.name, cls, getArgumentClass());
+      stateHelper = (StateHelper<T>) Class.forName(clsName + Icepick.SUFFIX).newInstance();
     } catch (ClassNotFoundException e) {
-      method = getMethodFromHelper(cls.getSuperclass(), action);
+      stateHelper = getHelperForClass(cls.getSuperclass());
+    } catch (InstantiationException e) {
+      return NO_OP;
+    } catch (IllegalAccessException e) {
+      return NO_OP;
     }
-    cachedMethods.put(methodKey, method);
-    return method;
-  }
 
-  protected abstract Class<?> getArgumentClass();
+    cachedHelpers.put(cls, stateHelper);
+    return stateHelper;
+  }
 
   public static class UnableToInjectException extends RuntimeException {
     UnableToInjectException(Object target, Throwable cause) {

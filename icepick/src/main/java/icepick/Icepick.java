@@ -3,7 +3,6 @@ package icepick;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
-import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,22 +10,22 @@ public class Icepick {
 
   public static final String SUFFIX = "$$Icicle";
 
-  private static final Map<MethodKey, Method> CACHED_METHODS =
-      new LinkedHashMap<MethodKey, Method>();
+  private static final Map<Class<?>, StateHelper<?>> CACHED_HELPERS =
+      new LinkedHashMap<Class<?>, StateHelper<?>>();
 
-  public static void saveInstanceState(Object target, Bundle outState) {
-    new ObjectInjector(target, outState, CACHED_METHODS).inject(Action.SAVE);
+  public static void saveInstanceState(Object target, Bundle state) {
+    new ObjectInjector(target, state, CACHED_HELPERS).inject(Action.SAVE);
   }
 
-  public static void restoreInstanceState(Object target, Bundle outState) {
-    new ObjectInjector(target, outState, CACHED_METHODS).inject(Action.RESTORE);
+  public static void restoreInstanceState(Object target, Bundle state) {
+    new ObjectInjector(target, state, CACHED_HELPERS).inject(Action.RESTORE);
   }
 
   public static <T extends View> Parcelable saveInstanceState(T target, Parcelable state) {
-    return new ViewInjector(target, state, CACHED_METHODS).inject(Action.SAVE);
+    return new ViewInjector(target, state, CACHED_HELPERS).inject(Action.SAVE);
   }
 
   public static <T extends View> Parcelable restoreInstanceState(T target, Parcelable state) {
-    return new ViewInjector(target, state, CACHED_METHODS).inject(Action.RESTORE);
+    return new ViewInjector(target, state, CACHED_HELPERS).inject(Action.RESTORE);
   }
 }

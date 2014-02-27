@@ -32,7 +32,8 @@ abstract class AbsWriter {
     builder.append("package ").append(enclosingClass.getClassPackage()).append(";\n\n");
     builder.append("import android.os.Bundle;\n");
     builder.append("import android.os.Parcelable;\n");
-    builder.append("public class ").append(enclosingClass.getClassName() + suffix).append(" {\n");
+    builder.append("public class ").append(enclosingClass.getClassName() + suffix).
+        append(" implements icepick.StateHelper<" + getType() + "> {\n");
     builder.append("  private static final String ").append(BASE_KEY).append(" = \"")
         .append(enclosingClass.getClassPackage()).append(".")
         .append(enclosingClass.getClassName() + suffix).append(".\";\n");
@@ -56,6 +57,8 @@ abstract class AbsWriter {
     return builder.toString();
 
   }
+
+  protected abstract String getType();
 
   protected abstract String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix);
 
