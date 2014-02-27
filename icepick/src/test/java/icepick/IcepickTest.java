@@ -43,11 +43,11 @@ public class IcepickTest {
   static class ClassToInject$$Icicle {
 
     public static void saveInstanceState(ClassToInject target, Bundle outState) {
-      outState.putString("KEY", target.string);
+      outState.putString(KEY, target.string);
     }
 
     public static void restoreInstanceState(ClassToInject target, Bundle saveInstanceState) {
-      target.string = saveInstanceState.getString("KEY");
+      target.string = saveInstanceState.getString(KEY);
     }
   }
 }
