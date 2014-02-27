@@ -15,11 +15,11 @@ public class Icepick {
       new LinkedHashMap<MethodKey, Method>();
 
   public static void saveInstanceState(Object target, Bundle outState) {
-    new GenericInjector(target, outState, CACHED_METHODS).inject(Action.SAVE);
+    new ObjectInjector(target, outState, CACHED_METHODS).inject(Action.SAVE);
   }
 
   public static void restoreInstanceState(Object target, Bundle outState) {
-    new GenericInjector(target, outState, CACHED_METHODS).inject(Action.RESTORE);
+    new ObjectInjector(target, outState, CACHED_METHODS).inject(Action.RESTORE);
   }
 
   public static <T extends View> Parcelable saveInstanceState(T target, Parcelable state) {

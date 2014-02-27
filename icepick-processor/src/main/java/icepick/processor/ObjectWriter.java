@@ -2,9 +2,9 @@ package icepick.processor;
 
 import javax.tools.JavaFileObject;
 
-class GenericWriter extends AbsWriter {
+class ObjectWriter extends AbsWriter {
 
-    GenericWriter(JavaFileObject jfo, String suffix, EnclosingClass enclosingClass) {
+    ObjectWriter(JavaFileObject jfo, String suffix, EnclosingClass enclosingClass) {
         super(jfo, suffix, enclosingClass);
     }
 

@@ -3,14 +3,14 @@ package icepick;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-abstract class Injector<T> {
+abstract class AbsInjector<T> {
 
   static final Method NO_OP = null;
   protected final Object target;
   protected final T argument;
   protected final Map<MethodKey, Method> cachedMethods;
 
-  protected Injector(Object target, T argument, Map<MethodKey, Method> cachedMethods) {
+  protected AbsInjector(Object target, T argument, Map<MethodKey, Method> cachedMethods) {
     this.target = target;
     this.argument = argument;
     this.cachedMethods = cachedMethods;

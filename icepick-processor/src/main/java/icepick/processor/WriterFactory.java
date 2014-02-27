@@ -7,13 +7,13 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 
-class ClassWriter {
+class WriterFactory {
   private final Elements elementUtils;
   private final Types typeUtils;
   private final Filer filer;
   private final String suffix;
 
-  public ClassWriter(Elements elementUtils, Types typeUtils, Filer filer, String suffix) {
+  public WriterFactory(Elements elementUtils, Types typeUtils, Filer filer, String suffix) {
     this.elementUtils = elementUtils;
     this.typeUtils = typeUtils;
     this.filer = filer;
@@ -27,6 +27,6 @@ class ClassWriter {
     boolean isView = typeUtils.isAssignable(classType.asType(),
         elementUtils.getTypeElement("android.view.View").asType());
     return isView ? new ViewWriter(jfo, suffix, enclosingClass)
-        : new GenericWriter(jfo, suffix, enclosingClass);
+        : new ObjectWriter(jfo, suffix, enclosingClass);
   }
 }

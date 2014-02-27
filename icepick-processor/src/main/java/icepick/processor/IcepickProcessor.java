@@ -32,10 +32,11 @@ public class IcepickProcessor extends AbstractProcessor {
   }
 
   private void write(Map<EnclosingClass, Collection<AnnotatedField>> fieldsByEnclosingClass) {
-    ClassWriter classWriter = new ClassWriter(elementUtils(), typeUtils(), filer(), Icepick.SUFFIX);
+    WriterFactory
+        writerFactory = new WriterFactory(elementUtils(), typeUtils(), filer(), Icepick.SUFFIX);
     for (EnclosingClass enclosingClass : fieldsByEnclosingClass.keySet()) {
       try {
-        classWriter.writeClass(enclosingClass)
+        writerFactory.writeClass(enclosingClass)
             .withFields(fieldsByEnclosingClass.get(enclosingClass));
       } catch (IOException e) {
         messager().printMessage(Diagnostic.Kind.ERROR,

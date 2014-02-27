@@ -4,9 +4,9 @@ import android.os.Bundle;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class GenericInjector extends Injector<Bundle> {
+class ObjectInjector extends AbsInjector<Bundle> {
 
-  GenericInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
+  ObjectInjector(Object target, Bundle argument, Map<MethodKey, Method> cachedMethods) {
     super(target, argument, cachedMethods);
   }
 

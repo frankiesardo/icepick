@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-class ViewInjector extends Injector<Parcelable> {
+class ViewInjector extends AbsInjector<Parcelable> {
 
   ViewInjector(Object target, Parcelable argument, Map<MethodKey, Method> cachedMethods) {
     super(target, argument, cachedMethods);
