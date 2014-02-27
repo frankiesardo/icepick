@@ -100,12 +100,11 @@ class AnnotationsConverter {
 
     @Override public EnclosingClass apply(AnnotatedField field) {
       TypeElement classType = field.getEnclosingClassType();
-      String classPackage = elementUtils.getPackageOf(classType).getQualifiedName().toString();
-      int packageLength = classPackage.length() + 1;
-      String targetClass = classType.getQualifiedName().toString().substring(packageLength);
-      String className = targetClass.replace(".", "$");
+      String classPackage = getPackageName(classType);
+      String targetClass = getClassName(classType, classPackage);
+      String sanitizedClassName = sanitize(targetClass);
       String parentFqcn = findParentFqcn(classType);
-      return new EnclosingClass(classPackage, className, targetClass, parentFqcn, classType);
+      return new EnclosingClass(classPackage, sanitizedClassName, targetClass, parentFqcn, classType);
     }
 
     private String findParentFqcn(TypeElement classType) {
@@ -117,7 +116,8 @@ class AnnotationsConverter {
         }
         classType = (TypeElement) ((DeclaredType) type).asElement();
         if (containsTypeMirror(type)) {
-          return classType.getQualifiedName().toString();
+          String packageName = getPackageName(classType);
+          return packageName + "." + sanitize(getClassName(classType, packageName));
         }
       }
     }
@@ -131,6 +131,19 @@ class AnnotationsConverter {
         }
       }
       return false;
+    }
+
+    private String getPackageName(TypeElement classType) {
+      return elementUtils.getPackageOf(classType).getQualifiedName().toString();
+    }
+
+    private String getClassName(TypeElement classType, String classPackage) {
+      int packageLength = classPackage.length() + 1;
+      return classType.getQualifiedName().toString().substring(packageLength);
+    }
+
+    private String sanitize(String targetClass) {
+      return targetClass.replace(".", "$");
     }
   }
 }

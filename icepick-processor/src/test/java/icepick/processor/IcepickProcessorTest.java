@@ -72,10 +72,7 @@ public class IcepickProcessorTest {
 
   @Test public void notEveryObjectCanBePutInsideBundle() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;",
-        "import icepick.Icicle;",
-        "public class Test {",
-        "  @Icicle Object thing;",
+        "package test;", "import icepick.Icicle;", "public class Test {", "  @Icicle Object thing;",
         "}"));
 
     ASSERT.about(javaSource()).that(source)
@@ -85,12 +82,8 @@ public class IcepickProcessorTest {
 
   @Test public void simple() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
-        "package test;",
-        "import icepick.Icicle;",
-        "public class Test {",
-        "  @Icicle int thing;",
-        "}"
-    ));
+        "package test;", "import icepick.Icicle;", "public class Test {", "  @Icicle int thing;",
+        "}"));
 
     JavaFileObject expectedSource =
         JavaFileObjects.forSourceString("test.Test$$Icicle", Joiner.on("\n") .join(
@@ -237,7 +230,7 @@ public class IcepickProcessorTest {
         .and().generatesSources(expectedSource1, expectedSource2);
   }
 
-  @Test public void innerClass() {
+  @Test public void simpleInnerClass() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
         "package test;",
         "import icepick.Icicle;",
@@ -245,7 +238,8 @@ public class IcepickProcessorTest {
         "  class Inner {",
         "    @Icicle char[] thing;",
         "  }",
-        "}"));
+        "}"
+    ));
 
     JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$Inner$$Icicle",
         Joiner.on('\n').join(
@@ -263,12 +257,73 @@ public class IcepickProcessorTest {
             "  public static void saveInstanceState(Test.Inner target, Bundle outState) {",
             "    outState.putCharArray(BASE_KEY + \"thing\", target.thing);",
             "  }",
-            "}"));
+            "}"
+        ));
 
     ASSERT.about(javaSource()).that(source)
         .processedWith(icepickProcessors())
         .compilesWithoutError()
         .and().generatesSources(expectedSource);
+  } 
+  
+  @Test public void innerClassRespectsFullyQualifiedClassNames() {
+    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  class Inner {",
+        "    @Icicle char[] thing;",
+        "  }",
+        "  class Extender extends Inner {",
+        "    @Icicle double[] otherThing;",
+        "  }",
+        "}"
+    ));
+
+    JavaFileObject expectedSource1 = JavaFileObjects.forSourceString("test.Test$Inner$$Icicle",
+        Joiner.on('\n').join(
+            "package test;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class Test$Inner$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$Inner$$Icicle.\";",
+            "  public static void restoreInstanceState(Test.Inner target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.thing = savedInstanceState.getCharArray(BASE_KEY + \"thing\");",
+            "  }",
+            "  public static void saveInstanceState(Test.Inner target, Bundle outState) {",
+            "    outState.putCharArray(BASE_KEY + \"thing\", target.thing);",
+            "  }",
+            "}"
+        ));
+
+    JavaFileObject expectedSource2 = JavaFileObjects.forSourceString("test.Test$Extender$$Icicle",
+        Joiner.on('\n').join(
+            "package test;",
+            "import android.os.Bundle;",
+            "import android.os.Parcelable;",
+            "public class Test$Extender$$Icicle {",
+            "  private static final String BASE_KEY = \"test.Test$Extender$$Icicle.\";",
+            "  public static void restoreInstanceState(Test.Extender target, Bundle savedInstanceState) {",
+            "    if (savedInstanceState == null) {",
+            "      return;",
+            "    }",
+            "    target.otherThing = savedInstanceState.getDoubleArray(BASE_KEY + \"otherThing\");",
+            "    test.Test$Inner$$Icicle.restoreInstanceState(target, savedInstanceState);",
+            "  }",
+            "  public static void saveInstanceState(Test.Extender target, Bundle outState) {",
+            "    test.Test$Inner$$Icicle.saveInstanceState(target, outState);",
+            "    outState.putDoubleArray(BASE_KEY + \"otherThing\", target.otherThing);",
+            "  }",
+            "}"
+        ));
+
+    ASSERT.about(javaSource()).that(source)
+        .processedWith(icepickProcessors())
+        .compilesWithoutError()
+        .and().generatesSources(expectedSource1, expectedSource2);
   }
 
   @Test public void typesAreDowncastWhenNecessary() {
@@ -334,11 +389,8 @@ public class IcepickProcessorTest {
 
   @Test public void incompleteSerializableChainCompilesButFailsAtRuntime() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;",
-        "import icepick.Icicle;",
-        "public class Test {",
-        "  @Icicle Object[] thing;",
-        "}"));
+        "package test;", "import icepick.Icicle;", "public class Test {",
+        "  @Icicle Object[] thing;", "}"));
 
     JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
         Joiner.on('\n').join("package test;", "import android.os.Bundle;",
@@ -363,17 +415,10 @@ public class IcepickProcessorTest {
 
   @Test public void viewReturnsParcelable() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;",
-        "import icepick.Icicle;",
-        "import android.widget.LinearLayout;",
-        "import android.content.Context;",
-        "public class Test extends LinearLayout{",
-        "  public Test(Context context) {",
-        "    super(context);",
-        "  }",
-        "  @Icicle android.os.Bundle thing;",
-        "}"
-    ));
+        "package test;", "import icepick.Icicle;", "import android.widget.LinearLayout;",
+        "import android.content.Context;", "public class Test extends LinearLayout{",
+        "  public Test(Context context) {", "    super(context);", "  }",
+        "  @Icicle android.os.Bundle thing;", "}"));
 
     JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
         Joiner.on('\n') .join(
