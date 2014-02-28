@@ -3,6 +3,7 @@ package com.github.frankiesardo.icepick;
 import android.content.Context;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import com.sample.icepick.lib.BaseCustomView;
 import icepick.Icicle;
 
 public class CustomView extends BaseCustomView {

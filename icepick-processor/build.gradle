@@ -5,8 +5,8 @@ targetCompatibility = '1.6'
 sourceCompatibility = '1.6'
 
 dependencies {
+  compile project(':icepick')
   compile 'com.google.guava:guava:15.0'
-  compile 'com.github.frankiesardo:icepick:2.3.1'
 
   testCompile 'com.google.testing.compile:compile-testing:0.4'
   testCompile 'com.google.android:android:4.1.1.4'

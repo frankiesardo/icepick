@@ -1,47 +1,41 @@
 package icepick.processor;
 
+import com.google.common.base.Joiner;
 import javax.tools.JavaFileObject;
 
 class ViewWriter extends AbsWriter {
 
   private static final String SUPER_SUFFIX = "\"$$SUPER$$\"";
+  private static final String SUPER_KEY = BASE_KEY + " + " + SUPER_SUFFIX;
 
   public ViewWriter(JavaFileObject jfo, String suffix, EnclosingClass enclosingClass) {
     super(jfo, suffix, enclosingClass);
   }
 
-  @Override protected String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix) {
-    return
-        "  public static Parcelable restoreInstanceState(" + enclosingClass.getTargetClass()
-        + " target, Parcelable state) {\n"
-        + "    Bundle savedInstanceState = (Bundle) state;\n"
-        + "    Parcelable superState = savedInstanceState.getParcelable(" + BASE_KEY +
-        " + " + SUPER_SUFFIX + ");\n";
+  @Override protected String getWriterType() {
+    return "Parcelable";
   }
 
-  @Override protected String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix) {
-    String parentFqcn = enclosingClass.getParentEnclosingClass();
-    return "    return " + (parentFqcn != null ?
-        parentFqcn + suffix + ".restoreInstanceState(target, superState)"
-        : "superState") + ";\n  }\n";
+  @Override protected String emitRestoreStateStart() {
+    return Joiner.on("\n").join(
+        "    Bundle savedInstanceState = (Bundle) state;",
+        "    Parcelable superState = savedInstanceState.getParcelable(" + SUPER_KEY + ");"
+    );
   }
 
-  @Override protected String emitSaveStateStart(EnclosingClass enclosingClass, String suffix) {
-    return "  public static Parcelable saveInstanceState("
-        + enclosingClass.getTargetClass()
-        + " target, Parcelable state) {\n"
-        + "    Bundle outState = new Bundle();\n"
-        + "    Parcelable superState = "
-        + makeSaveSuperStateCall(enclosingClass.getParentEnclosingClass(), suffix)
-        + ";\n"
-        + "    outState.putParcelable(" + BASE_KEY + " + " + SUPER_SUFFIX + ", superState);\n";
+  @Override protected String emitRestoreStateEnd() {
+    return "    return parent.restoreInstanceState(target, superState);";
   }
 
-  private String makeSaveSuperStateCall(String parentFqcn, String suffix) {
-    return parentFqcn != null ? parentFqcn + suffix + ".saveInstanceState(target, state)" : "state";
+  @Override protected String emitSaveStateStart() {
+    return Joiner.on("\n").join(
+        "    Bundle outState = new Bundle();",
+        "    Parcelable superState = parent.saveInstanceState(target, state);",
+        "    outState.putParcelable(" + SUPER_KEY + ", superState);"
+    );
   }
 
-  @Override protected String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix) {
-    return "    return outState;\n  }\n";
+  @Override protected String emitSaveStateEnd() {
+    return "    return outState;";
   }
 }

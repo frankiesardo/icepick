@@ -1,4 +1,4 @@
-package com.github.frankiesardo.icepick;
+package com.sample.icepick.lib;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,8 +6,7 @@ import icepick.Icepick;
 import icepick.Icicle;
 
 public class BaseActivity extends Activity {
-
-  @Icicle String baseMessage;
+  @Icicle protected String baseMessage;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

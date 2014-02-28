@@ -1,11 +1,16 @@
 package icepick;
 
 enum Action {
-  SAVE("saveInstanceState"),
-  RESTORE("restoreInstanceState");
-  public final String name;
+  SAVE {
+    @Override <T> T invoke(StateHelper<T> helper, Object target, T state) {
+      return helper.saveInstanceState(target, state);
+    }
+  },
+  RESTORE {
+    @Override <T> T invoke(StateHelper<T> helper, Object target, T state) {
+      return helper.restoreInstanceState(target, state);
+    }
+  };
 
-  Action(String name) {
-    this.name = name;
-  }
+  abstract <T> T invoke(StateHelper<T> inject, Object target, T state);
 }

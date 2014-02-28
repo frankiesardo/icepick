@@ -1,5 +1,6 @@
 package icepick.processor;
 
+import com.google.common.base.Joiner;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -27,51 +28,80 @@ abstract class AbsWriter {
   }
 
   private String brewJava(Collection<AnnotatedField> annotatedFields) {
-    StringBuilder builder = new StringBuilder();
-    builder.append("// Generated code from Icepick. Do not modify!\n");
-    builder.append("package ").append(enclosingClass.getClassPackage()).append(";\n\n");
-    builder.append("import android.os.Bundle;\n");
-    builder.append("import android.os.Parcelable;\n");
-    builder.append("public class ").append(enclosingClass.getClassName() + suffix).append(" {\n");
-    builder.append("  private static final String ").append(BASE_KEY).append(" = \"")
-        .append(enclosingClass.getClassPackage()).append(".")
-        .append(enclosingClass.getClassName() + suffix).append(".\";\n");
+    String classPackage = enclosingClass.getClassPackage();
+    String helperClassName = enclosingClass.getClassName() + suffix;
+    String fqHelperClassName = classPackage + "." + helperClassName;
 
-    builder.append(emitRestoreStateStart(enclosingClass, suffix));
+    String type = getWriterType();
+    String helperType = "StateHelper<" + type + ">";
+
+    String parentClass = enclosingClass.getParentEnclosingClass() == null
+        ? "(" + helperType + ") StateHelper.NO_OP;"
+        : "new " + enclosingClass.getParentEnclosingClass() + suffix + "();";
+    String targetClass = enclosingClass.getTargetClass();
+
+    return Joiner.on("\n").join(
+        "// Generated code from Icepick. Do not modify!",
+        "package " + classPackage + ";",
+        "import android.os.Bundle;",
+        "import android.os.Parcelable;",
+        "import icepick.StateHelper;",
+        "public class " + helperClassName + " implements " + helperType + " {",
+        "",
+        "  private static final String " + BASE_KEY + " = \"" + fqHelperClassName + ".\";",
+        "  private final " + helperType + " parent = " + parentClass,
+        "",
+        "  public " + type + " restoreInstanceState(Object obj, " + type + " state) {",
+        "    " + targetClass + " target = (" + targetClass + ") obj;",
+        emitRestoreStateStart(),
+        "",
+        emitFieldRestoreState(annotatedFields),
+        emitRestoreStateEnd(),
+        "  }",
+        "  public " + type + " saveInstanceState(Object obj, " + type + " state) {",
+        "    " + targetClass + " target = (" + targetClass + ") obj;",
+        emitSaveStateStart(),
+        "",
+        emitFieldSaveState(annotatedFields),
+        emitSaveStateEnd(),
+        "  }",
+        "}"
+        );
+  }
+
+  protected abstract String getWriterType();
+
+  protected abstract String emitRestoreStateStart();
+
+  private String emitFieldRestoreState(Collection<AnnotatedField> annotatedFields) {
+    StringBuilder builder = new StringBuilder();
     for (AnnotatedField field : annotatedFields) {
       builder.append(emitRestoreState(field));
     }
-    builder.append(emitRestoreStateEnd(enclosingClass, suffix));
-
-    builder.append('\n');
-
-    builder.append(emitSaveStateStart(enclosingClass, suffix));
-    for (AnnotatedField field : annotatedFields) {
-      builder.append(emitSaveState(field));
-    }
-
-    builder.append(emitSaveStateEnd(enclosingClass, suffix));
-
-    builder.append("}\n");
     return builder.toString();
-
   }
 
-  protected abstract String emitRestoreStateStart(EnclosingClass enclosingClass, String suffix);
-
-  protected String emitRestoreState(AnnotatedField field) {
+  private String emitRestoreState(AnnotatedField field) {
     return "    target." + field.getName() + " = " + field.getTypeCast() + " savedInstanceState.get"
         + field.getBundleMethod() + "(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
   }
 
-  protected abstract String emitRestoreStateEnd(EnclosingClass enclosingClass, String suffix);
+  protected abstract String emitRestoreStateEnd();
 
-  protected abstract String emitSaveStateStart(EnclosingClass enclosingClass, String suffix);
+  protected abstract String emitSaveStateStart();
 
-  protected String emitSaveState(AnnotatedField field) {
+  private String emitFieldSaveState(Collection<AnnotatedField> annotatedFields) {
+    StringBuilder builder = new StringBuilder();
+    for (AnnotatedField field : annotatedFields) {
+      builder.append(emitSaveState(field));
+    }
+    return builder.toString();
+  }
+
+  private String emitSaveState(AnnotatedField field) {
     return "    outState.put" + field.getBundleMethod() + "(" + BASE_KEY + " + \""
         + field.getName() + "\", target." + field.getName() + ");\n";
   }
 
-  protected abstract String emitSaveStateEnd(EnclosingClass enclosingClass, String suffix);
+  protected abstract String emitSaveStateEnd();
 }
