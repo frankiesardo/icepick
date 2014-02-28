@@ -44,7 +44,7 @@ class AnnotationsConverter {
     FluentIterable<AnnotatedField> annotatedFields =
         from(annotatedElements).filter(new ValidModifier()).transform(new ToAnnotatedField());
 
-    Set<TypeMirror> erasedEnclosingClasses =
+    Set<String> erasedEnclosingClasses =
         annotatedFields.transform(new ToErasedEnclosingClass()).toSet();
 
     return index(annotatedFields, new ByEnclosingClass(erasedEnclosingClasses)).asMap();
@@ -86,23 +86,23 @@ class AnnotationsConverter {
     }
   }
 
-  private class ToErasedEnclosingClass implements Function<AnnotatedField, TypeMirror> {
-    @Override public TypeMirror apply(AnnotatedField field) {
+  private class ToErasedEnclosingClass implements Function<AnnotatedField, String> {
+    @Override public String apply(AnnotatedField field) {
       TypeElement enclosingClassType = field.getEnclosingClassType();
       if (enclosingClassType.getModifiers().contains(Modifier.PRIVATE)) {
         logError(enclosingClassType, "Enclosing class must not be private");
       }
-      return typeUtils.erasure(enclosingClassType.asType());
+      return enclosingClassType.toString();
     }
   }
 
   private class ByEnclosingClass implements Function<AnnotatedField, EnclosingClass> {
 
-    private final Set<TypeMirror> ignoredClasses = new HashSet<TypeMirror>();
-    private final Set<TypeMirror> annotatedClasses = new HashSet<TypeMirror>();
+    private final Set<String> ignoredClasses = new HashSet<String>();
+    private final Set<String> annotatedClasses = new HashSet<String>();
 
-    private ByEnclosingClass(Set<TypeMirror> erasedEnclosingClasses) {
-      this.annotatedClasses.addAll(erasedEnclosingClasses);
+    private ByEnclosingClass(Set<String> erasedEnclosingClasses) {
+      annotatedClasses.addAll(erasedEnclosingClasses);
     }
 
     @Override public EnclosingClass apply(AnnotatedField field) {
@@ -122,34 +122,23 @@ class AnnotationsConverter {
           return null;
         }
         classType = (TypeElement) ((DeclaredType) type).asElement();
+        String erasedClassName = classType.toString();
 
-        if (containsErasure(annotatedClasses, type)) {
-          return getFqcn(classType);
-        }
-
-        // The assumption is that it should be faster to check a stoplist than checking every field
-        if (containsErasure(ignoredClasses, type)) {
+        if (ignoredClasses.contains(erasedClassName)) {
           continue;
         }
 
-        if (isAnnotatedFromAnotherSourceSet(classType)) {
-          annotatedClasses.add(typeUtils.erasure(type));
+        if (annotatedClasses.contains(erasedClassName)) {
           return getFqcn(classType);
         }
 
-        ignoredClasses.add(typeUtils.erasure(type));
-      }
-    }
-
-    private boolean containsErasure(Set<TypeMirror> group, TypeMirror query) {
-      // Ensure we are checking against a type-erased version for normalization purposes.
-      TypeMirror erasure = typeUtils.erasure(query);
-      for (TypeMirror mirror : group) {
-        if (typeUtils.isSameType(mirror, erasure)) {
-          return true;
+        if (isAnnotatedFromAnotherSourceSet(classType)) {
+          annotatedClasses.add(erasedClassName);
+          return getFqcn(classType);
         }
+
+        ignoredClasses.add(erasedClassName);
       }
-      return false;
     }
 
     private boolean isAnnotatedFromAnotherSourceSet(TypeElement query) {
