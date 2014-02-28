@@ -72,7 +72,10 @@ public class IcepickProcessorTest {
 
   @Test public void notEveryObjectCanBePutInsideBundle() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;", "import icepick.Icicle;", "public class Test {", "  @Icicle Object thing;",
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  @Icicle Object thing;",
         "}"));
 
     ASSERT.about(javaSource()).that(source)
@@ -82,7 +85,10 @@ public class IcepickProcessorTest {
 
   @Test public void simple() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
-        "package test;", "import icepick.Icicle;", "public class Test {", "  @Icicle int thing;",
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        "  @Icicle int thing;",
         "}"));
 
     JavaFileObject expectedSource =
@@ -90,16 +96,25 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.thing = savedInstanceState.getInt(BASE_KEY + \"thing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putInt(BASE_KEY + \"thing\", target.thing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -129,16 +144,25 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.thing = savedInstanceState.getFloat(BASE_KEY + \"thing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putFloat(BASE_KEY + \"thing\", target.thing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -148,18 +172,25 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class TestOne$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class TestOne$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.TestOne$$Icicle.\";",
-            "  public static void restoreInstanceState(TestOne target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = new test.Test$$Icicle();",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    TestOne target = (TestOne) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.anotherThing = savedInstanceState.getDouble(BASE_KEY + \"anotherThing\");",
-            "    test.Test$$Icicle.restoreInstanceState(target, savedInstanceState);",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(TestOne target, Bundle outState) {",
-            "    test.Test$$Icicle.saveInstanceState(target, outState);",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    TestOne target = (TestOne) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putDouble(BASE_KEY + \"anotherThing\", target.anotherThing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -175,10 +206,10 @@ public class IcepickProcessorTest {
         "package test;",
         "import icepick.Icicle;",
         "public class Test<T> {",
-        "  @Icicle java.lang.String thing;",
+        "  @Icicle String thing;",
         "}",
         "class TestOne extends Test<String> {",
-        "  @Icicle java.lang.Long anotherThing;",
+        "  @Icicle Long anotherThing;",
         "}",
         "class TestTwo extends Test<Integer> {",
         "}"
@@ -189,37 +220,53 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.thing = savedInstanceState.getString(BASE_KEY + \"thing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putString(BASE_KEY + \"thing\", target.thing);",
+            "    return outState;",
             "  }",
             "}"
         ));
 
     JavaFileObject expectedSource2 = JavaFileObjects.forSourceString("test.TestOne$$Icicle",
-        Joiner.on('\n') .join(
+        Joiner.on('\n').join(
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class TestOne$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class TestOne$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.TestOne$$Icicle.\";",
-            "  public static void restoreInstanceState(TestOne target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = new test.Test$$Icicle();",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    TestOne target = (TestOne) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.anotherThing = savedInstanceState.getLong(BASE_KEY + \"anotherThing\");",
-            "    test.Test$$Icicle.restoreInstanceState(target, savedInstanceState);",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(TestOne target, Bundle outState) {",
-            "    test.Test$$Icicle.saveInstanceState(target, outState);",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    TestOne target = (TestOne) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putLong(BASE_KEY + \"anotherThing\", target.anotherThing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -246,16 +293,25 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$Inner$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$Inner$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$Inner$$Icicle.\";",
-            "  public static void restoreInstanceState(Test.Inner target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test.Inner target = (Test.Inner) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.thing = savedInstanceState.getCharArray(BASE_KEY + \"thing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test.Inner target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test.Inner target = (Test.Inner) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putCharArray(BASE_KEY + \"thing\", target.thing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -275,7 +331,7 @@ public class IcepickProcessorTest {
         "    @Icicle char[] thing;",
         "  }",
         "  class Extender extends Inner {",
-        "    @Icicle double[] otherThing;",
+        "    @Icicle double[] anotherThing;",
         "  }",
         "}"
     ));
@@ -285,37 +341,52 @@ public class IcepickProcessorTest {
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$Inner$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$Inner$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$Inner$$Icicle.\";",
-            "  public static void restoreInstanceState(Test.Inner target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test.Inner target = (Test.Inner) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.thing = savedInstanceState.getCharArray(BASE_KEY + \"thing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test.Inner target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test.Inner target = (Test.Inner) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putCharArray(BASE_KEY + \"thing\", target.thing);",
+            "    return outState;",
             "  }",
             "}"
         ));
 
     JavaFileObject expectedSource2 = JavaFileObjects.forSourceString("test.Test$Extender$$Icicle",
-        Joiner.on('\n').join(
-            "package test;",
+        Joiner.on('\n').join("package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$Extender$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$Extender$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$Extender$$Icicle.\";",
-            "  public static void restoreInstanceState(Test.Extender target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = new test.Test$Inner$$Icicle();",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test.Extender target = (Test.Extender) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
-            "    target.otherThing = savedInstanceState.getDoubleArray(BASE_KEY + \"otherThing\");",
-            "    test.Test$Inner$$Icicle.restoreInstanceState(target, savedInstanceState);",
+            "    Bundle savedInstanceState = state;",
+            "    target.anotherThing = savedInstanceState.getDoubleArray(BASE_KEY + \"anotherThing\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test.Extender target, Bundle outState) {",
-            "    test.Test$Inner$$Icicle.saveInstanceState(target, outState);",
-            "    outState.putDoubleArray(BASE_KEY + \"otherThing\", target.otherThing);",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test.Extender target = (Test.Extender) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
+            "    outState.putDoubleArray(BASE_KEY + \"anotherThing\", target.anotherThing);",
+            "    return outState;",
             "  }",
             "}"
         ));
@@ -328,10 +399,11 @@ public class IcepickProcessorTest {
 
   @Test public void typesAreDowncastWhenNecessary() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;", "import icepick.Icicle;", "public class Test {",
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
         "  static class AL<E> extends java.util.ArrayList<E> {}",
         "  static class SA<E> extends android.util.SparseArray<E> {}",
-
         "  @Icicle android.text.SpannableString charSequence;",
         "  @Icicle android.text.SpannableString[] charSequenceArray;",
         "  @Icicle android.accounts.Account parcelable;",
@@ -342,20 +414,24 @@ public class IcepickProcessorTest {
         "  @Icicle AL<java.lang.CharSequence> charSequenceArrayList;",
         "  @Icicle AL<android.os.Parcelable> parcelableArrayList;",
         "  @Icicle SA<android.os.Parcelable> sparseParcelableArray;",
-
-        "}"));
+        "}"
+    ));
 
     JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
         Joiner.on('\n').join(
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$$Icicle implements StateHelper<Bundle> {",
             "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
+            "  private final StateHelper<Bundle> parent = (StateHelper<Bundle>) StateHelper.NO_OP;",
+            "  public Bundle restoreInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    if (state == null) {",
+            "      return null;",
             "    }",
+            "    Bundle savedInstanceState = state;",
             "    target.charSequence = (android.text.SpannableString) savedInstanceState.getCharSequence(BASE_KEY + \"charSequence\");",
             "    target.charSequenceArray = (android.text.SpannableString[]) savedInstanceState.getCharSequenceArray(BASE_KEY + \"charSequenceArray\");",
             "    target.parcelable = (android.accounts.Account) savedInstanceState.getParcelable(BASE_KEY + \"parcelable\");",
@@ -366,8 +442,12 @@ public class IcepickProcessorTest {
             "    target.charSequenceArrayList = (test.Test.AL<java.lang.CharSequence>) savedInstanceState.getCharSequenceArrayList(BASE_KEY + \"charSequenceArrayList\");",
             "    target.parcelableArrayList = (test.Test.AL<android.os.Parcelable>) savedInstanceState.getParcelableArrayList(BASE_KEY + \"parcelableArrayList\");",
             "    target.sparseParcelableArray = (test.Test.SA<android.os.Parcelable>) savedInstanceState.getSparseParcelableArray(BASE_KEY + \"sparseParcelableArray\");",
+            "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
-            "  public static void saveInstanceState(Test target, Bundle outState) {",
+            "  public Bundle saveInstanceState(Object obj, Bundle state) {",
+            "    Test target = (Test) obj;",
+            "    parent.saveInstanceState(target, state);",
+            "    Bundle outState = state;",
             "    outState.putCharSequence(BASE_KEY + \"charSequence\", target.charSequence);",
             "    outState.putCharSequenceArray(BASE_KEY + \"charSequenceArray\", target.charSequenceArray);",
             "    outState.putParcelable(BASE_KEY + \"parcelable\", target.parcelable);",
@@ -378,8 +458,10 @@ public class IcepickProcessorTest {
             "    outState.putCharSequenceArrayList(BASE_KEY + \"charSequenceArrayList\", target.charSequenceArrayList);",
             "    outState.putParcelableArrayList(BASE_KEY + \"parcelableArrayList\", target.parcelableArrayList);",
             "    outState.putSparseParcelableArray(BASE_KEY + \"sparseParcelableArray\", target.sparseParcelableArray);",
+            "    return outState;",
             "  }",
-            "}"));
+            "}"
+        ));
 
     ASSERT.about(javaSource()).that(source)
         .processedWith(icepickProcessors())
@@ -389,53 +471,53 @@ public class IcepickProcessorTest {
 
   @Test public void incompleteSerializableChainCompilesButFailsAtRuntime() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;", "import icepick.Icicle;", "public class Test {",
-        "  @Icicle Object[] thing;", "}"));
-
-    JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
-        Joiner.on('\n').join("package test;", "import android.os.Bundle;",
-            "import android.os.Parcelable;", "public class Test$$Icicle {",
-            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static void restoreInstanceState(Test target, Bundle savedInstanceState) {",
-            "    if (savedInstanceState == null) {",
-            "      return;",
-            "    }",
-            "    target.thing = (java.lang.Object[]) savedInstanceState.getSerializable(BASE_KEY + \"thing\");",
-            "  }",
-            "  public static void saveInstanceState(Test target, Bundle outState) {",
-            "    outState.putSerializable(BASE_KEY + \"thing\", target.thing);",
-            "  }",
-            "}"));
+        "package test;",
+        "import icepick.Icicle;",
+        "public class Test {",
+        // Arrays are Serializable by default
+        "  @Icicle Object[] thing;",
+        "}"
+    ));
 
     ASSERT.about(javaSource()).that(source)
         .processedWith(icepickProcessors())
-        .compilesWithoutError()
-        .and().generatesSources(expectedSource);
+        .compilesWithoutError();
   }
 
   @Test public void viewReturnsParcelable() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
-        "package test;", "import icepick.Icicle;", "import android.widget.LinearLayout;",
-        "import android.content.Context;", "public class Test extends LinearLayout{",
-        "  public Test(Context context) {", "    super(context);", "  }",
-        "  @Icicle android.os.Bundle thing;", "}"));
+        "package test;",
+        "import icepick.Icicle;",
+        "import android.widget.LinearLayout;",
+        "import android.content.Context;",
+        "public class Test extends LinearLayout {",
+        "  public Test(Context context) {",
+        "    super(context);",
+        "  }",
+        "  @Icicle android.os.Bundle thing;",
+        "}"
+    ));
 
     JavaFileObject expectedSource = JavaFileObjects.forSourceString("test.Test$$Icicle",
         Joiner.on('\n') .join(
             "package test;",
             "import android.os.Bundle;",
             "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
+            "import icepick.StateHelper;",
+            "public class Test$$Icicle implements StateHelper<Parcelable> {",
             "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static Parcelable restoreInstanceState(Test target, Parcelable state) {",
+            "  private final StateHelper<Parcelable> parent = (StateHelper<Parcelable>) StateHelper.NO_OP;",
+            "  public Parcelable restoreInstanceState(Object obj, Parcelable state) {",
+            "    Test target = (Test) obj;",
             "    Bundle savedInstanceState = (Bundle) state;",
             "    Parcelable superState = savedInstanceState.getParcelable(BASE_KEY + \"$$SUPER$$\");",
             "    target.thing = savedInstanceState.getBundle(BASE_KEY + \"thing\");",
-            "    return superState;",
+            "    return parent.restoreInstanceState(target, superState);",
             "  }",
-            "  public static Parcelable saveInstanceState(Test target, Parcelable state) {",
+            "  public Parcelable saveInstanceState(Object obj, Parcelable state) {",
+            "    Test target = (Test) obj;",
             "    Bundle outState = new Bundle();",
-            "    Parcelable superState = state;",
+            "    Parcelable superState = parent.saveInstanceState(target, state);",
             "    outState.putParcelable(BASE_KEY + \"$$SUPER$$\", superState);",
             "    outState.putBundle(BASE_KEY + \"thing\", target.thing);",
             "    return outState;",
@@ -447,83 +529,6 @@ public class IcepickProcessorTest {
         .processedWith(icepickProcessors())
         .compilesWithoutError()
         .and().generatesSources(expectedSource);
-  }
-
-  @Test public void viewWithParent() {
-    JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
-        "package test;",
-        "import icepick.Icicle;",
-        "import android.widget.LinearLayout;",
-        "import android.content.Context;",
-        "public class Test extends LinearLayout{",
-        "  public Test(Context context) {",
-        "    super(context);",
-        "  }",
-        "  @Icicle short thing;",
-        "}",
-        "class TestOne extends Test {",
-        "  public TestOne(Context context) {",
-        "    super(context);",
-        "  }",
-        "  @Icicle float[] anotherThing;",
-        "}",
-        "class TestTwo extends Test {",
-        "  public TestTwo(Context context) {",
-        "    super(context);",
-        "  }",
-        "}"
-        ));
-
-    JavaFileObject expectedSource1 = JavaFileObjects.forSourceString("test.Test$$Icicle",
-        Joiner.on('\n').join(
-            "package test;",
-            "import android.os.Bundle;",
-            "import android.os.Parcelable;",
-            "public class Test$$Icicle {",
-            "  private static final String BASE_KEY = \"test.Test$$Icicle.\";",
-            "  public static Parcelable restoreInstanceState(Test target, Parcelable state) {",
-            "    Bundle savedInstanceState = (Bundle)state;",
-            "    Parcelable superState = savedInstanceState.getParcelable(BASE_KEY + \"$$SUPER$$\");",
-            "    target.thing = savedInstanceState.getShort(BASE_KEY + \"thing\");",
-            "    return superState;",
-            "  }",
-            "  public static Parcelable saveInstanceState(Test target, Parcelable state) {",
-            "    Bundle outState = new Bundle();",
-            "    Parcelable superState = state;",
-            "    outState.putParcelable(BASE_KEY + \"$$SUPER$$\", superState);",
-            "    outState.putShort(BASE_KEY + \"thing\", target.thing);",
-            "    return outState;",
-            "  }",
-            "}"
-        ));
-
-    JavaFileObject expectedSource2 = JavaFileObjects.forSourceString("test.TestOne$$Icicle",
-        Joiner.on('\n') .join(
-            "package test;",
-            "import android.os.Bundle;",
-            "import android.os.Parcelable;",
-            "public class TestOne$$Icicle {",
-            "  private static final String BASE_KEY = \"test.TestOne$$Icicle.\";",
-            "  public static Parcelable restoreInstanceState(TestOne target, Parcelable state) {",
-            "    Bundle savedInstanceState = (Bundle)state;",
-            "    Parcelable superState = savedInstanceState.getParcelable(BASE_KEY + \"$$SUPER$$\");",
-            "    target.anotherThing = savedInstanceState.getFloatArray(BASE_KEY + \"anotherThing\");",
-            "    return test.Test$$Icicle.restoreInstanceState(target, superState);",
-            "  }",
-            "  public static Parcelable saveInstanceState(TestOne target, Parcelable state) {",
-            "    Bundle outState = new Bundle();",
-            "    Parcelable superState = test.Test$$Icicle.saveInstanceState(target, state);",
-            "    outState.putParcelable(BASE_KEY + \"$$SUPER$$\", superState);",
-            "    outState.putFloatArray(BASE_KEY + \"anotherThing\", target.anotherThing);",
-            "    return outState;",
-            "  }",
-            "}"
-        ));
-
-    ASSERT.about(javaSource()).that(source)
-        .processedWith(icepickProcessors())
-        .compilesWithoutError()
-        .and().generatesSources(expectedSource1, expectedSource2);
   }
 
   private Iterable<? extends Processor> icepickProcessors() {

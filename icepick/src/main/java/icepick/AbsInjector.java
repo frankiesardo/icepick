@@ -4,16 +4,6 @@ import java.util.Map;
 
 abstract class AbsInjector<T> {
 
-  private final StateHelper<T> NO_OP = new StateHelper<T>() {
-    @Override public T saveInstanceState(Object target, T state) {
-      return state;
-    }
-
-    @Override public T restoreInstanceState(Object target, T state) {
-      return state;
-    }
-  };
-
   protected final Object target;
   protected final T argument;
   protected final Map<Class<?>, StateHelper<?>> cachedHelpers;
@@ -33,7 +23,7 @@ abstract class AbsInjector<T> {
 
     String clsName = cls.getName();
     if (clsName.startsWith("android.") || clsName.startsWith("java.")) {
-      return NO_OP;
+      return (StateHelper<T>) StateHelper.NO_OP;
     }
 
     try {
@@ -41,9 +31,9 @@ abstract class AbsInjector<T> {
     } catch (ClassNotFoundException e) {
       stateHelper = getHelperForClass(cls.getSuperclass());
     } catch (InstantiationException e) {
-      return NO_OP;
+      return (StateHelper<T>) StateHelper.NO_OP;
     } catch (IllegalAccessException e) {
-      return NO_OP;
+      return (StateHelper<T>) StateHelper.NO_OP;
     }
 
     cachedHelpers.put(cls, stateHelper);

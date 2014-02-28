@@ -5,8 +5,8 @@ import java.util.Map;
 
 class ObjectInjector extends AbsInjector<Bundle> {
 
-  ObjectInjector(Object target, Bundle argument, Map<Class<?>, StateHelper<?>> cachedhelpers) {
-    super(target, argument, cachedhelpers);
+  ObjectInjector(Object target, Bundle argument, Map<Class<?>, StateHelper<?>> cachedHelpers) {
+    super(target, argument, cachedHelpers);
   }
 
   void inject(Action action) {

@@ -19,10 +19,11 @@ public class IcepickTest {
   static final String ANOTHER_VALUE = "anotherValue";
 
   final Bundle state = PowerMockito.mock(Bundle.class);
-  final ClassToInject classToInject = new ClassToInject();
+  final ClassWithInjections classWithInjections = new ClassWithInjections();
+  final ClassWithoutInjections classWithoutInjections = new ClassWithoutInjections();
 
   @Test public void saveState() throws Exception {
-    Icepick.saveInstanceState(classToInject, state);
+    Icepick.saveInstanceState(classWithInjections, state);
 
     verify(state).putString(KEY, VALUE);
   }
@@ -30,28 +31,42 @@ public class IcepickTest {
   @Test public void restoreState() throws Exception {
     when(state.getString(KEY)).thenReturn(ANOTHER_VALUE);
 
-    Icepick.restoreInstanceState(classToInject, state);
+    Icepick.restoreInstanceState(classWithInjections, state);
 
-    assertEquals(ANOTHER_VALUE, classToInject.string);
+    assertEquals(ANOTHER_VALUE, classWithInjections.string);
   }
 
-  static class ClassToInject {
+  @Test public void noInjectionsDoesNotBlowUp() throws Exception {
+    Icepick.saveInstanceState(classWithoutInjections, state);
+
+    Icepick.restoreInstanceState(classWithoutInjections, state);
+
+    assertNoExceptionsThrown();
+  }
+
+  static class ClassWithInjections {
     String string = VALUE;
   }
 
+  static class ClassWithoutInjections {
+  }
+
   @SuppressWarnings("unused")
-  static class ClassToInject$$Icicle implements StateHelper<Bundle> {
+  static class ClassWithInjections$$Icicle implements StateHelper<Bundle> {
 
     @Override public Bundle saveInstanceState(Object obj, Bundle outState) {
-      ClassToInject target = (ClassToInject) obj;
+      ClassWithInjections target = (ClassWithInjections) obj;
       outState.putString(KEY, target.string);
       return outState;
     }
 
     @Override public Bundle restoreInstanceState(Object obj, Bundle saveInstanceState) {
-      ClassToInject target = (ClassToInject) obj;
+      ClassWithInjections target = (ClassWithInjections) obj;
       target.string = saveInstanceState.getString(KEY);
       return saveInstanceState;
     }
+  }
+
+  private void assertNoExceptionsThrown() {
   }
 }
