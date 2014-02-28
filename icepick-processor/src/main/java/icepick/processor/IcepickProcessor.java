@@ -29,7 +29,8 @@ public class IcepickProcessor extends AbstractProcessor {
     }
 
     long elapsedTime = System.currentTimeMillis() - startTime;
-    messager().printMessage(Diagnostic.Kind.NOTE, "IcepickProcessor took " + elapsedTime + " milliseconds");
+    messager().printMessage(Diagnostic.Kind.NOTE,
+        "IcepickProcessor took " + elapsedTime + " milliseconds");
     return true;
   }
 
