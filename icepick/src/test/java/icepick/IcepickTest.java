@@ -1,13 +1,13 @@
 package icepick;
 
 import android.os.Bundle;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -32,7 +32,7 @@ public class IcepickTest {
 
     Icepick.restoreInstanceState(classToInject, state);
 
-    Assert.assertEquals(ANOTHER_VALUE, classToInject.string);
+    assertEquals(ANOTHER_VALUE, classToInject.string);
   }
 
   static class ClassToInject {
@@ -40,14 +40,18 @@ public class IcepickTest {
   }
 
   @SuppressWarnings("unused")
-  static class ClassToInject$$Icicle {
+  static class ClassToInject$$Icicle implements StateHelper<Bundle> {
 
-    public static void saveInstanceState(ClassToInject target, Bundle outState) {
+    @Override public Bundle saveInstanceState(Object obj, Bundle outState) {
+      ClassToInject target = (ClassToInject) obj;
       outState.putString(KEY, target.string);
+      return outState;
     }
 
-    public static void restoreInstanceState(ClassToInject target, Bundle saveInstanceState) {
+    @Override public Bundle restoreInstanceState(Object obj, Bundle saveInstanceState) {
+      ClassToInject target = (ClassToInject) obj;
       target.string = saveInstanceState.getString(KEY);
+      return saveInstanceState;
     }
   }
 }
