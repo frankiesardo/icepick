@@ -1,8 +1,8 @@
 Icepick
 ============
 
-Icepick is an Android library that simplifies the `Bundle` save and restore instance state.
-It uses annotation processing to generate code that does bundle manipulation and key generation, removing lots of boilerplate from your code.
+Icepick is an Android library that simplifies the lifecycle of save and restore instance state.
+It uses annotation processing to generate code that does bundle manipulation and key generation, removing lots of boilerplate from your classes.
 
 ```java
 class ExampleActivity extends Activity {
@@ -42,7 +42,6 @@ class CustomView extends View {
 }
 ```
 
-__If you're proficient with a [dagger](https://github.com/square/dagger) and a [butter knife](https://github.com/JakeWharton/butterknife) this is another useful weapon in your tool bag.__
 
 Proguard
 --------
@@ -64,15 +63,32 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3.2'
-  provided 'com.github.frankiesardo:icepick-processor:2.3.2'
+  compile 'com.github.frankiesardo:icepick:2.3.3'
+  provided 'com.github.frankiesardo:icepick-processor:2.3.3'
 }
 ```
 
+Maven:
+
+```
+<dependencies>
+  <dependency>
+    <groupId>com.github.frankiesardo</groupId>
+    <artifactId>icepick</artifactId>
+    <version>2.3.3</version>
+  </dependency>
+  <dependency>
+    <groupId>com.github.frankiesardo</groupId>
+    <artifactId>icepick-processor</artifactId>
+    <version>2.3.3</version>
+    <optional>true</optional>
+  </dependency>
+</dependencies>
+```
 
 Jar:
 
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.2/icepick-2.3.2.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.2/icepick-processor-2.3.2.jar).
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.3/icepick-2.3.3.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.3/icepick-processor-2.3.3.jar).
 
 License
 -------
