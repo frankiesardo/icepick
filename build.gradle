@@ -9,13 +9,16 @@ subprojects {
   }
 
   repositories {
+    mavenCentral()
     maven {
       url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
-    mavenCentral()
     mavenLocal()
   }
+
+  project.group = 'com.gihub.frankiesardo'
 }
+
 
 task wrapper(type: Wrapper) {
   gradleVersion = '1.10'
