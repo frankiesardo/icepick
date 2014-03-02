@@ -16,7 +16,7 @@ subprojects {
     mavenLocal()
   }
 
-  project.group = 'com.gihub.frankiesardo'
+  project.group = 'com.github.frankiesardo'
 }
 
 

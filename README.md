@@ -63,8 +63,8 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3.4'
-  provided 'com.github.frankiesardo:icepick-processor:2.3.4'
+  compile 'com.github.frankiesardo:icepick:2.3.5'
+  provided 'com.github.frankiesardo:icepick-processor:2.3.5'
 }
 ```
 
@@ -75,12 +75,12 @@ Maven:
   <dependency>
     <groupId>com.github.frankiesardo</groupId>
     <artifactId>icepick</artifactId>
-    <version>2.3.4</version>
+    <version>2.3.5</version>
   </dependency>
   <dependency>
     <groupId>com.github.frankiesardo</groupId>
     <artifactId>icepick-processor</artifactId>
-    <version>2.3.4</version>
+    <version>2.3.5</version>
     <optional>true</optional>
   </dependency>
 </dependencies>
@@ -88,7 +88,7 @@ Maven:
 
 Jar:
 
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.4/icepick-2.3.4.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.4/icepick-processor-2.3.4.jar).
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.5/icepick-2.3.5.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.5/icepick-processor-2.3.5.jar).
 
 License
 -------
