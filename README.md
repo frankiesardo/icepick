@@ -88,7 +88,7 @@ Maven:
 
 Jar:
 
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.5/icepick-2.3.5.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.5/icepick-processor-2.3.5.jar).
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.5/icepick-2.3.5.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.5/icepick-processor-2.3.5.jar). Note that if you use include the jars without using a dependency management tool you'll also need to include Guava in your path. More details [here](https://github.com/frankiesardo/icepick/issues/17)
 
 License
 -------
