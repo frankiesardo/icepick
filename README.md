@@ -63,8 +63,8 @@ Gradle:
 
 ```
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3.5'
-  provided 'com.github.frankiesardo:icepick-processor:2.3.5'
+  compile 'com.github.frankiesardo:icepick:2.3.6'
+  provided 'com.github.frankiesardo:icepick-processor:2.3.6'
 }
 ```
 
@@ -75,12 +75,12 @@ Maven:
   <dependency>
     <groupId>com.github.frankiesardo</groupId>
     <artifactId>icepick</artifactId>
-    <version>2.3.5</version>
+    <version>2.3.6</version>
   </dependency>
   <dependency>
     <groupId>com.github.frankiesardo</groupId>
     <artifactId>icepick-processor</artifactId>
-    <version>2.3.5</version>
+    <version>2.3.6</version>
     <optional>true</optional>
   </dependency>
 </dependencies>
@@ -88,7 +88,7 @@ Maven:
 
 Jar:
 
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.5/icepick-2.3.5.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.5/icepick-processor-2.3.5.jar). Note that if you use include the jars without using a dependency management tool you'll also need to include Guava in your path. More details [here](https://github.com/frankiesardo/icepick/issues/17)
+This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.6/icepick-2.3.6.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.6/icepick-processor-2.3.6.jar). Note that if you use include the jars without using a dependency management tool you'll also need to include Guava in your path. More details [here](https://github.com/frankiesardo/icepick/issues/17)
 
 License
 -------

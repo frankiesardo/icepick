@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "2.3.5"
+version = "2.3.6"
 
 def isReleaseBuild() {
   !version.contains("SNAPSHOT")
@@ -17,8 +17,8 @@ if (isReleaseBuild()) {
   sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-def username = project.hasProperty("nexusUsername") ? project.property("nexusUsername") : ""
-def password = project.hasProperty("nexusPassword") ? project.property("nexusPassword") : ""
+def username = project.getProperty("nexusUsername") ?: ""
+def password = project.getProperty("nexusPassword") ?: ""
 
 afterEvaluate { project ->
   uploadArchives {
