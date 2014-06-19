@@ -412,8 +412,8 @@ public class IcepickProcessorTest {
         "  @Icicle AL<java.lang.Integer> integerArrayList;",
         "  @Icicle AL<java.lang.String> stringArrayList;",
         "  @Icicle AL<java.lang.CharSequence> charSequenceArrayList;",
-        "  @Icicle AL<android.os.Parcelable> parcelableArrayList;",
-        "  @Icicle SA<android.os.Parcelable> sparseParcelableArray;",
+        "  @Icicle AL<android.net.Uri> parcelableArrayList;",
+        "  @Icicle SA<android.net.Uri> sparseParcelableArray;",
         "}"
     ));
 
@@ -440,8 +440,8 @@ public class IcepickProcessorTest {
             "    target.integerArrayList = (test.Test.AL<java.lang.Integer>) savedInstanceState.getIntegerArrayList(BASE_KEY + \"integerArrayList\");",
             "    target.stringArrayList = (test.Test.AL<java.lang.String>) savedInstanceState.getStringArrayList(BASE_KEY + \"stringArrayList\");",
             "    target.charSequenceArrayList = (test.Test.AL<java.lang.CharSequence>) savedInstanceState.getCharSequenceArrayList(BASE_KEY + \"charSequenceArrayList\");",
-            "    target.parcelableArrayList = (test.Test.AL<android.os.Parcelable>) savedInstanceState.getParcelableArrayList(BASE_KEY + \"parcelableArrayList\");",
-            "    target.sparseParcelableArray = (test.Test.SA<android.os.Parcelable>) savedInstanceState.getSparseParcelableArray(BASE_KEY + \"sparseParcelableArray\");",
+            "    target.parcelableArrayList = (test.Test.AL<android.net.Uri>) (java.util.ArrayList) savedInstanceState.getParcelableArrayList(BASE_KEY + \"parcelableArrayList\");",
+            "    target.sparseParcelableArray = (test.Test.SA<android.net.Uri>) (android.util.SparseArray) savedInstanceState.getSparseParcelableArray(BASE_KEY + \"sparseParcelableArray\");",
             "    return parent.restoreInstanceState(target, savedInstanceState);",
             "  }",
             "  public Bundle saveInstanceState(Object obj, Bundle state) {",

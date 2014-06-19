@@ -70,17 +70,18 @@ class AnnotationsConverter {
 
   private class ToAnnotatedField implements Function<Element, AnnotatedField> {
 
-    final TypeToMethodMap typeToMethodMap = new TypeToMethodMap(elementUtils, typeUtils);
+    final TypeToBundleMethodMap
+        typeToBundleMethodMap = new TypeToBundleMethodMap(elementUtils, typeUtils);
 
     @Override public AnnotatedField apply(Element fieldElement) {
       String name = fieldElement.getSimpleName().toString();
       TypeMirror fieldType = fieldElement.asType();
       TypeElement enclosingClass = (TypeElement) fieldElement.getEnclosingElement();
-      String bundleMethod = typeToMethodMap.convert(fieldType);
+      String bundleMethod = typeToBundleMethodMap.convert(fieldType);
       if (bundleMethod == null) {
         logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
       }
-      String typeCast = typeToMethodMap.requiresTypeCast(bundleMethod) ? "(" + fieldType + ")" : "";
+      String typeCast = TypecastStrategy.resolve(bundleMethod, fieldType);
 
       return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
     }

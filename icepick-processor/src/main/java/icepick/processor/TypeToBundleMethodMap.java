@@ -1,9 +1,7 @@
 package icepick.processor;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
@@ -12,14 +10,14 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-class TypeToMethodMap {
+class TypeToBundleMethodMap {
 
   private final Map<TypeMirror, String> conversionMap = new LinkedHashMap<TypeMirror, String>();
 
   private final Elements elementUtils;
   private final Types typeUtils;
 
-  public TypeToMethodMap(Elements elementUtils, Types typeUtils) {
+  public TypeToBundleMethodMap(Elements elementUtils, Types typeUtils) {
     this.elementUtils = elementUtils;
     this.typeUtils = typeUtils;
 
@@ -35,10 +33,6 @@ class TypeToMethodMap {
       }
     }
     return null;
-  }
-
-  public boolean requiresTypeCast(String bundleMethod) {
-    return REQUIRE_TYPE_CAST_METHODS.contains(bundleMethod);
   }
 
   private void put(TypeMirror type, String method) {
@@ -109,58 +103,39 @@ class TypeToMethodMap {
     return elementUtils.getTypeElement(type).asType();
   }
 
-  private static final Map<String, String> DICTIONARY = new LinkedHashMap<String, String>();
+  private static final Map<String, String>  DICTIONARY = new LinkedHashMap<String, String>() {{
+    put("java.util.ArrayList<java.lang.Integer>", "IntegerArrayList");
+    put("java.util.ArrayList<java.lang.String>", "StringArrayList");
+    put("java.util.ArrayList<java.lang.CharSequence>", "CharSequenceArrayList");
 
-  static {
-
-    DICTIONARY.put("java.util.ArrayList<java.lang.Integer>", "IntegerArrayList");
-    DICTIONARY.put("java.util.ArrayList<java.lang.String>", "StringArrayList");
-    DICTIONARY.put("java.util.ArrayList<java.lang.CharSequence>", "CharSequenceArrayList");
-
-    DICTIONARY.put("java.util.ArrayList<? extends android.os.Parcelable>", "ParcelableArrayList");
-    DICTIONARY.put("android.util.SparseArray<? extends android.os.Parcelable>",
+    put("java.util.ArrayList<? extends android.os.Parcelable>", "ParcelableArrayList");
+    put("android.util.SparseArray<? extends android.os.Parcelable>",
         "SparseParcelableArray");
 
-    DICTIONARY.put("short", "Short");
-    DICTIONARY.put("short[]", "ShortArray");
-    DICTIONARY.put("int", "Int");
-    DICTIONARY.put("int[]", "IntArray");
-    DICTIONARY.put("long", "Long");
-    DICTIONARY.put("long[]", "LongArray");
-    DICTIONARY.put("float", "Float");
-    DICTIONARY.put("float[]", "FloatArray");
-    DICTIONARY.put("double", "Double");
-    DICTIONARY.put("double[]", "DoubleArray");
-    DICTIONARY.put("byte", "Byte");
-    DICTIONARY.put("byte[]", "ByteArray");
-    DICTIONARY.put("boolean", "Boolean");
-    DICTIONARY.put("boolean[]", "BooleanArray");
-    DICTIONARY.put("char", "Char");
-    DICTIONARY.put("char[]", "CharArray");
-    DICTIONARY.put("java.lang.String", "String");
-    DICTIONARY.put("java.lang.String[]", "StringArray");
-    DICTIONARY.put("android.os.Bundle", "Bundle");
+    put("short", "Short");
+    put("short[]", "ShortArray");
+    put("int", "Int");
+    put("int[]", "IntArray");
+    put("long", "Long");
+    put("long[]", "LongArray");
+    put("float", "Float");
+    put("float[]", "FloatArray");
+    put("double", "Double");
+    put("double[]", "DoubleArray");
+    put("byte", "Byte");
+    put("byte[]", "ByteArray");
+    put("boolean", "Boolean");
+    put("boolean[]", "BooleanArray");
+    put("char", "Char");
+    put("char[]", "CharArray");
+    put("java.lang.String", "String");
+    put("java.lang.String[]", "StringArray");
+    put("android.os.Bundle", "Bundle");
 
-    DICTIONARY.put("java.lang.CharSequence", "CharSequence");
-    DICTIONARY.put("java.lang.CharSequence[]", "CharSequenceArray");
-    DICTIONARY.put("android.os.Parcelable", "Parcelable");
-    DICTIONARY.put("android.os.Parcelable[]", "ParcelableArray");
-    DICTIONARY.put("java.io.Serializable", "Serializable");
-  }
-
-  private static final Set<String> REQUIRE_TYPE_CAST_METHODS = new HashSet<String>();
-
-  static {
-    REQUIRE_TYPE_CAST_METHODS.add("IntegerArrayList");
-    REQUIRE_TYPE_CAST_METHODS.add("StringArrayList");
-    REQUIRE_TYPE_CAST_METHODS.add("CharSequenceArrayList");
-    REQUIRE_TYPE_CAST_METHODS.add("ParcelableArrayList");
-    REQUIRE_TYPE_CAST_METHODS.add("SparseParcelableArray");
-
-    REQUIRE_TYPE_CAST_METHODS.add("CharSequence");
-    REQUIRE_TYPE_CAST_METHODS.add("CharSequenceArray");
-    REQUIRE_TYPE_CAST_METHODS.add("Parcelable");
-    REQUIRE_TYPE_CAST_METHODS.add("ParcelableArray");
-    REQUIRE_TYPE_CAST_METHODS.add("Serializable");
-  }
+    put("java.lang.CharSequence", "CharSequence");
+    put("java.lang.CharSequence[]", "CharSequenceArray");
+    put("android.os.Parcelable", "Parcelable");
+    put("android.os.Parcelable[]", "ParcelableArray");
+    put("java.io.Serializable", "Serializable");
+  }};
 }
