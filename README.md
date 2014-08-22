@@ -61,7 +61,7 @@ Icepick comes in two libraries: `icepick` and `icepick-processor`.
 
 Gradle:
 
-```
+```groovy
 dependencies {
   compile 'com.github.frankiesardo:icepick:2.3.6'
   provided 'com.github.frankiesardo:icepick-processor:2.3.6'
@@ -70,7 +70,7 @@ dependencies {
 
 Maven:
 
-```
+```xml
 <dependencies>
   <dependency>
     <groupId>com.github.frankiesardo</groupId>
