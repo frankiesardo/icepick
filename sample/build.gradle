@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 dependencies {
   provided project(':icepick-processor')
@@ -7,12 +7,12 @@ dependencies {
 }
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion "19.1"
+  compileSdkVersion 21
+  buildToolsVersion "21.0.2"
 
     defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 19
+    targetSdkVersion 21
   }
 
   lintOptions {

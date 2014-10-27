@@ -10,7 +10,7 @@ dependencies {
 
   testCompile 'com.google.testing.compile:compile-testing:0.4'
   testCompile 'com.google.android:android:4.1.1.4'
-  testCompile files('libs/tools.jar')
+  testCompile files("$System.env.JAVA_HOME/lib/tools.jar")
 }
 
 tasks.withType(Test) {
