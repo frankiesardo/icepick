@@ -112,6 +112,8 @@ class TypeToBundleMethodMap {
     put("android.util.SparseArray<? extends android.os.Parcelable>",
         "SparseParcelableArray");
 
+    put("char", "Char");
+    put("byte", "Byte");
     put("short", "Short");
     put("short[]", "ShortArray");
     put("int", "Int");
@@ -122,11 +124,9 @@ class TypeToBundleMethodMap {
     put("float[]", "FloatArray");
     put("double", "Double");
     put("double[]", "DoubleArray");
-    put("byte", "Byte");
     put("byte[]", "ByteArray");
     put("boolean", "Boolean");
     put("boolean[]", "BooleanArray");
-    put("char", "Char");
     put("char[]", "CharArray");
     put("java.lang.String", "String");
     put("java.lang.String[]", "StringArray");
