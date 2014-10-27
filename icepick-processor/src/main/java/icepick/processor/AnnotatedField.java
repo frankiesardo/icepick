@@ -8,12 +8,14 @@ class AnnotatedField {
   private final String bundleMethod;
   private final String typeCast;
   private final TypeElement enclosingClassType;
+  private final boolean nullable;
 
-  AnnotatedField(String name, String bundleMethod, String typeCast, TypeElement enclosingClassType) {
+  AnnotatedField(String name, String bundleMethod, String typeCast, TypeElement enclosingClassType, boolean nullable) {
     this.name = name;
     this.bundleMethod = bundleMethod;
     this.typeCast = typeCast;
     this.enclosingClassType = enclosingClassType;
+    this.nullable = nullable;
   }
 
   public String getName() {
@@ -31,4 +33,8 @@ class AnnotatedField {
   public TypeElement getEnclosingClassType() {
     return enclosingClassType;
   }
+
+  public boolean isNullable() {
+        return nullable;
+    }
 }

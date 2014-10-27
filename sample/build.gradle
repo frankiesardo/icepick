@@ -1,18 +1,24 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
+buildscript {
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
 dependencies {
-  provided project(':icepick-processor')
+  apt project(':icepick-processor')
 
   compile project(':sample-lib')
 }
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion "19.1"
+  compileSdkVersion 21
+  buildToolsVersion "21.0.2"
 
     defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 19
+    targetSdkVersion 21
   }
 
   lintOptions {

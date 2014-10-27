@@ -42,6 +42,16 @@ class CustomView extends View {
 }
 ```
 
+Null-safety
+--------
+
+All variables, annotated with `@Icicle`, annotation are assumed to be null-safe; generated code does not
+contain null checks, the only exception being wrappers for primitive types (`Long`, `Character` etc.)
+This behavior can be modified in both ways by annotating corresponding variable definitions with
+any `Nullable`/`Nonnull`/`NotNull` annotation of your choise.
+
+Note: Icepick does no checks for null-safety on it's own. You still have to use other tools with
+abovementioned annotations to detect related issues.
 
 Proguard
 --------
