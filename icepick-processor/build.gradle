@@ -10,6 +10,7 @@ dependencies {
 
   testCompile 'com.google.testing.compile:compile-testing:0.4'
   testCompile 'com.google.android:android:4.1.1.4'
+  testCompile 'com.google.code.findbugs:jsr305:2.+'
   testCompile files("$System.env.JAVA_HOME/lib/tools.jar")
 }
 

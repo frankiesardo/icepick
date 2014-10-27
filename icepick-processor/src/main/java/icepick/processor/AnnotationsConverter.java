@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import icepick.Icicle;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +73,8 @@ class AnnotationsConverter {
 
     final TypeToBundleMethodMap
         typeToBundleMethodMap = new TypeToBundleMethodMap(elementUtils, typeUtils);
+    final NullSafetyDetector
+            nullSafetyDetector = new NullSafetyDetector(typeUtils);
 
     @Override public AnnotatedField apply(Element fieldElement) {
       String name = fieldElement.getSimpleName().toString();
@@ -82,8 +85,9 @@ class AnnotationsConverter {
         logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
       }
       String typeCast = TypecastStrategy.resolve(bundleMethod, fieldType);
+      boolean nullability = nullSafetyDetector.isNullable(fieldElement);
 
-      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
+      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass, nullability);
     }
   }
 
