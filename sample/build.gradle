@@ -1,7 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
+buildscript {
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
 dependencies {
-  provided project(':icepick-processor')
+  apt project(':icepick-processor')
 
   compile project(':sample-lib')
 }

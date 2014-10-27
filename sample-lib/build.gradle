@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 
 android {
   compileSdkVersion 21
@@ -10,7 +11,13 @@ android {
   }
 }
 
+buildscript {
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
+
 dependencies {
   compile project(':icepick')
-  provided project(':icepick-processor')
+  apt project(':icepick-processor')
 }
