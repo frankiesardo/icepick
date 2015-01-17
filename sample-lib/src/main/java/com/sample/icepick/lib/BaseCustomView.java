@@ -9,7 +9,7 @@ import icepick.Icicle;
 
 public class BaseCustomView extends TextView {
 
-  @Icicle protected int backgroundColor = Integer.MAX_VALUE;
+  @Icicle protected Integer backgroundColor;
 
   public BaseCustomView(Context context) {
     super(context);
@@ -36,7 +36,7 @@ public class BaseCustomView extends TextView {
   @Override
   public void onRestoreInstanceState(Parcelable state) {
     super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-    if (backgroundColor != Integer.MAX_VALUE) {
+    if (backgroundColor != null) {
       setBackgroundColorWithAnotherMethod(backgroundColor);
     }
   }

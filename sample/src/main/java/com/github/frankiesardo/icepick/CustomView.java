@@ -30,7 +30,7 @@ public class CustomView extends BaseCustomView {
   @Override
   public void onRestoreInstanceState(Parcelable state) {
     super.onRestoreInstanceState(state);
-    if (textColor != Integer.MAX_VALUE) {
+    if (textColor != null) {
       setTextColorWithAnotherMethod(textColor);
     }
   }
