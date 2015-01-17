@@ -8,7 +8,7 @@ import icepick.Icicle;
 
 public class CustomView extends BaseCustomView {
 
-  @Icicle Integer textColor = Integer.MAX_VALUE;
+  @Icicle Integer textColor;
 
   public CustomView(Context context) {
     super(context);
