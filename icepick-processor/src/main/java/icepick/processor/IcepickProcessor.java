@@ -22,15 +22,9 @@ public class IcepickProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment) {
-    long startTime = System.currentTimeMillis();
-
     for (TypeElement annotation : annotations) {
       write(classesWithFieldsAnnotatedWith(environment.getElementsAnnotatedWith(annotation)));
     }
-
-    long elapsedTime = System.currentTimeMillis() - startTime;
-    messager().printMessage(Diagnostic.Kind.NOTE,
-        "IcepickProcessor took " + elapsedTime + " milliseconds");
     return true;
   }
 
