@@ -82,8 +82,8 @@ abstract class AbsWriter {
   }
 
   private String emitRestoreState(AnnotatedField field) {
-    return "    target." + field.getName() + " = " + field.getTypeCast() + " savedInstanceState.get"
-        + field.getBundleMethod() + "(" + BASE_KEY + " + \"" + field.getName() + "\");\n";
+    String key = BASE_KEY + " + \"" + field.getName() + "\"";
+    return "if (savedInstanceState.containsKey(" + key + ")) {     target." + field.getName() + " = " + field.getTypeCast() + " savedInstanceState.get" + field.getBundleMethod() + "(" + key + ");\n}\n";
   }
 
   protected abstract String emitRestoreStateEnd();
@@ -99,8 +99,12 @@ abstract class AbsWriter {
   }
 
   private String emitSaveState(AnnotatedField field) {
-    return "    outState.put" + field.getBundleMethod() + "(" + BASE_KEY + " + \""
+    String save = "    outState.put" + field.getBundleMethod() + "(" + BASE_KEY + " + \""
         + field.getName() + "\", target." + field.getName() + ");\n";
+    if (field.isPrimitive()) {
+      return save;
+    }
+    return "if (target." + field.getName() + "!= null) {" + save + "}";
   }
 
   protected abstract String emitSaveStateEnd();

@@ -82,8 +82,9 @@ class AnnotationsConverter {
         logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
       }
       String typeCast = TypecastStrategy.resolve(bundleMethod, fieldType);
+      boolean isPrimitive = fieldType.getKind().isPrimitive();
 
-      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass);
+      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass, isPrimitive);
     }
   }
 
