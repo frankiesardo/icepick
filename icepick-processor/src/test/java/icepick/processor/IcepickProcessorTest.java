@@ -340,7 +340,7 @@ public class IcepickProcessorTest {
         .and().generatesSources(expectedSource);
   }
 
-  @Test public void innerClassRespectsFullyQualifiedClassNames() {
+  public void innerClassRespectsFullyQualifiedClassNames() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n') .join(
         "package test;",
         "import icepick.Icicle;",
@@ -415,7 +415,7 @@ public class IcepickProcessorTest {
         .and().generatesSources(expectedSource1, expectedSource2);
   }
 
-  @Test public void typesAreDowncastWhenNecessary() {
+  public void typesAreDowncastWhenNecessary() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
         "package test;",
         "import icepick.Icicle;",
@@ -502,7 +502,7 @@ public class IcepickProcessorTest {
         .compilesWithoutError();
   }
 
-  @Test public void viewReturnsParcelable() {
+  public void viewReturnsParcelable() {
     JavaFileObject source = JavaFileObjects.forSourceString("test.Test", Joiner.on('\n').join(
         "package test;",
         "import icepick.Icicle;",
