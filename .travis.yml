@@ -1,5 +1,6 @@
 language: clojure
-script: lein sub test
+lein: lein2
+script: lein2 sub do install, test
 notifications:
   email: false
 sudo: false
