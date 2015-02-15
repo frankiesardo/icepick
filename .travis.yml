@@ -1,5 +1,4 @@
 language: clojure
-install: lein sub install
 script: lein sub test
 notifications:
   email: false
