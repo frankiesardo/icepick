@@ -1,2 +1,0 @@
-include 'icepick', 'icepick-processor', 'sample-lib', 'sample'
-rootProject.name = 'icepick-parent'

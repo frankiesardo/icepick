@@ -1,0 +1,20 @@
+apply plugin: 'android-library'
+
+dependencies {
+  compile "frankiesardo:icepick:3.0.0"
+  provided "frankiesardo:icepick-processor:3.0.0"
+}
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion "19.0.3"
+
+  defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 19
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+}

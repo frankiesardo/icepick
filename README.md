@@ -18,7 +18,7 @@ class ExampleActivity extends Activity {
     Icepick.saveInstanceState(this, outState);
   }
 
-  // You can put the calls to Bundles into a BaseActivity
+  // You can put the calls to Icepick into a BaseActivity
   // All Activities extending BaseActivity automatically have state saved/restored
 }
 ```
@@ -46,7 +46,7 @@ class CustomView extends View {
 Proguard
 --------
 
-If Proguard is enabled be sure to add these rules on your configuration:
+If Proguard is enabled make sure you add these rules to your configuration:
 
 ```
 -dontwarn icepick.**
@@ -57,38 +57,49 @@ If Proguard is enabled be sure to add these rules on your configuration:
 Download
 --------
 
-Icepick comes in two libraries: `icepick` and `icepick-processor`.
+Icepick needs two libraries: `icepick` and `icepick-processor`.
 
 Gradle:
 
 ```groovy
+repositories {
+  maven {url "https://clojars.org/repo/"}
+}
 dependencies {
-  compile 'com.github.frankiesardo:icepick:2.3.6'
-  provided 'com.github.frankiesardo:icepick-processor:2.3.6'
+  compile 'frankiesardo:icepick:3.0.0'
+  provided 'frankiesardo:icepick-processor:3.0.0'
 }
 ```
 
 Maven:
 
 ```xml
+<repositories>
+  <repository>
+    <id>clojars</id>
+    <url>https://clojars.org/repo/</url>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+    <releases>
+      <enabled>true</enabled>
+    </releases>
+  </repository>
+</repositories>
 <dependencies>
   <dependency>
-    <groupId>com.github.frankiesardo</groupId>
+    <groupId>frankiesardo</groupId>
     <artifactId>icepick</artifactId>
-    <version>2.3.6</version>
+    <version>3.0.0</version>
   </dependency>
   <dependency>
-    <groupId>com.github.frankiesardo</groupId>
+    <groupId>frankiesardo</groupId>
     <artifactId>icepick-processor</artifactId>
-    <version>2.3.6</version>
+    <version>3.0.0</version>
     <optional>true</optional>
   </dependency>
 </dependencies>
 ```
-
-Jar:
-
-This is the [library](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick/2.3.6/icepick-2.3.6.jar) and here is the [processor](http://search.maven.org/remotecontent?filepath=com/github/frankiesardo/icepick-processor/2.3.6/icepick-processor-2.3.6.jar). Note that if you use include the jars without using a dependency management tool you'll also need to include Guava in your path. More details [here](https://github.com/frankiesardo/icepick/issues/17)
 
 License
 -------

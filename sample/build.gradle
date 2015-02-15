@@ -1,21 +1,23 @@
-apply plugin: 'android'
+subprojects {
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+    dependencies {
+      classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+  }
 
-dependencies {
-  provided project(':icepick-processor')
-
-  compile project(':sample-lib')
+  repositories {
+    mavenCentral()
+    maven {
+      url "https://clojars.org/repo/"
+    }
+    mavenLocal()
+  }
 }
 
-android {
-  compileSdkVersion 19
-  buildToolsVersion "19.1"
 
-    defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion 19
-  }
-
-  lintOptions {
-    abortOnError false
-  }
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.10'
 }
