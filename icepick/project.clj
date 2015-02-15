@@ -5,4 +5,5 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :java-source-paths ["src"]
   :javac-options ["-target" "1.6" "-source" "1.6"]
-  :profiles {:provided {:dependencies [[com.google.android/android "4.1.1.4"]]}})
+  :profiles {:provided {:dependencies [[com.google.android/android "4.1.1.4"]]}
+             :dev {:dependencies [[org.clojure/clojure "1.6.0"]]}})
