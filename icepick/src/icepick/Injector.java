@@ -67,7 +67,7 @@ public class Injector {
             }
         }
 
-        public byte[] getByeArray(Bundle state, String key) {
+        public byte[] getByteArray(Bundle state, String key) {
             return state.getByteArray(key + baseKey);
         }
 
