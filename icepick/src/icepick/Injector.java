@@ -342,7 +342,7 @@ public class Injector {
             return state.getParcelableArrayList(key + baseKey);
         }
 
-        public void putParcelableArrayList(Bundle state, String key, ArrayList<Parcelable> x) {
+        public void putParcelableArrayList(Bundle state, String key, ArrayList<? extends Parcelable> x) {
             state.putParcelableArrayList(key + baseKey, x);
         }
 
@@ -350,7 +350,7 @@ public class Injector {
             return state.getSparseParcelableArray(key + baseKey);
         }
 
-        public void putSparseParcelableArray(Bundle state, String key, SparseArray<Parcelable> x) {
+        public void putSparseParcelableArray(Bundle state, String key, SparseArray<? extends Parcelable> x) {
             state.putSparseParcelableArray(key + baseKey, x);
         }
 
