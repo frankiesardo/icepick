@@ -1,8 +1,10 @@
 Icepick
 ============
 
-Icepick is an Android library that simplifies the lifecycle of save and restore instance state.
-It uses annotation processing to generate code that does bundle manipulation and key generation, removing lots of boilerplate from your classes.
+[![Build Status](https://secure.travis-ci.org/frankiesardo/icepick.png)](http://travis-ci.org/frankiesardo/icepick)
+
+Icepick is an Android library that eliminates the boilerplate of saving and restoring instance state.
+It uses annotation processing to generate code that does bundle manipulation and key generation, so that you don't have to write it yourself.
 
 ```java
 class ExampleActivity extends Activity {
@@ -59,6 +61,10 @@ Download
 
 Icepick needs two libraries: `icepick` and `icepick-processor`.
 
+[![Clojars Project](http://clojars.org/frankiesardo/icepick/latest-version.svg)](http://clojars.org/frankiesardo/icepick)
+
+[![Clojars Project](http://clojars.org/frankiesardo/icepick-processor/latest-version.svg)](http://clojars.org/frankiesardo/icepick-processor)
+
 Gradle:
 
 ```groovy
@@ -66,8 +72,8 @@ repositories {
   maven {url "https://clojars.org/repo/"}
 }
 dependencies {
-  compile 'frankiesardo:icepick:3.0.0'
-  provided 'frankiesardo:icepick-processor:3.0.0'
+  compile 'frankiesardo:icepick:{{latest-version}}'
+  provided 'frankiesardo:icepick-processor:{{latest-version}}'
 }
 ```
 
@@ -90,12 +96,12 @@ Maven:
   <dependency>
     <groupId>frankiesardo</groupId>
     <artifactId>icepick</artifactId>
-    <version>3.0.0</version>
+    <version>{{latest-version}}</version>
   </dependency>
   <dependency>
     <groupId>frankiesardo</groupId>
     <artifactId>icepick-processor</artifactId>
-    <version>3.0.0</version>
+    <version>{{latest-version}}</version>
     <optional>true</optional>
   </dependency>
 </dependencies>
