@@ -1,15 +1,16 @@
-(defproject frankiesardo/icepick-processor "3.0.1-SNAPSHOT"
+(defproject frankiesardo/icepick-processor "3.0.2-SNAPSHOT"
   :description "Compile time processor for Icepick"
   :url "https://github.com/frankiesardo/icepick"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [frankiesardo/icepick "3.0.1-SNAPSHOT"]
+                 [frankiesardo/icepick "3.0.2-SNAPSHOT"]
                  [com.google.auto.service/auto-service "1.0-rc2"]
                  [stencil "0.3.5"]]
   :deploy-repositories {"snapshots" {:url "https://clojars.org/repo"
                                      :username [:gpg :env/clojars_username]
-                                     :password [:gpg :env/clojars_password]}}
+                                     :password [:gpg :env/clojars_password]}
+                        "releases" {:url "https://clojars.org/repo"}}
   :source-paths      ["src/clojure"]
   :java-source-paths ["src/java"]
   :javac-options ["-target" "1.6" "-source" "1.6"]

@@ -1,8 +1,8 @@
 apply plugin: 'android'
 
 dependencies {
-  compile "frankiesardo:icepick:3.0.0"
-  provided "frankiesardo:icepick-processor:3.0.0"
+  compile "frankiesardo:icepick:3.0.2-SNAPSHOT"
+  provided "frankiesardo:icepick-processor:3.0.2-SNAPSHOT"
   compile project(':lib')
 }
 

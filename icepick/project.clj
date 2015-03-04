@@ -1,4 +1,4 @@
-(defproject frankiesardo/icepick "3.0.1-SNAPSHOT"
+(defproject frankiesardo/icepick "3.0.2-SNAPSHOT"
   :description "Android instance state made easy"
   :url "https://github.com/frankiesardo/icepick"
   :license {:name "Eclipse Public License"
@@ -7,6 +7,7 @@
   :javac-options ["-target" "1.6" "-source" "1.6"]
   :deploy-repositories {"snapshots" {:url "https://clojars.org/repo"
                                      :username [:gpg :env/clojars_username]
-                                     :password [:gpg :env/clojars_password]}}
+                                     :password [:gpg :env/clojars_password]}
+                        "releases" {:url "https://clojars.org/repo"}}
   :profiles {:provided {:dependencies [[com.google.android/android "4.1.1.4"]]}
              :dev {:dependencies [[org.clojure/clojure "1.6.0"]]}})
