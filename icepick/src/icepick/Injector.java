@@ -355,12 +355,10 @@ public class Injector {
         }
 
         public Parcelable getParent(Bundle state) {
-            android.util.Log.e("Restore", baseKey);
             return state.getParcelable(baseKey + "$$SUPER");
         }
 
         public Bundle putParent(Parcelable superState) {
-            android.util.Log.e("Save", baseKey);
             Bundle state = new Bundle();
             state.putParcelable(baseKey + "$$SUPER", superState);
             return state;
