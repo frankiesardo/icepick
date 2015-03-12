@@ -1,4 +1,4 @@
-(defproject frankiesardo/icepick "3.0.2-SNAPSHOT"
+(defproject frankiesardo/icepick "3.0.2"
   :description "Android instance state made easy"
   :url "https://github.com/frankiesardo/icepick"
   :license {:name "Eclipse Public License"
