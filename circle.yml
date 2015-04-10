@@ -1,0 +1,7 @@
+test:
+  pre:
+   - git clone $DOTFILES ~/dotfiles && . ~/dotfiles/init.sh
+  override:
+    - lein sub do install, test
+  post:
+    - lein sub circle

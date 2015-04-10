@@ -7,10 +7,14 @@
                  [frankiesardo/icepick "3.0.3-SNAPSHOT"]
                  [com.google.auto.service/auto-service "1.0-rc2"]
                  [stencil "0.3.5"]]
-  :deploy-repositories {"snapshots" {:url "https://clojars.org/repo"
-                                     :username [:gpg :env/clojars_username]
-                                     :password [:gpg :env/clojars_password]}
-                        "releases" {:url "https://clojars.org/repo"}}
+    :release-tasks [["vcs" "assert-committed"]
+                  ["change" "version" "leiningen.release/bump-version" "release"]
+                  ["vcs" "commit"]
+                  ["vcs" "tag" "v"]
+                  ["deploy" "clojars"]
+                  ["change" "version" "leiningen.release/bump-version"]
+                  ["vcs" "commit"]
+                  ["vcs" "push"]]
   :source-paths      ["src/clojure"]
   :java-source-paths ["src/java"]
   :javac-options ["-target" "1.6" "-source" "1.6"]

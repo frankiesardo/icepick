@@ -1,7 +1,0 @@
-language: clojure
-lein: lein2
-script: lein2 sub do install, test
-after_script: lein2 sub deploy
-notifications:
-  email: false
-sudo: false
