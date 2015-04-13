@@ -262,7 +262,7 @@ public class Injector {
             return state.getStringArray(key + baseKey);
         }
 
-        public void putStringAray(Bundle state, String key, String[] x) {
+        public void putStringArray(Bundle state, String key, String[] x) {
             state.putStringArray(key + baseKey, x);
         }
 
