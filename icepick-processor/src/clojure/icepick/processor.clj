@@ -57,7 +57,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public void restore(T target, Bundle state) {
     if (state == null) return;
     {{#fields}}
-    target.{{name}} = H.get{{primitive}}{{method}}(state, \"{{name}}\");
+    target.{{name}} = H.get{{method}}(state, \"{{name}}\");
     {{/fields}}
     super.restore(target, state);
   }
@@ -65,7 +65,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public void save(T target, Bundle state) {
     super.save(target, state);
     {{#fields}}
-    H.put{{primitive}}{{method}}(state, \"{{name}}\", target.{{name}});
+    H.put{{method}}(state, \"{{name}}\", target.{{name}});
     {{/fields}}
   }
   {{/view?}}
@@ -73,7 +73,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public Parcelable restore(T target, Parcelable p) {
     Bundle state = (Bundle) p;
     {{#fields}}
-    target.{{name}} = H.get{{primitive}}{{method}}(state, \"{{name}}\");
+    target.{{name}} = H.get{{method}}(state, \"{{name}}\");
     {{/fields}}
     return super.restore(target, H.getParent(state));
   }
@@ -81,7 +81,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public Parcelable save(T target, Parcelable p) {
     Bundle state = H.putParent(super.save(target, p));
     {{#fields}}
-    H.put{{primitive}}{{method}}(state, \"{{name}}\", target.{{name}});
+    H.put{{method}}(state, \"{{name}}\", target.{{name}});
     {{/fields}}
     return state;
   }
@@ -169,38 +169,40 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 ;; bundle-method
 
 (def ^:private exact-types
-  {"float"                                       "Float",
-   "boolean"                                     "Boolean",
-   "java.lang.Boolean"                           "BoxedBoolean",
-   "int"                                         "Int",
-   "short[]"                                     "ShortArray",
-   "java.lang.Char"                              "BoxedChar",
-   "byte[]"                                      "ByteArray",
-   "java.lang.CharSequence"                      "CharSequence",
-   "long[]"                                      "LongArray",
-   "long"                                        "Long",
-   "java.util.ArrayList<java.lang.CharSequence>" "CharSequenceArrayList",
-   "java.lang.CharSequence[]"                    "CharSequenceArray",
-   "java.util.ArrayList<java.lang.String>"       "StringArrayList",
-   "short"                                       "Short",
-   "android.os.Bundle"                           "Bundle",
-   "java.lang.String[]"                          "StringArray",
-   "char"                                        "Char",
-   "int[]"                                       "IntArray",
+  {"boolean"                                     "Boolean",
    "boolean[]"                                   "BooleanArray",
-   "java.lang.String"                            "String",
-   "java.lang.Double"                            "BoxedDouble",
-   "char[]"                                      "CharArray",
-   "double"                                      "Double",
-   "java.lang.Short"                             "BoxedShort",
-   "float[]"                                     "FloatArray",
-   "java.lang.Byte"                              "BoxedByte",
-   "java.util.ArrayList<java.lang.Integer>"      "IntegerArrayList",
-   "double[]"                                    "DoubleArray",
-   "java.lang.Float"                             "BoxedFloat",
+   "java.lang.Boolean"                           "BoxedBoolean",
    "byte"                                        "Byte",
-   "java.lang.Long"                              "BoxedLong",
+   "byte[]"                                      "ByteArray",
+   "java.lang.Byte"                              "BoxedByte",
+   "char"                                        "Char",
+   "char[]"                                      "CharArray",
+   "java.lang.Char"                              "BoxedChar",
+   "double"                                      "Double",
+   "double[]"                                    "DoubleArray",
+   "java.lang.Double"                            "BoxedDouble",
+   "float"                                       "Float",
+   "float[]"                                     "FloatArray",
+   "java.lang.Float"                             "BoxedFloat",
+   "int"                                         "Int",
+   "int[]"                                       "IntArray",
    "java.lang.Integer"                           "BoxedInt"
+   "long"                                        "Long",
+   "long[]"                                      "LongArray",
+   "java.lang.Long"                              "BoxedLong",
+   "short"                                       "Short",
+   "short[]"                                     "ShortArray",
+   "java.lang.Short"                             "BoxedShort",
+   
+   "java.lang.CharSequence"                      "CharSequence",
+   "java.lang.CharSequence[]"                    "CharSequenceArray",
+   "java.lang.String"                            "String",
+   "java.lang.String[]"                          "StringArray",
+   "java.util.ArrayList<java.lang.CharSequence>" "CharSequenceArrayList",
+   "java.util.ArrayList<java.lang.Integer>"      "IntegerArrayList",
+   "java.util.ArrayList<java.lang.String>"       "StringArrayList",
+   
+   "android.os.Bundle"                           "Bundle",
    "android.os.Parcelable[]"                     "ParcelableArray"})
 
 (defn- parcelable? [type]
