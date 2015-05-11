@@ -55,6 +55,9 @@ If Proguard is enabled make sure you add these rules to your configuration:
 -dontwarn icepick.**
 -keep class **$$Icicle { *; }
 -keepnames class * { @icepick.Icicle *;}
+-keepclasseswithmembernames class * {
+    @icepick.* <fields>;
+}
 ```
 
 Download
