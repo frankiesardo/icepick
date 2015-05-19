@@ -26,7 +26,9 @@ class ExampleActivity extends Activity {
 }
 ```
 
-Icepick can also generate the instance state code for your Custom Views:
+It works for `Activities`, `Fragments` or any object that needs to serialize its state on a `Bundle` (e.g. mortar's [ViewPresenters](https://github.com/square/mortar/blob/master/mortar/src/main/java/mortar/ViewPresenter.java))
+
+Icepick can also generate the instance state code for custom Views:
 
 ```java
 class CustomView extends View {
