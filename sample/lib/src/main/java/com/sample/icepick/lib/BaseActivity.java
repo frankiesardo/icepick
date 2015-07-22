@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import android.util.Log;
 
 public class BaseActivity extends Activity {
-  @Icicle protected String baseMessage;
+  @State protected String baseMessage;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

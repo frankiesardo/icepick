@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import com.sample.icepick.lib.BaseCustomView;
-import icepick.Icicle;
+import icepick.State;
 
 public class CustomView extends BaseCustomView {
 
-  @Icicle Integer textColor;
+  @State Integer textColor;
 
   public CustomView(Context context) {
     super(context);

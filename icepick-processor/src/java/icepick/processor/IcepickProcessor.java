@@ -22,7 +22,7 @@ import clojure.java.api.Clojure;
 import clojure.lang.IFn;
 import clojure.lang.Compiler;
 
-import icepick.Icicle;
+import icepick.State;
 
 import com.google.auto.service.AutoService;
 
@@ -60,6 +60,6 @@ public class IcepickProcessor extends AbstractProcessor {
     }
 
     @Override public Set<String> getSupportedAnnotationTypes() {
-        return new HashSet<String>(Arrays.asList(Icicle.class.getName()));
+        return new HashSet<String>(Arrays.asList(State.class.getName()));
     }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Icepick {
 
-    public static final String SUFFIX = "$$Icicle";
+    public static final String SUFFIX = "$$Icepick";
     public static final String ANDROID_PREFIX = "android.";
     public static final String JAVA_PREFIX = "java.";
 

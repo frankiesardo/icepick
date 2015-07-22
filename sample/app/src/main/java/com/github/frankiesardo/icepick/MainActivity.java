@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.sample.icepick.lib.BaseActivity;
-import icepick.Icicle;
+import icepick.State;
 
 public class MainActivity extends BaseActivity {
 
-  @Icicle String message;
+  @State String message;
 
   CustomView customView;
 

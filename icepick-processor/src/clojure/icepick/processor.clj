@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [stencil.core :as mustache])
-  (:import (icepick Icicle
+  (:import (icepick State
                     Icepick)
            (javax.tools Diagnostic$Kind)
            (javax.lang.model.type       TypeMirror
@@ -128,7 +128,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 (defn- annotated-class? [^TypeElement elem]
   (seq (for [field (ElementFilter/fieldsIn (.getEnclosedElements elem))
              ann (.getAnnotationMirrors field)
-             :when (= (.getName Icicle)
+             :when (= (.getName State)
                       (-> ann .getAnnotationType .asElement str))]
          field)))
 

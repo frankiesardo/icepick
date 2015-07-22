@@ -9,7 +9,7 @@ It uses annotation processing to generate code that does bundle manipulation and
 
 ```java
 class ExampleActivity extends Activity {
-  @Icicle String username; // This will be automatically saved and restored
+  @State String username; // This will be automatically saved and restored
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ Icepick can also generate the instance state code for custom Views:
 
 ```java
 class CustomView extends View {
-  @Icicle int selectedPosition; // This will be automatically saved and restored
+  @State int selectedPosition; // This will be automatically saved and restored
 
   @Override public Parcelable onSaveInstanceState() {
     return Icepick.saveInstanceState(this, super.onSaveInstanceState());
@@ -55,8 +55,8 @@ If Proguard is enabled make sure you add these rules to your configuration:
 
 ```
 -dontwarn icepick.**
--keep class **$$Icicle { *; }
--keepnames class * { @icepick.Icicle *;}
+-keep class **$$State { *; }
+-keepnames class * { @icepick.State *;}
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }

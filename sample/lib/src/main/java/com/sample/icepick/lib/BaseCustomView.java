@@ -5,11 +5,11 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 
 public class BaseCustomView extends TextView {
 
-  @Icicle protected Integer backgroundColor;
+  @State protected Integer backgroundColor;
 
   public BaseCustomView(Context context) {
     super(context);
