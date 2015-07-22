@@ -1,5 +1,8 @@
 ## Current
 
+## 3.1.0
+- Change annotation name from `@Icicle` to `@State`
+
 ## 3.0.2
 - Remove debug logs
 
