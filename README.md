@@ -55,8 +55,8 @@ If Proguard is enabled make sure you add these rules to your configuration:
 
 ```
 -dontwarn icepick.**
--keep class **$$State { *; }
--keepnames class * { @icepick.State *;}
+-keep class **$$Icepick { *; }
+-keepnames class * { @icepick.State *; }
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
