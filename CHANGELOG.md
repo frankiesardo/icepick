@@ -1,4 +1,5 @@
 ## Current
+- Remove project.clj from generated jars
 
 ## 3.1.0
 - Change annotation name from `@Icicle` to `@State`
