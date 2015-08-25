@@ -13,5 +13,6 @@
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]]
+  :jar-exclusions [#"project.clj"]
   :profiles {:provided {:dependencies [[com.google.android/android "4.1.1.4"]]}
              :dev {:dependencies [[org.clojure/clojure "1.6.0"]]}})
