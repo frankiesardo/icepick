@@ -21,6 +21,8 @@ public class Icepick {
         Icepick.debug = debug;
     }
 
+    private static final Injector.Object DEFAULT_OBJECT_INJECTOR = new Injector.Object();
+    private static final Injector.View DEFAULT_VIEW_INJECTOR = new Injector.View();
     private static final Map<Class<?>, Injector> INJECTORS =
         new LinkedHashMap<Class<?>, Injector>();
 
@@ -62,22 +64,22 @@ public class Icepick {
     }
 
     public static <T> void saveInstanceState(T target, Bundle state) {
-        Injector.Object<T> injector = safeGet(target, new Injector.Object<T>());
+        Injector.Object<T> injector = safeGet(target, DEFAULT_OBJECT_INJECTOR);
         injector.save(target, state);
     }
 
     public static <T> void restoreInstanceState(T target, Bundle state) {
-        Injector.Object<T> injector = safeGet(target, new Injector.Object<T>());
+        Injector.Object<T> injector = safeGet(target, DEFAULT_OBJECT_INJECTOR);
         injector.restore(target, state);
     }
 
     public static <T extends View> Parcelable saveInstanceState(T target, Parcelable state) {
-        Injector.View<T> injector = safeGet(target, new Injector.View<T>());
+        Injector.View<T> injector = safeGet(target, DEFAULT_VIEW_INJECTOR);
         return injector.save(target, state);
     }
 
     public static <T extends View> Parcelable restoreInstanceState(T target, Parcelable state) {
-        Injector.View<T> injector = safeGet(target, new Injector.View<T>());
+        Injector.View<T> injector = safeGet(target, DEFAULT_VIEW_INJECTOR);
         return injector.restore(target, state);
     }
 }
