@@ -6,8 +6,33 @@ import android.util.SparseArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Injector {
+
+    private static final Map<Class<?>, StateBundler> BUNDLERS =
+            new HashMap<Class<?>, StateBundler>();
+
+    private static <T> StateBundler<T> unsafeGetBundler(Class<? extends StateBundler<T>> cls)
+        throws IllegalAccessException, InstantiationException {
+        StateBundler<T> bundler = BUNDLERS.get(cls);
+        if (bundler != null) {
+            return bundler;
+        }
+
+        bundler = (StateBundler<T>) cls.newInstance();
+        BUNDLERS.put(cls, bundler);
+        return bundler;
+    }
+
+    protected static <T> StateBundler<T> getBundler(Class<? extends StateBundler<T>> cls) {
+        try {
+            return unsafeGetBundler(cls);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get bundler of class " + cls);
+        }
+    }
 
     public static class Helper {
 
@@ -362,6 +387,14 @@ public class Injector {
             Bundle state = new Bundle();
             state.putParcelable(baseKey + "$$SUPER", superState);
             return state;
+        }
+
+        public <T> T getWithBundler(Bundle state, String key, StateBundler<T> bundler) {
+            return bundler.get(key + baseKey, state);
+        }
+
+        public <T> void putWithBundler(Bundle state, String key, T x, StateBundler<T> bundler) {
+            bundler.put(key + baseKey, x, state);
         }
     }
 

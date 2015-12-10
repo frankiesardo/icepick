@@ -57,7 +57,12 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public void restore(T target, Bundle state) {
     if (state == null) return;
     {{#fields}}
+    {{#bundler}}
+    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", getBundler({{bundler}}));
+    {{/bundler}}
+    {{^bundler}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
+    {{/bundler}}
     {{/fields}}
     super.restore(target, state);
   }
@@ -65,7 +70,12 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public void save(T target, Bundle state) {
     super.save(target, state);
     {{#fields}}
+    {{#bundler}}
+    H.putWithBundler(state, \"{{name}}\", target.{{name}}, getBundler({{bundler}}));
+    {{/bundler}}
+    {{^bundler}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
+    {{/bundler}}
     {{/fields}}
   }
   {{/view?}}
@@ -73,7 +83,12 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public Parcelable restore(T target, Parcelable p) {
     Bundle state = (Bundle) p;
     {{#fields}}
+    {{#bundler}}
+    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", getBundler({{bundler}}));
+    {{/bundler}}
+    {{^bundler}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
+    {{/bundler}}
     {{/fields}}
     return super.restore(target, H.getParent(state));
   }
@@ -81,7 +96,12 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   public Parcelable save(T target, Parcelable p) {
     Bundle state = H.putParent(super.save(target, p));
     {{#fields}}
+    {{#bundler}}
+    H.putWithBundler(state, \"{{name}}\", target.{{name}}, getBundler({{bundler}}));
+    {{/bundler}}
+    {{^bundler}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
+    {{/bundler}}
     {{/fields}}
     return state;
   }
@@ -223,6 +243,14 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
                           (type-element "android.util.SparseArray")
                           (wildcard-type "android.os.Parcelable")))))
 
+(defn- field-bundler [elem]
+  (->> (.getAnnotationMirrors elem)
+       (filter #(= (.. % getAnnotationType toString) (.getName State)))
+       (mapcat #(.getElementValues %))
+       (filter #(= (.. % getKey getSimpleName toString) "bundler"))
+       (map #(.. % getValue toString))
+       (first)))
+
 (defn- bundle-method
   "docstring"
   [^TypeMirror type]
@@ -238,10 +266,13 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   (when (some #{Modifier/PRIVATE Modifier/STATIC Modifier/FINAL} (.getModifiers elem))
     (error elem "Field must not be private, static or final"))
   (let [type (.asType elem)
+        bundler (field-bundler elem)
         bundle-method (bundle-method type)]
-    (when-not bundle-method
+    (when-not (or bundler bundle-method)
       (error elem (str "Don't know how to put a " type " inside a Bundle")))
     {:name (.. elem getSimpleName toString)
+     :bundler bundler
+     :field-type type
      :method bundle-method
      :enclosing-class (enclosing-class (.getEnclosingElement elem))}))
 

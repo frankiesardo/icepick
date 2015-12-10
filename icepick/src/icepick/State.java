@@ -8,4 +8,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
 public @interface State {
+	Class<? extends StateBundler> bundler() default StateBundler.class;
 }
