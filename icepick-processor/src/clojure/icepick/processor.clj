@@ -48,6 +48,7 @@ import android.os.Parcelable;
 {{/view?}}
 import icepick.Injector.Helper;
 import icepick.Injector.{{type}};
+import icepick.Icepick$$Bundlers;
 
 public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 
@@ -58,7 +59,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     if (state == null) return;
     {{#fields}}
     {{#bundler}}
-    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", getBundler({{bundler}}));
+    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", Icepick$$Bundlers.{{bundler.instance-name}});
     {{/bundler}}
     {{^bundler}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
@@ -71,7 +72,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     super.save(target, state);
     {{#fields}}
     {{#bundler}}
-    H.putWithBundler(state, \"{{name}}\", target.{{name}}, getBundler({{bundler}}));
+    H.putWithBundler(state, \"{{name}}\", target.{{name}}, Icepick$$Bundlers.{{bundler.instance-name}});
     {{/bundler}}
     {{^bundler}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
@@ -84,7 +85,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     Bundle state = (Bundle) p;
     {{#fields}}
     {{#bundler}}
-    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", getBundler({{bundler}}));
+    target.{{name}} = ({{field-type}}) H.getWithBundler(state, \"{{name}}\", Icepick$$Bundlers.{{bundler.instance-name}});
     {{/bundler}}
     {{^bundler}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
@@ -97,7 +98,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     Bundle state = H.putParent(super.save(target, p));
     {{#fields}}
     {{#bundler}}
-    H.putWithBundler(state, \"{{name}}\", target.{{name}}, getBundler({{bundler}}));
+    H.putWithBundler(state, \"{{name}}\", target.{{name}}, Icepick$$Bundlers.{{bundler.instance-name}});
     {{/bundler}}
     {{^bundler}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
@@ -124,6 +125,26 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
         file-object (file-object file-name (:element class))]
     (doto (.openWriter file-object)
       (.write (mustache/render-string template vals))
+      (.flush)
+      (.close))))
+
+(def ^:private bundlers-template
+  "// Generated code from Icepick. Do not modify!
+package icepick;
+
+public class Icepick$$Bundlers {
+
+  {{#bundlers}}
+  public static final {{type}} {{instance-name}} = new {{type}}();
+  {{/bundlers}}
+
+}")
+
+(defn- emit-bundlers-class! [bundlers]
+  (let [file-name "icepick.Icepick$$Bundlers"
+        file-object (file-object file-name nil)]
+    (doto (.openWriter file-object)
+      (.write (mustache/render-string bundlers-template {:bundlers (seq bundlers)}))
       (.flush)
       (.close))))
 
@@ -248,7 +269,13 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
        (filter #(= (.. % getAnnotationType toString) (.getName State)))
        (mapcat #(.getElementValues %))
        (filter #(= (.. % getKey getSimpleName toString) "bundler"))
-       (map #(.. % getValue toString))
+       (map #(.. % getValue getValue asElement))
+       (map #(let [full-name (str %)
+                   package-prefix (str (package-name %) ".")
+                   simple-name (str/replace-first full-name package-prefix "")
+                   instance-name (str (str/replace simple-name "." "$") "Instance")]
+               {:type full-name
+                :instance-name instance-name}))
        (first)))
 
 (defn- bundle-method
@@ -281,8 +308,10 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   [processing-env annotations env]
   (binding [*env* processing-env]
     (doseq [ann annotations]
-      (->> (.getElementsAnnotatedWith env ann)
-           (map analyze-field)
-           (group-by :enclosing-class)
-           (map emit-class!)
-           (doall)))))
+      (let [analyzed-fields (map analyze-field (.getElementsAnnotatedWith env ann))
+            bundlers (apply hash-set (remove nil? (map :bundler analyzed-fields)))]
+        (emit-bundlers-class! bundlers)
+        (->> analyzed-fields
+             (group-by :enclosing-class)
+             (map emit-class!)
+             (doall))))))
