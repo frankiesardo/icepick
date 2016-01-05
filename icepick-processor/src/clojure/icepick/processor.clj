@@ -317,7 +317,7 @@ public class Icepick$$Bundlers {
     (doseq [ann annotations]
       (let [analyzed-fields (map analyze-field (.getElementsAnnotatedWith env ann))
             bundlers (apply hash-set (remove nil? (map :bundler analyzed-fields)))]
-        (emit-bundlers-class! bundlers)
+        (when (seq bundlers) (emit-bundlers-class! bundlers))
         (->> analyzed-fields
              (group-by :enclosing-class)
              (map emit-class!)
