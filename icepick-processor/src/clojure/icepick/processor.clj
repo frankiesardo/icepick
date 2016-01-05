@@ -48,7 +48,9 @@ import android.os.Parcelable;
 {{/view?}}
 import icepick.Injector.Helper;
 import icepick.Injector.{{type}};
+{{#bundlers?}}
 import icepick.Icepick$$Bundlers;
+{{/bundlers?}}
 
 public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 
@@ -112,15 +114,20 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 (defn- emit-class!
   "docstring"
   [[class fields]]
-  (let [vals {:view?   (:view? class)
-              :type    (if (:view? class) "View" "Object")
-              :package (:package class)
-              :name    (str (:dollar-name class) Icepick/SUFFIX)
-              :target  (:dotted-name class)
-              :parent  (if-let [parent (:qualified-parent-name class)]
-                         (str parent Icepick/SUFFIX)
-                         (if (:view? class) "View" "Object"))
-              :fields  fields}
+  (let [vals {:view?     (:view? class)
+              :type      (if (:view? class) "View" "Object")
+              :package   (:package class)
+              :name      (str (:dollar-name class) Icepick/SUFFIX)
+              :target    (:dotted-name class)
+              :parent    (if-let [parent (:qualified-parent-name class)]
+                           (str parent Icepick/SUFFIX)
+                           (if (:view? class) "View" "Object"))
+              :fields    fields
+              :bundlers? (->> fields
+                              (map :bundler)
+                              (remove nil?)
+                              (empty?)
+                              (not))}
         file-name (str (:package class) "." (:dollar-name class) Icepick/SUFFIX)
         file-object (file-object file-name (:element class))]
     (doto (.openWriter file-object)
