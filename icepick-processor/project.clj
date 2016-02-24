@@ -1,10 +1,10 @@
-(defproject frankiesardo/icepick-processor "3.2.0"
+(defproject frankiesardo/icepick-processor "3.2.1-SNAPSHOT"
   :description "Compile time processor for Icepick"
   :url "https://github.com/frankiesardo/icepick"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [frankiesardo/icepick "3.2.0"]
+                 [frankiesardo/icepick "3.2.1-SNAPSHOT"]
                  [com.google.auto.service/auto-service "1.0-rc2"]
                  [stencil "0.3.5"]]
   :release-tasks [["vcs" "assert-committed"]
