@@ -8,6 +8,6 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 /logs
-.DS_STORE
+.DS_Store
 *.iml
 .idea
