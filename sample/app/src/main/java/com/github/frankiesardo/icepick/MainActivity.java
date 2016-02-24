@@ -9,7 +9,7 @@ import icepick.State;
 
 public class MainActivity extends BaseActivity {
 
-  @State String message;
+  @State(MyBundler.class) String message;
 
   CustomView customView;
 

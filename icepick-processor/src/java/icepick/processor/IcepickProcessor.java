@@ -1,30 +1,18 @@
 package icepick.processor;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
-
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;
-import clojure.lang.Compiler;
-
+import com.google.auto.service.AutoService;
 import icepick.State;
 
-import com.google.auto.service.AutoService;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @AutoService(Processor.class)
 public class IcepickProcessor extends AbstractProcessor {
@@ -55,11 +43,13 @@ public class IcepickProcessor extends AbstractProcessor {
         return true;
     }
 
-    @Override public SourceVersion getSupportedSourceVersion() {
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
     }
 
-    @Override public Set<String> getSupportedAnnotationTypes() {
-        return new HashSet<String>(Arrays.asList(State.class.getName()));
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return new HashSet<String>(Collections.singletonList(State.class.getName()));
     }
 }

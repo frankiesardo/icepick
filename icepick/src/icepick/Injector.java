@@ -6,15 +6,28 @@ import android.util.SparseArray;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Injector {
 
     public static class Helper {
 
         private final String baseKey;
+        private final Map<String, Bundler<?>> bundlers;
 
-        public Helper(String baseKey) {
+        public Helper(String baseKey, Map<String, Bundler<?>> bundlers) {
             this.baseKey = baseKey;
+            this.bundlers = bundlers;
+        }
+
+        public <T> T getWithBundler(Bundle state, String key) {
+            Bundler<T> b = (Bundler<T>) bundlers.get(key);
+            return b.get(key + baseKey, state);
+        }
+
+        public <T> void putWithBundler(Bundle state, String key, T value) {
+            Bundler<T> b = (Bundler<T>) bundlers.get(key);
+            b.put(key + baseKey, value, state);
         }
 
         public boolean getBoolean(Bundle state, String key) {
@@ -362,14 +375,6 @@ public class Injector {
             Bundle state = new Bundle();
             state.putParcelable(baseKey + "$$SUPER", superState);
             return state;
-        }
-
-        public <T> T getWithBundler(Bundle state, String key, StateBundler<T> bundler) {
-            return bundler.get(key + baseKey, state);
-        }
-
-        public <T> void putWithBundler(Bundle state, String key, T x, StateBundler<T> bundler) {
-            bundler.put(key + baseKey, x, state);
         }
     }
 
