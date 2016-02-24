@@ -47,6 +47,12 @@ class CustomView extends View {
 }
 ```
 
+Custom Bundler
+--------
+
+From version `3.2.0` you can supply a class parameter to the `State` annotation.
+This class should implement the `Bundler` interface and you can use it to provide custom serialisation and deserialisation for your types.
+For example, you can use it in conjunction with `Parceler`.
 
 Proguard
 --------
