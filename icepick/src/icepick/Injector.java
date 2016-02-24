@@ -363,6 +363,14 @@ public class Injector {
             state.putParcelable(baseKey + "$$SUPER", superState);
             return state;
         }
+
+        public <T> T getWithBundler(Bundle state, String key, StateBundler<T> bundler) {
+            return bundler.get(key + baseKey, state);
+        }
+
+        public <T> void putWithBundler(Bundle state, String key, T x, StateBundler<T> bundler) {
+            bundler.put(key + baseKey, x, state);
+        }
     }
 
     public static class Object<T> extends Injector {
