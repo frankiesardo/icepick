@@ -11,5 +11,3 @@ pom.xml.asc
 .DS_STORE
 *.iml
 .idea
-build
-project.clj
