@@ -52,7 +52,24 @@ Custom Bundler
 
 From version `3.2.0` you can supply a class parameter to the `State` annotation.
 This class should implement the `Bundler` interface and you can use it to provide custom serialisation and deserialisation for your types.
-For example, you can use it in conjunction with `Parceler`.
+
+```java
+class MyFragment {
+  @State(MyCustomBundler.class) MyCustomType myCustomType;
+}
+
+class MyCustomBundler implements Bundler<MyCustomType> {
+  void put(String key, MyCustomType value, Bundle bundle) {
+    ...
+  }
+
+  MyCustomType get(String key, Bundle bundle) {
+    ...
+  }
+}
+```
+
+This is useful if you want to use `icepick` in conjunction with `Parceler`.
 
 Proguard
 --------
