@@ -42,7 +42,7 @@ class CustomView extends View {
     super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
   }
 
-  // You can put the calls to Bundles into a BaseCustomView and inherit from it
+  // You can put the calls to Icepick into a BaseCustomView and inherit from it
   // All Views extending this CustomView automatically have state saved/restored
 }
 ```
