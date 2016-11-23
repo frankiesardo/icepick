@@ -1,9 +1,6 @@
 Icepick
 ============
 
-[![Build status](https://circleci.com/gh/frankiesardo/icepick.svg?style=shield)](https://circleci.com/gh/frankiesardo/icepick)
-
-
 Icepick is an Android library that eliminates the boilerplate of saving and restoring instance state.
 It uses annotation processing to generate code that does bundle manipulation and key generation, so that you don't have to write it yourself.
 
