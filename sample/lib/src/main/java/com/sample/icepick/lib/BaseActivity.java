@@ -2,10 +2,8 @@ package com.sample.icepick.lib;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Parcelable;
 import icepick.Icepick;
 import icepick.State;
-import android.util.Log;
 
 public class BaseActivity extends Activity {
   @State protected String baseMessage;
