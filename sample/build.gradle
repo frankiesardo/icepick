@@ -1,10 +1,16 @@
 subprojects {
   buildscript {
     repositories {
-      mavenCentral()
+      jcenter()
     }
     dependencies {
-      classpath 'com.android.tools.build:gradle:1.2.0'
+      classpath 'com.android.tools.build:gradle:2.3.0'
+    }
+    project.ext {
+      buildToolsVersion = "25.0.2"
+      compileSdkVersion = 25
+      targetSdkVersion = 25
+      minSdkVersion = 14
     }
   }
 
@@ -17,7 +23,7 @@ subprojects {
   }
 }
 
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.2.1'
+ext {
+  icepickVersion = '3.2.0-SNAPSHOT'
+  parcelerVersion = '1.1.6'
 }
