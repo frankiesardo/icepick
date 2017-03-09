@@ -28,11 +28,11 @@ public class Icepick {
 
     private static Injector getInjector(Class<?> cls)
         throws IllegalAccessException, InstantiationException {
-        Injector injector = INJECTORS.get(cls);
-        if (injector != null) {
+        if (INJECTORS.containsKey(cls)) {
             if (debug) Log.d(TAG, "HIT: Cached in injector map.");
-            return injector;
+            return INJECTORS.get(cls);
         }
+        Injector injector = null;
         String clsName = cls.getName();
         if (clsName.startsWith(ANDROID_PREFIX) || clsName.startsWith(JAVA_PREFIX)) {
             if (debug) Log.d(TAG, "MISS: Reached framework class. Abandoning search.");
