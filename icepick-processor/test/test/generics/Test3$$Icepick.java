@@ -15,14 +15,14 @@ public class Test3$$Icepick<T extends Test3> extends Object<T> {
 
     private final static Helper H = new Helper("test.generics.Test3$$Icepick.", BUNDLERS);
 
-    public void restore(T target, Bundle state) {
+    @Override public void restore(T target, Bundle state) {
         if (state == null) return;
         target.f1 = H.getParcelableArrayList(state, "f1");
         target.f2 = H.getSparseParcelableArray(state, "f2");
         super.restore(target, state);
     }
 
-    public void save(T target, Bundle state) {
+    @Override public void save(T target, Bundle state) {
         super.save(target, state);
         H.putParcelableArrayList(state, "f1", target.f1);
         H.putSparseParcelableArray(state, "f2", target.f2);

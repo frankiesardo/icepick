@@ -16,13 +16,13 @@ public class Test$Inner$$Icepick<T extends Test.Inner> extends test.parent.Test$
 
     private final static Helper H = new Helper("test.parent.Test$Inner$$Icepick.", BUNDLERS);
 
-    public void restore(T target, Bundle state) {
+    @Override public void restore(T target, Bundle state) {
         if (state == null) return;
         target.f2 = H.getString(state, "f2");
         super.restore(target, state);
     }
 
-    public void save(T target, Bundle state) {
+    @Override public void save(T target, Bundle state) {
         super.save(target, state);
         H.putString(state, "f2", target.f2);
     }

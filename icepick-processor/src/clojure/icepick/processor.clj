@@ -67,7 +67,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   private final static Helper H = new Helper(\"{{package}}.{{name}}.\", BUNDLERS);
 
   {{^view?}}
-  public void restore(T target, Bundle state) {
+  @Override public void restore(T target, Bundle state) {
     if (state == null) return;
     {{#fields}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
@@ -75,7 +75,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     super.restore(target, state);
   }
 
-  public void save(T target, Bundle state) {
+  @Override public void save(T target, Bundle state) {
     super.save(target, state);
     {{#fields}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
@@ -83,7 +83,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   }
   {{/view?}}
   {{#view?}}
-  public Parcelable restore(T target, Parcelable p) {
+  @Override public Parcelable restore(T target, Parcelable p) {
     Bundle state = (Bundle) p;
     {{#fields}}
     target.{{name}} = H.get{{method}}(state, \"{{name}}\");
@@ -91,7 +91,7 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
     return super.restore(target, H.getParent(state));
   }
 
-  public Parcelable save(T target, Parcelable p) {
+  @Override public Parcelable save(T target, Parcelable p) {
     Bundle state = H.putParent(super.save(target, p));
     {{#fields}}
     H.put{{method}}(state, \"{{name}}\", target.{{name}});
