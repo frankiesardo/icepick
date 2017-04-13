@@ -17,13 +17,13 @@ public class Test$Inner$$Icepick<T extends Test.Inner> extends test.views.Test$$
 
     private final static Helper H = new Helper("test.views.Test$Inner$$Icepick.", BUNDLERS);
 
-    public Parcelable restore(T target, Parcelable p) {
+    @Override public Parcelable restore(T target, Parcelable p) {
         Bundle state = (Bundle) p;
         target.f2 = H.getString(state, "f2");
         return super.restore(target, H.getParent(state));
     }
 
-    public Parcelable save(T target, Parcelable p) {
+    @Override public Parcelable save(T target, Parcelable p) {
         Bundle state = H.putParent(super.save(target, p));
         H.putString(state, "f2", target.f2);
         return state;

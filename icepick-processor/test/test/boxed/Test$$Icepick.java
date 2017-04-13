@@ -15,13 +15,13 @@ public class Test$$Icepick<T extends Test> extends Object<T> {
 
     private final static Helper H = new Helper("test.boxed.Test$$Icepick.", BUNDLERS);
 
-    public void restore(T target, Bundle state) {
+    @Override public void restore(T target, Bundle state) {
         if (state == null) return;
         target.f1 = H.getBoxedFloat(state, "f1");
         super.restore(target, state);
     }
 
-    public void save(T target, Bundle state) {
+    @Override public void save(T target, Bundle state) {
         super.save(target, state);
         H.putBoxedFloat(state, "f1", target.f1);
     }

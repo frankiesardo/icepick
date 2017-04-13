@@ -15,7 +15,7 @@ public class Test4$$Icepick<T extends Test4> extends Object<T> {
 
     private final static Helper H = new Helper("test.generics.Test4$$Icepick.", BUNDLERS);
 
-    public void restore(T target, Bundle state) {
+    @Override public void restore(T target, Bundle state) {
         if (state == null) return;
         target.f1 = H.getSerializable(state, "f1");
         target.f2 = H.getSerializable(state, "f2");
@@ -25,7 +25,7 @@ public class Test4$$Icepick<T extends Test4> extends Object<T> {
         super.restore(target, state);
     }
 
-    public void save(T target, Bundle state) {
+    @Override public void save(T target, Bundle state) {
         super.save(target, state);
         H.putSerializable(state, "f1", target.f1);
         H.putSerializable(state, "f2", target.f2);
