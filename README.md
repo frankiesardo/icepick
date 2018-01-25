@@ -80,7 +80,6 @@ If Proguard is enabled make sure you add these rules to your configuration:
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
--keepnames class * { @icepick.State *;}
 ```
 
 Download
