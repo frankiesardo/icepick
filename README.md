@@ -100,7 +100,7 @@ repositories {
 }
 dependencies {
   implementation 'frankiesardo:icepick:{{latest-version}}'
-  annotationProcessor 'frankiesardo:icepick:{{latest-version}}'
+  annotationProcessor 'frankiesardo:icepick-processor:{{latest-version}}'
   compileOnly 'frankiesardo:icepick-processor:{{latest-version}}'
 }
 ```
