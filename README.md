@@ -99,8 +99,9 @@ repositories {
   maven {url "https://clojars.org/repo/"}
 }
 dependencies {
-  compile 'frankiesardo:icepick:{{latest-version}}'
-  provided 'frankiesardo:icepick-processor:{{latest-version}}'
+  implementation 'frankiesardo:icepick:{{latest-version}}'
+  annotationProcessor 'frankiesardo:icepick-processor:{{latest-version}}'
+  compileOnly 'frankiesardo:icepick-processor:{{latest-version}}'
 }
 ```
 
