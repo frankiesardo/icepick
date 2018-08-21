@@ -49,6 +49,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 {{/view?}}
 import icepick.Bundler;
+import icepick.Setuper;
 import icepick.Injector.Helper;
 import icepick.Injector.{{type}};
 
@@ -58,10 +59,14 @@ import java.util.HashMap;
 public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
 
   private final static Map<String, Bundler<?>> BUNDLERS = new HashMap<String, Bundler<?>>();
+  private final static Map<String, Setuper<?>> SETUPERS = new HashMap<String, Setuper<?>>();
   static {
-    {{#fields}} {{#bundler}}
+    {{#fields}} {{#bundler}} {{#setuper}}
     BUNDLERS.put(\"{{name}}\", new {{bundler}}());
-    {{/bundler}} {{/fields}}
+    if ({{setuper}} != null) {
+      SETUPERS.put(\"{{name}}\", new {{setuper}}());
+    }
+    {{/setuper}} {{/bundler}} {{/fields}}
   }
 
   private final static Helper H = new Helper(\"{{package}}.{{name}}.\", BUNDLERS);
@@ -70,7 +75,11 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   @Override public void restore(T target, Bundle state) {
     if (state == null) return;
     {{#fields}}
-    target.{{name}} = H.get{{method}}(state, \"{{name}}\");
+    if (SETUPERS.get(\"{{name}}\") != null) {
+      SETUPERS.get(\"{{name}}\").setup(target, H.get{{method}}(state, \"{{name}}\"))
+    } else {
+      target.{{name}} = H.get{{method}}(state, \"{{name}}\");
+    }
     {{/fields}}
     super.restore(target, state);
   }
@@ -245,7 +254,15 @@ public class {{name}}<T extends {{target}}> extends {{parent}}<T> {
   (->> (.getAnnotationMirrors elem)
        (filter #(= (.. % getAnnotationType toString) state-annotation))
        (mapcat #(.getElementValues %))
-       (filter #(= (.. % getKey getSimpleName toString) "value"))
+       (filter #(= (.. % getKey getSimpleName toString) "bundler"))
+       (map #(.. % getValue getValue asElement toString))
+       (first)))
+
+(defn- setuper [^Element elem]
+  (->> (.getAnnotationMirrors elem)
+       (filter #(= (.. % getAnnotationType toString) state-annotation))
+       (mapcat #(.getElementValues %))
+       (filter #(= (.. % getKey getSimpleName toString) "setuper"))
        (map #(.. % getValue getValue asElement toString))
        (first)))
 
