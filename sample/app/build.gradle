@@ -1,23 +1,46 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-  compileSdkVersion project.ext.compileSdkVersion
-  buildToolsVersion project.ext.buildToolsVersion
+    compileSdkVersion 30
 
-  defaultConfig {
-    minSdkVersion project.ext.minSdkVersion
-    targetSdkVersion project.ext.targetSdkVersion
-  }
+    defaultConfig {
+        applicationId "com.github.frankiesardo.icepick"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
 
-  lintOptions {
-    abortOnError false
-  }
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-  compile "frankiesardo:icepick:${icepickVersion}"
-  provided "frankiesardo:icepick-processor:${icepickVersion}"
-  compile "org.parceler:parceler-api:${parcelerVersion}"
-  annotationProcessor "org.parceler:parceler:${parcelerVersion}"
-  compile project(':lib')
+
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    implementation "frankiesardo:icepick:${icepickVersion}"
+    annotationProcessor "frankiesardo:icepick-processor:${icepickVersion}"
+
+    implementation "org.parceler:parceler-api:${parcelerVersion}"
+    annotationProcessor "org.parceler:parceler:${parcelerVersion}"
+
+    implementation project(':lib')
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

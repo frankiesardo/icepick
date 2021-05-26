@@ -1,29 +1,34 @@
-subprojects {
-  buildscript {
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
     repositories {
-      jcenter()
+        google()
+        mavenCentral()
     }
     dependencies {
-      classpath 'com.android.tools.build:gradle:2.3.0'
-    }
-    project.ext {
-      buildToolsVersion = "25.0.2"
-      compileSdkVersion = 25
-      targetSdkVersion = 25
-      minSdkVersion = 14
-    }
-  }
+        classpath "com.android.tools.build:gradle:4.2.1"
 
-  repositories {
-    mavenCentral()
-    maven {
-      url "https://clojars.org/repo/"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
-    mavenLocal()
-  }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+        maven {
+            url "https://clojars.org/repo/"
+        }
+        mavenLocal()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
 
 ext {
-  icepickVersion = '3.2.0-SNAPSHOT'
+  icepickVersion = '3.2.0'
   parcelerVersion = '1.1.6'
 }

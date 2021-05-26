@@ -2,6 +2,7 @@ package com.github.frankiesardo.icepick;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.sample.icepick.lib.BaseActivity;
@@ -34,7 +35,7 @@ public class MainActivity extends BaseActivity {
   }
 
   @Override
-  public boolean onMenuItemSelected(int featureId, MenuItem item) {
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.action_add_state) {
       customView.setBackgroundColorWithAnotherMethod(Color.BLUE);
       customView.setTextColorWithAnotherMethod(Color.WHITE);
@@ -44,6 +45,6 @@ public class MainActivity extends BaseActivity {
       updateText();
       return true;
     }
-    return super.onMenuItemSelected(featureId, item);
+    return super.onOptionsItemSelected(item);
   }
 }
