@@ -1,11 +1,11 @@
 package com.sample.icepick.lib;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import icepick.Icepick;
 import icepick.State;
 
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
   @State protected String baseMessage;
 
   @Override
